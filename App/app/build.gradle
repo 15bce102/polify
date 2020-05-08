@@ -63,4 +63,5 @@ dependencies {
     implementation 'com.google.firebase:firebase-database:19.3.0'
     implementation 'com.google.firebase:firebase-dynamic-links-ktx:19.1.0'
     implementation project(path: ':game')
+    implementation 'com.google.firebase:firebase-invites:16.0.4'
 }

@@ -4,6 +4,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
+
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.3"
@@ -46,4 +47,5 @@ dependencies {
 
     api 'com.squareup.retrofit2:retrofit:2.8.1'
     api 'com.squareup.retrofit2:converter-gson:2.8.1'
+    implementation 'com.google.firebase:firebase-auth:16.0.5'
 }
