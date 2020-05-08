@@ -10,13 +10,21 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+
         <activity android:name=".ui.activity.SplashActivity">
-            <!--<intent-filter>
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>-->
+            </intent-filter>
         </activity>
+
+        <activity android:name=".ui.activity.LoginActivity" />
+
+        <activity
+            android:name=".ui.activity.HomeActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+
         <activity android:name=".ui.activity.RoomActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -30,23 +38,23 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.activity.MultiPlayerActivity" />
-        <activity
-            android:name=".ui.activity.HomeActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".ProfileActivity" />
         <activity android:name=".VerifyActivity" />
         <activity android:name=".MainActivity">
-            <intent-filter>
+            <!--<intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-                <action android:name="android.intent.action.VIEW"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
+
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
                     android:host="polifywars.page.link"
-                    android:scheme="https"/>
-            </intent-filter>
+                    android:scheme="https" />
+            </intent-filter>-->
         </activity>
     </application>
 

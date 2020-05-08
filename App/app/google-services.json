@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "614876535479-ifm5t0licgdm8pu0nk538d4kbgcojd0b.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.polify",
+            "certificate_hash": "80b0e5e90dd3b2fd387c954586dcf566d7a8446a"
+          }
+        },
+        {
           "client_id": "614876535479-ihcnv9kd2bkq2lbb6r4phjdc91i1da59.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

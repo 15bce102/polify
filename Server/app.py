@@ -37,5 +37,14 @@ def join_battle():
     return simplejson.dumps(resp)
 
 
+@app.route('/my-rooms', methods=['GET'])
+def my_rooms():
+    uid = request.args['uid']
+    page_start = int(request.args['page_start'])
+    page_size = int(request.args['page_size'])
+    resp = db.my_rooms(uid, page_start, page_size)
+    return simplejson.dumps(resp)
+
+
 if __name__ == "__main__":
     app.run(host='0.0.0.0', debug=True)

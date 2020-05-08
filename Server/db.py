@@ -27,7 +27,7 @@ def create_user(uid):
 
     db[USERS].update({"_id": uid}, {"$setOnInsert": {"coins": 100}}, upsert=True)
 
-    resp['user'] = db[USERS].find({"_id": uid})[0]
+    resp['user'] = db[USERS].find_one({"_id": uid})
     return resp
 
 
@@ -36,7 +36,7 @@ def create_battle(uid, coins):
     if not valid:
         return resp
 
-    user = db[USERS].find({"_id": uid})[0]
+    user = db[USERS].find_one({"_id": uid})
 
     if user['coins'] < coins:
         resp['success'] = False
@@ -49,7 +49,11 @@ def create_battle(uid, coins):
         "creator": uid,
         "started": False,
         "time": current_milli_time(),
-        "coins_pool": coins
+        "coins_pool": coins,
+	   "members": [{
+		"uid": uid,
+		"score": -1
+         }]
     }
 
     db[BATTLES].insert_one(battle)
@@ -63,8 +67,8 @@ def join_battle(uid, battle_id):
     if not valid:
         return resp
 
-    user = db[USERS].find({"_id": uid})[0]
-    battle = db[BATTLES].find({"_id": battle_id})[0]
+    user = db[USERS].find_one({"_id": uid})
+    battle = db[BATTLES].find_one({"_id": battle_id})
 
     if battle["coins_pool"] > user['coins']:
         resp['success'] = False
@@ -78,7 +82,7 @@ def join_battle(uid, battle_id):
         }
     }})
 
-    resp['battle'] = db[BATTLES].find({"_id": battle_id})[0]
+    resp['battle'] = db[BATTLES].find_one({"_id": battle_id})
 
     return resp
 
@@ -88,7 +92,7 @@ def start_battle(battle_id, uid):
     if not valid:
         return resp
 
-    battle = db[BATTLES].find({"_id": battle_id})[0]
+    battle = db[BATTLES].find_one({"_id": battle_id})
 
     if not battle['started'] and battle['creator'] == uid:
         db[BATTLES].update({"_id": battle_id}, {"started": True})
@@ -100,3 +104,25 @@ def start_battle(battle_id, uid):
         resp['success'] = False
         resp['message'] = "Battle already started or you are not the creator"
         return resp
+
+
+def my_rooms(uid, page_start, page_size):
+    valid, resp = is_valid_user(uid)
+    if not valid:
+        return resp
+
+    query = {"members.uid": uid, "started": False}
+
+    total = db[BATTLES].find(query).count()
+
+    rooms = db[BATTLES].find(query).skip(page_start).limit(min(page_size, total-page_start))
+    resp['rooms'] = list(rooms)
+    print(resp['rooms'])
+
+    if page_start + page_size < total:
+        resp['hasMore'] = True
+    else:
+        resp['hasMore'] = False
+
+    resp['success'] = True
+    return resp
