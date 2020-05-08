@@ -1,3 +1,16 @@
 <resources>
     <string name="app_name">Polify</string>
+
+    <string name="one_vs_one">1 vs 1</string>
+    <string name="multi_player">Multi Player</string>
+
+    <string name="nav_header_title">Polify</string>
+    <string name="nav_header_subtitle">andruid.magic@gmail.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="history">History</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="create">Create</string>
+    <string name="join">Join</string>
 </resources>

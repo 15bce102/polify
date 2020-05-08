@@ -1,2 +1,3 @@
 rootProject.name='Polify'
 include ':app'
+include ':game'

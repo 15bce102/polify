@@ -8,9 +8,7 @@ import uuid
 import time
 
 cred = credentials.Certificate('key.json')
-firebase_admin.initialize_app(cred, {
-    'databaseURL': 'https://quizwars-b6cca.firebaseio.com/'
-})
+firebase_admin.initialize_app(cred)
 
 DBNAME = 'polify_db'
 
@@ -48,6 +46,7 @@ def create_battle(uid, coins):
     battle = {
         "_id": battle_id,
         "creator": uid,
+        "started": False,
         "time": current_milli_time(),
         "coins_pool": coins
     }
@@ -70,6 +69,18 @@ def join_battle(uid, battle_id):
     db[BATTLES].update({"_id": battle_id}, {"$addToSet": {
         "members": uid
     }})
+
+
+def start_battle(battle_id, uid):
+    # if not is_valid_user(uid):
+    #     return
+
+    battle = db[BATTLES].find({"_id": battle_id})[0]
+
+    if not battle['started'] and battle['creator'] == uid:
+        db[BATTLES].update({"_id": battle_id}, {"started": True})
+    else:
+        print("Battle already started or you are not the creator")
 
 
 def insert_questions(que_list):
