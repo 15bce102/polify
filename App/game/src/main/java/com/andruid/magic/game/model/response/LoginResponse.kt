@@ -5,5 +5,5 @@ import com.andruid.magic.game.model.User
 data class LoginResponse(
         override val success: Boolean,
         override val message: String?,
-        val user: User
+        val user: User?
 ) : ApiResponse()

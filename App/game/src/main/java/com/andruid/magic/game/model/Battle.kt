@@ -13,5 +13,5 @@ data class Battle(
         @SerializedName("coins_pool")
         val coinsPool: Int,
 
-        val members: List<Player>
+        val members: List<Player>?
 )

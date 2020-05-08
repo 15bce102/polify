@@ -1,65 +1,41 @@
 import db
 from flask import Flask, request
+import simplejson
+
+app = Flask(__name__)
 
 
-# app = Flask(__name__)
-
-# db.create_user('uid12')
-# db.create_battle('uid123', 30)
-# db.join_battle('uid11', '467fcce1-c003-418e-8131-f56f43706adb')
-
-questions = [
-    {
-        "_id": "qid1",
-        "category": "games",
-        "text": "Who is best CoD player?",
-        "options": [
-            {
-                "_id": 1,
-                "opt": "Rohit"
-            },
-            {
-                "_id": 2,
-                "opt": "Ramandeep"
-            },
-            {
-                "_id": 3,
-                "opt": "Darren"
-            },
-            {
-                "_id": 4,
-                "opt": "xyz"
-            }
-        ],
-        "correct": 3
-    },
-    {
-        "_id": "qid2",
-        "category": "games",
-        "text": "Who is worst CoD player?",
-        "options": [
-            {
-                "_id": 1,
-                "opt": "Rohit"
-            },
-            {
-                "_id": 2,
-                "opt": "Ramandeep"
-            },
-            {
-                "_id": 3,
-                "opt": "Darren"
-            },
-            {
-                "_id": 4,
-                "opt": "xyz"
-            }
-        ],
-        "correct": 2
+@app.route('/', methods=['GET'])
+def welcome():
+    resp = {
+        "message": "Welcome to polify",
+        "time": db.current_milli_time()
     }
-]
+    return simplejson.dumps(resp)
 
-db.insert_questions(questions)
 
-# if __name__ == "__main__":
-#     app.run(host='0.0.0.0', debug=True)
+@app.route('/login', methods=['GET'])
+def login_user():
+    uid = request.args['uid']
+    resp = db.create_user(uid)
+    return simplejson.dumps(resp)
+
+
+@app.route('/create-battle', methods=['GET'])
+def create_battle():
+    uid = request.args['uid']
+    coins = int(request.args['coins'])
+    resp = db.create_battle(uid, coins)
+    return simplejson.dumps(resp)
+
+
+@app.route('/join-battle', methods=['GET'])
+def join_battle():
+    uid = request.args['uid']
+    bid = request.args['bid']
+    resp = db.join_battle(uid, bid)
+    return simplejson.dumps(resp)
+
+
+if __name__ == "__main__":
+    app.run(host='0.0.0.0', debug=True)

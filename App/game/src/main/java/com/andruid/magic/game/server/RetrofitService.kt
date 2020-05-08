@@ -3,13 +3,16 @@ package com.andruid.magic.game.server
 import com.andruid.magic.game.model.response.BattleResponse
 import com.andruid.magic.game.model.response.LoginResponse
 import retrofit2.Response
-import retrofit2.http.Body
-import retrofit2.http.POST
+import retrofit2.http.GET
+import retrofit2.http.Query
 
 interface RetrofitService {
-    @POST("/login")
-    suspend fun login(@Body uid: String): Response<LoginResponse>
+    @GET("/login")
+    suspend fun login(@Query("uid") uid: String): Response<LoginResponse>
 
-    @POST("/create-battle")
-    suspend fun createBattle(@Body uid: String): Response<BattleResponse>
+    @GET("/create-battle")
+    suspend fun createBattle(@Query("uid") uid: String, @Query("coins") coins: Int): Response<BattleResponse>
+
+    @GET("/join-battle")
+    suspend fun joinBattle(@Query("uid") uid: String, @Query("bid") bid: String): Response<BattleResponse>
 }

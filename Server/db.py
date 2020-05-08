@@ -1,11 +1,11 @@
+import uuid
+import pymongo
+
 import firebase_admin
 from firebase_admin import credentials
-from firebase_admin import auth
-from firebase_admin.auth import UserNotFoundError
 
-import pymongo
-import uuid
-import time
+from utils import is_valid_user
+from utils import current_milli_time
 
 cred = credentials.Certificate('key.json')
 firebase_admin.initialize_app(cred)
@@ -21,26 +21,27 @@ QUESTIONS = 'questions'
 
 
 def create_user(uid):
-    # if not is_valid_user(uid):
-    #     return
+    valid, resp = is_valid_user(uid)
+    if not valid:
+        return resp
 
-    user = {
-        "_id": uid,
-        "coins": 100
-    }
-    db[USERS].insert_one(user)
+    db[USERS].update({"_id": uid}, {"$setOnInsert": {"coins": 100}}, upsert=True)
+
+    resp['user'] = db[USERS].find({"_id": uid})[0]
+    return resp
 
 
 def create_battle(uid, coins):
-    # if not is_valid_user(uid):
-    #     return
+    valid, resp = is_valid_user(uid)
+    if not valid:
+        return resp
 
     user = db[USERS].find({"_id": uid})[0]
-    print(user)
 
     if user['coins'] < coins:
-        print("Cannot create battle. Not enough coins")
-        return
+        resp['success'] = False
+        resp['message'] = "Cannot create battle. Not enough coins"
+        return resp
 
     battle_id = str(uuid.uuid4())
     battle = {
@@ -53,52 +54,49 @@ def create_battle(uid, coins):
 
     db[BATTLES].insert_one(battle)
 
+    resp['battle'] = battle
+    return resp
+
 
 def join_battle(uid, battle_id):
-    # if not is_valid_user(uid):
-    #     return
+    valid, resp = is_valid_user(uid)
+    if not valid:
+        return resp
 
     user = db[USERS].find({"_id": uid})[0]
     battle = db[BATTLES].find({"_id": battle_id})[0]
-    print(battle)
 
     if battle["coins_pool"] > user['coins']:
-        print("Cannot join battle. Not enough coins")
-        return
+        resp['success'] = False
+        resp['message'] = "Cannot join battle. Not enough coins"
+        return resp
 
     db[BATTLES].update({"_id": battle_id}, {"$addToSet": {
-        "members": uid
+        "members": {
+            "uid": uid,
+            "score": -1
+        }
     }})
+
+    resp['battle'] = db[BATTLES].find({"_id": battle_id})[0]
+
+    return resp
 
 
 def start_battle(battle_id, uid):
-    # if not is_valid_user(uid):
-    #     return
+    valid, resp = is_valid_user(uid)
+    if not valid:
+        return resp
 
     battle = db[BATTLES].find({"_id": battle_id})[0]
 
     if not battle['started'] and battle['creator'] == uid:
         db[BATTLES].update({"_id": battle_id}, {"started": True})
+
+        resp['battle'] = db[BATTLES].find({"_id": battle_id})[0]
+        return resp
+
     else:
-        print("Battle already started or you are not the creator")
-
-
-def insert_questions(que_list):
-    db[QUESTIONS].insert_many(que_list)
-
-
-def is_valid_user(uid):
-    if db[USERS].find({"_id": uid}) is None:
-        return False
-
-    try:
-        auth.get_user(uid)
-    except UserNotFoundError as e:
-        print(e)
-        return False
-    else:
-        return True
-
-
-def current_milli_time():
-    return int(round(time.time() * 1000))
+        resp['success'] = False
+        resp['message'] = "Battle already started or you are not the creator"
+        return resp
