@@ -4,3 +4,4 @@ firebase-admin~=4.2.0
 simplejson~=3.17.0
 requests~=2.23.0
 beautifulsoup4~=4.9.0
+APScheduler~=3.6.3

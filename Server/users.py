@@ -1,6 +1,8 @@
 import pymongo
 from pymongo import ReturnDocument
 
+from utils import current_milli_time
+
 DBNAME = 'polify_db'
 
 client = pymongo.MongoClient("mongodb+srv://polify:polify@cluster0-dhuyw.mongodb.net/test?retryWrites=true&w=majority")
@@ -8,13 +10,19 @@ db = client[DBNAME]
 
 USERS = 'users'
 
+STATUS_OFFLINE = 0
+STATUS_ONLINE = 1
+STATUS_BUSY = 2
+STATUS_WAITING = 3
+
 
 def create_user(uid):
     resp = {}
 
     user = db[USERS].find_one_and_update(
         {"_id": uid},
-        {"$set": {"online": True}, "$setOnInsert": {"coins": 100}},
+        {"$set": {"status": STATUS_ONLINE, "last_seen": current_milli_time()},
+         "$setOnInsert": {"coins": 100}},
         upsert=True,
         return_document=ReturnDocument.AFTER
     )
@@ -29,12 +37,12 @@ def create_user(uid):
     return resp
 
 
-def update_user_status(uid, online):
+def update_user_status(uid, status):
     resp = {}
 
     user = db[USERS].find_one_and_update(
         {"_id": uid},
-        {"$set": {"online": online}},
+        {"$set": {"status": status}},
         return_document=ReturnDocument.AFTER
     )
 
@@ -106,7 +114,7 @@ def get_my_friends(uid):
 
     friends = list(db[USERS].find(
         {"_id": {"$in": friends_uid}},
-        {"online": 1}
+        {"status": 1}
     ))
 
     if friends is None:
@@ -127,3 +135,16 @@ def is_friend_request(uid, friend_uid):
     if user is None:
         return False
     return True
+
+
+def update_all_users():
+    print('updating offline users')
+
+    now = current_milli_time()
+    interval = 2 * 60 * 1000
+
+    count = db[USERS].update_many(
+        {"status": STATUS_ONLINE, "last_seen": {"$lt": now - interval}},
+        {"$set": {"status": STATUS_OFFLINE}}
+    ).modified_count
+    print('updated count = ', count)

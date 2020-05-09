@@ -8,10 +8,21 @@ import users
 from utils import current_milli_time
 from utils import is_valid_user
 
+import atexit
+from apscheduler.schedulers.background import BackgroundScheduler
+
+
 app = Flask(__name__)
 
 cred = credentials.Certificate('key.json')
 firebase_admin.initialize_app(cred)
+
+scheduler = BackgroundScheduler()
+scheduler.add_job(func=users.update_all_users, trigger="interval", seconds=3*60)
+scheduler.start()
+
+# Shut down the scheduler when exiting the app
+atexit.register(lambda: scheduler.shutdown())
 
 
 @app.route('/', methods=['GET'])
@@ -38,15 +49,13 @@ def login_user():
 @app.route('/update-status', methods=['GET'])
 def update_status():
     uid = request.args['uid']
-    online = False
-    if request.args['online'] == 'true':
-        online = True
+    status = int(request.args['status'])
 
     valid, resp = is_valid_user(uid)
     if not valid:
         return resp
 
-    resp = users.update_user_status(uid, online)
+    resp = users.update_user_status(uid, status)
     return simplejson.dumps(resp)
 
 
