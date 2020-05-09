@@ -1,15 +1,24 @@
-import db
-from flask import Flask, request
+import firebase_admin
 import simplejson
+from firebase_admin import credentials
+from flask import Flask, request
+
+import db
+import users
+from utils import current_milli_time
+from utils import is_valid_user
 
 app = Flask(__name__)
+
+cred = credentials.Certificate('key.json')
+firebase_admin.initialize_app(cred)
 
 
 @app.route('/', methods=['GET'])
 def welcome():
     resp = {
         "message": "Welcome to polify",
-        "time": db.current_milli_time()
+        "time": current_milli_time()
     }
     return simplejson.dumps(resp)
 
@@ -17,7 +26,73 @@ def welcome():
 @app.route('/login', methods=['GET'])
 def login_user():
     uid = request.args['uid']
-    resp = db.create_user(uid)
+
+    valid, resp = is_valid_user(uid)
+    if not valid:
+        return resp
+
+    resp = users.create_user(uid)
+    return simplejson.dumps(resp)
+
+
+@app.route('/update-status', methods=['GET'])
+def update_status():
+    uid = request.args['uid']
+    online = False
+    if request.args['online'] == 'true':
+        online = True
+
+    valid, resp = is_valid_user(uid)
+    if not valid:
+        return resp
+
+    resp = users.update_user_status(uid, online)
+    return simplejson.dumps(resp)
+
+
+@app.route('/send-request', methods=['GET'])
+def send_friend_request():
+    uid = request.args['uid']
+    friend_uid = request.args['friend_uid']
+
+    valid, resp = is_valid_user(uid)
+    if not valid:
+        return resp
+
+    valid, resp = is_valid_user(friend_uid)
+    if not valid:
+        return resp
+
+    resp = users.send_friend_request(uid, friend_uid)
+    return simplejson.dumps(resp)
+
+
+@app.route('/accept-request', methods=['GET'])
+def accept_request():
+    uid = request.args['uid']
+    friend_uid = request.args['friend_uid']
+
+    valid, resp = is_valid_user(uid)
+    if not valid:
+        return resp
+
+    valid, resp = is_valid_user(friend_uid)
+    if not valid:
+        return resp
+
+    resp = users.accept_friend_request(uid, friend_uid)
+    return simplejson.dumps(resp)
+
+
+@app.route('/my-friends', methods=['GET'])
+def my_friends():
+    uid = request.args['uid']
+
+    valid, resp = is_valid_user(uid)
+    if not valid:
+        return resp
+
+    resp = users.get_my_friends(uid)
     return simplejson.dumps(resp)
 
 

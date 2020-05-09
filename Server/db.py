@@ -1,14 +1,12 @@
 import uuid
-import pymongo
 
-import firebase_admin
-from firebase_admin import credentials
+import pymongo
+from pymongo import ReturnDocument
 
 from utils import is_valid_user
 from utils import current_milli_time
 
-cred = credentials.Certificate('key.json')
-firebase_admin.initialize_app(cred)
+
 
 DBNAME = 'polify_db'
 
@@ -20,15 +18,6 @@ BATTLES = 'battles'
 QUESTIONS = 'questions'
 
 
-def create_user(uid):
-    valid, resp = is_valid_user(uid)
-    if not valid:
-        return resp
-
-    db[USERS].update({"_id": uid}, {"$setOnInsert": {"coins": 100}}, upsert=True)
-
-    resp['user'] = db[USERS].find_one({"_id": uid})
-    return resp
 
 
 def create_battle(uid, coins):
@@ -50,10 +39,10 @@ def create_battle(uid, coins):
         "started": False,
         "time": current_milli_time(),
         "coins_pool": coins,
-	   "members": [{
-		"uid": uid,
-		"score": -1
-         }]
+        "members": [{
+            "uid": uid,
+            "score": -1
+        }]
     }
 
     db[BATTLES].insert_one(battle)
@@ -115,7 +104,7 @@ def my_rooms(uid, page_start, page_size):
 
     total = db[BATTLES].find(query).count()
 
-    rooms = db[BATTLES].find(query).skip(page_start).limit(min(page_size, total-page_start))
+    rooms = db[BATTLES].find(query).skip(page_start).limit(min(page_size, total - page_start))
     resp['rooms'] = list(rooms)
     print(resp['rooms'])
 
