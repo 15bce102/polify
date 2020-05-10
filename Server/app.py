@@ -1,28 +1,17 @@
+import atexit
+
 import firebase_admin
 import simplejson
+from apscheduler.schedulers.background import BackgroundScheduler
 from firebase_admin import credentials
 from flask import Flask, request
 
-import db
-import users
+from api_utils import battles
+from api_utils import users
 from utils import current_milli_time
 from utils import is_valid_user
 
-import atexit
-from apscheduler.schedulers.background import BackgroundScheduler
-
-
 app = Flask(__name__)
-
-cred = credentials.Certificate('key.json')
-firebase_admin.initialize_app(cred)
-
-scheduler = BackgroundScheduler()
-scheduler.add_job(func=users.update_all_users, trigger="interval", seconds=3*60)
-scheduler.start()
-
-# Shut down the scheduler when exiting the app
-atexit.register(lambda: scheduler.shutdown())
 
 
 @app.route('/', methods=['GET'])
@@ -59,76 +48,27 @@ def update_status():
     return simplejson.dumps(resp)
 
 
-@app.route('/send-request', methods=['GET'])
-def send_friend_request():
-    uid = request.args['uid']
-    friend_uid = request.args['friend_uid']
-
-    valid, resp = is_valid_user(uid)
-    if not valid:
-        return resp
-
-    valid, resp = is_valid_user(friend_uid)
-    if not valid:
-        return resp
-
-    resp = users.send_friend_request(uid, friend_uid)
-    return simplejson.dumps(resp)
-
-
-@app.route('/accept-request', methods=['GET'])
-def accept_request():
-    uid = request.args['uid']
-    friend_uid = request.args['friend_uid']
-
-    valid, resp = is_valid_user(uid)
-    if not valid:
-        return resp
-
-    valid, resp = is_valid_user(friend_uid)
-    if not valid:
-        return resp
-
-    resp = users.accept_friend_request(uid, friend_uid)
-    return simplejson.dumps(resp)
-
-
-@app.route('/my-friends', methods=['GET'])
-def my_friends():
-    uid = request.args['uid']
-
-    valid, resp = is_valid_user(uid)
-    if not valid:
-        return resp
-
-    resp = users.get_my_friends(uid)
-    return simplejson.dumps(resp)
-
-
-@app.route('/create-battle', methods=['GET'])
-def create_battle():
-    uid = request.args['uid']
-    coins = int(request.args['coins'])
-    resp = db.create_battle(uid, coins)
-    return simplejson.dumps(resp)
-
-
-@app.route('/join-battle', methods=['GET'])
-def join_battle():
-    uid = request.args['uid']
-    bid = request.args['bid']
-    resp = db.join_battle(uid, bid)
-    return simplejson.dumps(resp)
-
-
-@app.route('/my-rooms', methods=['GET'])
-def my_rooms():
-    uid = request.args['uid']
-    page_start = int(request.args['page_start'])
-    page_size = int(request.args['page_size'])
-    resp = db.my_rooms(uid, page_start, page_size)
-    return simplejson.dumps(resp)
+def shut_down():
+    try:
+        battles.stop_matchmaking()
+        scheduler.shutdown()
+        print('shutdown success')
+    except Exception as e:
+        print("shutdown exception:", e)
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', debug=True)
+
+    cred = credentials.Certificate('keys/key.json')
+    firebase_admin.initialize_app(cred)
+
+    scheduler = BackgroundScheduler()
+    scheduler.add_job(func=users.update_all_users, trigger="interval", seconds=3 * 60)
+    scheduler.add_job(func=battles.start_matchmaking)
+
+    scheduler.start()
+
+    # Shut down the scheduler when exiting the app
+    atexit.register(lambda: shut_down())
+
+    app.run(host='0.0.0.0', debug=False)

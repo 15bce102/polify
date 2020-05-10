@@ -1,0 +1,165 @@
+# @app.route('/send-request', methods=['GET'])
+# def send_friend_request():
+#     uid = request.args['uid']
+#     friend_uid = request.args['friend_uid']
+#
+#     valid, resp = is_valid_user(uid)
+#     if not valid:
+#         return resp
+#
+#     valid, resp = is_valid_user(friend_uid)
+#     if not valid:
+#         return resp
+#
+#     resp = users.send_friend_request(uid, friend_uid)
+#     return simplejson.dumps(resp)
+#
+#
+# @app.route('/accept-request', methods=['GET'])
+# def accept_request():
+#     uid = request.args['uid']
+#     friend_uid = request.args['friend_uid']
+#
+#     valid, resp = is_valid_user(uid)
+#     if not valid:
+#         return resp
+#
+#     valid, resp = is_valid_user(friend_uid)
+#     if not valid:
+#         return resp
+#
+#     resp = users.accept_friend_request(uid, friend_uid)
+#     return simplejson.dumps(resp)
+#
+#
+# @app.route('/my-friends', methods=['GET'])
+# def my_friends():
+#     uid = request.args['uid']
+#
+#     valid, resp = is_valid_user(uid)
+#     if not valid:
+#         return resp
+#
+#     resp = users.get_my_friends(uid)
+#     return simplejson.dumps(resp)
+#
+#
+# @app.route('/create-battle', methods=['GET'])
+# def create_battle():
+#     uid = request.args['uid']
+#     coins = int(request.args['coins'])
+#     resp = api_utils.create_battle(uid, coins)
+#     return simplejson.dumps(resp)
+#
+#
+# @app.route('/join-battle', methods=['GET'])
+# def join_battle():
+#     uid = request.args['uid']
+#     bid = request.args['bid']
+#     resp = api_utils.join_battle(uid, bid)
+#     return simplejson.dumps(resp)
+#
+#
+# @app.route('/my-rooms', methods=['GET'])
+# def my_rooms():
+#     uid = request.args['uid']
+#     page_start = int(request.args['page_start'])
+#     page_size = int(request.args['page_size'])
+#     resp = users.my_rooms(uid, page_start, page_size)
+#     return simplejson.dumps(resp)
+
+# def create_battle(uid, coins):
+#     valid, resp = is_valid_user(uid)
+#     if not valid:
+#         return resp
+#
+#     user = db[USERS].find_one({"_id": uid})
+#
+#     if user['coins'] < coins:
+#         resp['success'] = False
+#         resp['message'] = "Cannot create battle. Not enough coins"
+#         return resp
+#
+#     battle_id = str(uuid.uuid4())
+#     battle = {
+#         "_id": battle_id,
+#         "creator": uid,
+#         "started": False,
+#         "time": current_milli_time(),
+#         "coins_pool": coins,
+#         "members": [{
+#             "uid": uid,
+#             "score": -1
+#         }]
+#     }
+#
+#     db[BATTLES].insert_one(battle)
+#
+#     resp['battle'] = battle
+#     return resp
+#
+#
+# def join_battle(uid, battle_id):
+#     valid, resp = is_valid_user(uid)
+#     if not valid:
+#         return resp
+#
+#     user = db[USERS].find_one({"_id": uid})
+#     battle = db[BATTLES].find_one({"_id": battle_id})
+#
+#     if battle["coins_pool"] > user['coins']:
+#         resp['success'] = False
+#         resp['message'] = "Cannot join battle. Not enough coins"
+#         return resp
+#
+#     db[BATTLES].update({"_id": battle_id}, {"$addToSet": {
+#         "members": {
+#             "uid": uid,
+#             "score": -1
+#         }
+#     }})
+#
+#     resp['battle'] = db[BATTLES].find_one({"_id": battle_id})
+#
+#     return resp
+#
+#
+# def start_battle(battle_id, uid):
+#     valid, resp = is_valid_user(uid)
+#     if not valid:
+#         return resp
+#
+#     battle = db[BATTLES].find_one({"_id": battle_id})
+#
+#     if not battle['started'] and battle['creator'] == uid:
+#         db[BATTLES].update({"_id": battle_id}, {"started": True})
+#
+#         resp['battle'] = db[BATTLES].find({"_id": battle_id})[0]
+#         return resp
+#
+#     else:
+#         resp['success'] = False
+#         resp['message'] = "Battle already started or you are not the creator"
+#         return resp
+#
+#
+# def my_rooms(uid, page_start, page_size):
+#     valid, resp = is_valid_user(uid)
+#     if not valid:
+#         return resp
+#
+#     query = {"members.uid": uid, "started": False}
+#
+#     total = db[BATTLES].find(query).count()
+#
+#     rooms = db[BATTLES].find(query).skip(page_start).limit(min(page_size, total - page_start))
+#     resp['rooms'] = list(rooms)
+#     print(resp['rooms'])
+#
+#     if page_start + page_size < total:
+#         resp['hasMore'] = True
+#     else:
+#         resp['hasMore'] = False
+#
+#     resp['success'] = True
+#     return resp

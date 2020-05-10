@@ -1,5 +1,6 @@
 import pymongo
 from pymongo import ReturnDocument
+from pymongo.errors import PyMongoError
 
 from utils import current_milli_time
 

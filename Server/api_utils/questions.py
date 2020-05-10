@@ -1,6 +1,6 @@
 import pymongo
 
-from question_scrape import get_questions
+from data_collection.question_scrape import get_questions
 
 DBNAME = 'polify_db'
 
