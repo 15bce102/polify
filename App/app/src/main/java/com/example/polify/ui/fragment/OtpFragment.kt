@@ -1,6 +1,7 @@
 package com.example.polify.ui.fragment
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -15,6 +16,7 @@ import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthProvider
+import com.google.firebase.auth.ktx.userProfileChangeRequest
 import java.util.concurrent.TimeUnit
 
 class OtpFragment : Fragment() {
@@ -24,6 +26,9 @@ class OtpFragment : Fragment() {
 
     private lateinit var binding: FragmentOtpBinding
     private lateinit var phoneNumber: String
+
+    private var userName: String? = null
+    private var avatarUri: String? = null
 
     private val mAuth = FirebaseAuth.getInstance()
     private lateinit var verificationId: String
@@ -48,7 +53,11 @@ class OtpFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            phoneNumber = OtpFragmentArgs.fromBundle(it).phoneNumber
+            val safeArgs = OtpFragmentArgs.fromBundle(it)
+
+            phoneNumber = safeArgs.phoneNumber
+            userName = safeArgs.userName
+            avatarUri = safeArgs.avatarUri
         }
     }
 
@@ -82,10 +91,21 @@ class OtpFragment : Fragment() {
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        val intent = Intent(requireActivity(), HomeActivity::class.java)
-                                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                        startActivity(intent)
-                        requireActivity().finish()
+
+                        val profileUpdates = userProfileChangeRequest {
+                            displayName = userName
+                            photoUri = Uri.parse(avatarUri)
+                        }
+
+                        mAuth.currentUser?.updateProfile(profileUpdates)?.addOnCompleteListener { profileTask ->
+                            if (profileTask.isSuccessful) {
+                                val intent = Intent(requireActivity(), HomeActivity::class.java)
+                                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                                startActivity(intent)
+                                requireActivity().finish()
+                            } else
+                                Toast.makeText(requireContext(), task.exception!!.message, Toast.LENGTH_SHORT).show()
+                        }
                     } else
                         Toast.makeText(requireContext(), task.exception!!.message, Toast.LENGTH_SHORT).show()
                 }

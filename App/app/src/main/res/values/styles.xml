@@ -6,7 +6,7 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="otpViewStyle">@style/OtpWidget.OtpView</item>
         <item name="windowActionBar">false</item>
-        <item name="android:windowNoTitle">true</item>
+        <item name="windowNoTitle">true</item>
     </style>
 
     <style name="AppTheme.NoActionBar">

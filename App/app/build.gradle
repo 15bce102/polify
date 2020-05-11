@@ -63,9 +63,10 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
 
     implementation "com.google.android.material:material:1.1.0"
-    implementation 'com.google.firebase:firebase-auth:19.3.1'
+    implementation 'com.google.firebase:firebase-auth-ktx:19.3.1'
     implementation 'com.google.firebase:firebase-database:19.3.0'
     implementation 'com.google.firebase:firebase-dynamic-links-ktx:19.1.0'
+    implementation 'com.google.firebase:firebase-common-ktx:19.3.0'
 
     implementation 'com.hbb20:ccp:2.3.8'
     implementation 'com.github.mukeshsolanki:android-otpview-pinview:2.1.0'

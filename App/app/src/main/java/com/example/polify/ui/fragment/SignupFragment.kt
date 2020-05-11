@@ -9,15 +9,15 @@ import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.polify.R
-import com.example.polify.databinding.FragmentLoginBinding
+import com.example.polify.databinding.FragmentSignupBinding
 import com.example.polify.util.isValidPhoneNumber
 
-class LoginFragment : Fragment() {
-    private lateinit var binding: FragmentLoginBinding
+class SignupFragment : Fragment() {
+    private lateinit var binding: FragmentSignupBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        binding = FragmentLoginBinding.inflate(inflater, container, false)
+        binding = FragmentSignupBinding.inflate(inflater, container, false)
 
         binding.apply {
             countryCodePicker.registerCarrierNumberEditText(phoneET)
@@ -29,11 +29,14 @@ class LoginFragment : Fragment() {
                     phoneTextInput.error = null
             }
 
-            sendOtpBtn.setOnClickListener {
+            submitBtn.setOnClickListener {
                 val number = countryCodePicker.fullNumberWithPlus
-                if (isValidPhoneNumber(number))
+                val userName = userNameET.text.toString().trim()
+                val avatarUri = "https://images.app.goo.gl/8y6cxrZPicwQFEK69"
+
+                if (isValidPhoneNumber(number) && userName.isNotEmpty() && avatarUri.isNotEmpty())
                     findNavController().navigate(
-                            LoginFragmentDirections.actionLoginFragmentToOtpFragment(number, null, null))
+                            SignupFragmentDirections.actionSignupFragmentToOtpFragment(number, userName, avatarUri))
                 else
                     Toast.makeText(requireContext(), R.string.error_invalid_number, Toast.LENGTH_SHORT).show()
             }

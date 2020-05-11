@@ -1,12 +1,8 @@
-<?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
-
-
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/img_avatar"
@@ -14,57 +10,75 @@
         android:layout_height="100dp"
         android:src="@mipmap/ic_profile"
         app:civ_border_color="@color/black"
-
         app:civ_border_width="2dp"
         tools:layout_editor_absoluteX="155dp"
         tools:layout_editor_absoluteY="199dp" />
 
-
-    <EditText
-        android:id="@+id/userNameET"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="300dp"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/userNameTextInput"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/edittext"
-        android:fontFamily="@font/regular"
         android:gravity="center_horizontal"
-        android:text="Avatar Name"
-        android:textColor="@color/black"
-        android:textSize="30dp"
+        app:errorEnabled="true"
+        app:hintEnabled="true"
         tools:layout_editor_absoluteX="55dp"
-        tools:layout_editor_absoluteY="344dp" />
+        tools:layout_editor_absoluteY="344dp">
+
+        <EditText
+            android:id="@+id/userNameET"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/edittext"
+            android:fontFamily="@font/regular"
+            android:gravity="center_horizontal"
+            android:text="Avatar Name"
+            android:textColor="@color/black"
+            android:textSize="30dp" />
+    </com.google.android.material.textfield.TextInputLayout>
 
     <com.hbb20.CountryCodePicker
+        android:id="@+id/countryCodePicker"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="268dp"
         app:ccp_autoFormatNumber="false"
         app:ccp_countryPreference="in"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/phoneET"
+        app:layout_constraintEnd_toStartOf="@id/phoneTextInput"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <EditText
-        android:id="@+id/phoneET"
-        android:layout_width="250dp"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/phoneTextInput"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/edittext"
-        android:fontFamily="@font/regular"
         android:gravity="center_horizontal"
-        android:text="Mobile No."
-        android:textColor="@color/black"
-        android:textSize="30dp"
-        tools:layout_editor_absoluteX="113dp"
-        tools:layout_editor_absoluteY="442dp" />
+        app:errorEnabled="true"
+        app:hintEnabled="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/countryCodePicker"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <EditText
+            android:id="@+id/phoneET"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/edittext"
+            android:fontFamily="@font/regular"
+            android:text="Mobile No."
+            android:textColor="@color/black"
+            android:textSize="30dp" />
+    </com.google.android.material.textfield.TextInputLayout>
 
     <Button
         android:id="@+id/submitBtn"
         android:layout_width="125dp"
         android:layout_height="wrap_content"
         android:background="@drawable/button"
-        android:text="SUBMIT"
         android:fontFamily="@font/regular"
+        android:text="SUBMIT"
         android:textColor="@color/white"
         android:textSize="22dp"
         tools:layout_editor_absoluteX="161dp"
@@ -103,6 +117,4 @@
         app:layout_constraintHorizontal_bias="0.019"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.988" />
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>
