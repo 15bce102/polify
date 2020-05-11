@@ -12,12 +12,15 @@
         android:usesCleartextTraffic="true">
 
         <activity android:name=".ui.activity.SplashActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
         </activity>
+
+
+
 
         <activity android:name=".ui.activity.LoginActivity" />
 
@@ -41,6 +44,9 @@
         <activity android:name=".ProfileActivity" />
         <activity android:name=".VerifyActivity" />
         <activity android:name=".MainActivity">
+
+
+        </activity>
             <!--<intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -55,7 +61,7 @@
                     android:host="polifywars.page.link"
                     android:scheme="https" />
             </intent-filter>-->
-        </activity>
+
     </application>
 
 </manifest>
