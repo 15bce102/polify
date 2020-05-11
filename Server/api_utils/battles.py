@@ -3,6 +3,8 @@ from pymongo.errors import PyMongoError
 
 import uuid
 
+from utils import send_multi_message
+
 DBNAME = 'polify_db'
 
 client = pymongo.MongoClient("mongodb+srv://polify:polify@cluster0-dhuyw.mongodb.net/test?retryWrites=true&w=majority")
@@ -30,6 +32,8 @@ def start_matchmaking():
                 users = list(db[WAITING_ROOM].aggregate([{"$sample": {"size": 2}}]))
                 print(users)
 
+                uids = [user['_id'] for user in users]
+
                 db[WAITING_ROOM].delete_many({"_id": {"$in": users}})
                 players = [{"uid": user['uid'], "score": -1} for user in users]
 
@@ -38,6 +42,8 @@ def start_matchmaking():
                     "players": players
                 }
                 db[BATTLES].insert_one(battle)
+
+                send_multi_message(battle, uids)
 
     except PyMongoError as e:
         # The ChangeStream encountered an unrecoverable error or the

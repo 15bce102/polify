@@ -1,6 +1,5 @@
 import pymongo
 from pymongo import ReturnDocument
-from pymongo.errors import PyMongoError
 
 from utils import current_milli_time
 
@@ -149,3 +148,21 @@ def update_all_users():
         {"$set": {"status": STATUS_OFFLINE}}
     ).modified_count
     print('updated count = ', count)
+
+
+def get_fcm_tokens(uids):
+    tokens = db[USERS].find({"_id": {"$in": uids}}, {"_id:0", "token:1"})
+    return tokens
+
+
+def update_fcm_token(uid, token):
+    resp = {}
+    count = db[USERS].update_one({"_id": uid}, {"$set": {"token": token}}).matched_count
+
+    if count == 1:
+        resp['success'] = True
+    else:
+        resp['success'] = False
+        resp['message'] = 'Could not update FCM token'
+
+    return resp

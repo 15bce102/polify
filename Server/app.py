@@ -1,15 +1,17 @@
 import atexit
 
 import firebase_admin
-import simplejson
-from apscheduler.schedulers.background import BackgroundScheduler
 from firebase_admin import credentials
+
+import simplejson
+
+from apscheduler.schedulers.background import BackgroundScheduler
+
 from flask import Flask, request
 
-from api_utils import battles
-from api_utils import users
-from utils import current_milli_time
-from utils import is_valid_user
+from api_utils import battles, users
+
+from utils import current_milli_time, is_valid_user
 
 app = Flask(__name__)
 
@@ -45,6 +47,19 @@ def update_status():
         return resp
 
     resp = users.update_user_status(uid, status)
+    return simplejson.dumps(resp)
+
+
+@app.route('/update-token', methods=['GET'])
+def update_token():
+    uid = request.args['uid']
+    token = request.args['token']
+
+    valid, resp = is_valid_user(uid)
+    if not valid:
+        return resp
+
+    resp = users.update_fcm_token(uid, token)
     return simplejson.dumps(resp)
 
 

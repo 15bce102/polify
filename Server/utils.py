@@ -2,6 +2,9 @@ import time
 
 from firebase_admin import auth
 from firebase_admin.auth import UserNotFoundError
+from firebase_admin.messaging import Message, MulticastMessage, send, send_multicast
+
+from api_utils.users import get_fcm_tokens
 
 
 def current_milli_time():
@@ -11,12 +14,26 @@ def current_milli_time():
 def is_valid_user(uid):
     resp = {}
 
-    # try:
-    #     auth.get_user(uid)
-    # except UserNotFoundError as e:
-    #     resp['success'] = False
-    #     resp['message'] = str(e)
-    #     return False, resp
-    # else:
-    resp['success'] = True
-    return True, resp
+    try:
+        auth.get_user(uid)
+    except UserNotFoundError as e:
+        resp['success'] = False
+        resp['message'] = str(e)
+        return False, resp
+    else:
+        resp['success'] = True
+        return True, resp
+
+
+def send_multi_message(data, uids):
+    tokens = get_fcm_tokens(uids)
+    message = MulticastMessage(data, tokens)
+    response = send_multicast(message)
+    print('{0} messages were sent successfully'.format(response.success_count))
+
+
+def send_single_message(data, uid):
+    token = get_fcm_tokens(list(uid))[0]
+    message = Message(data, token)
+    response = send(message)
+    print('Successfully sent message:', response)
