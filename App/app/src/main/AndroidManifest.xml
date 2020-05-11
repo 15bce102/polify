@@ -8,26 +8,26 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
+        android:theme="@style/AppTheme.FullScreen"
         android:usesCleartextTraffic="true">
 
+        <service
+            android:name=".service.CloudMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
         <activity android:name=".ui.activity.SplashActivity">
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
-
-
-
-
         <activity android:name=".ui.activity.LoginActivity" />
-
-        <activity
-            android:name=".ui.activity.HomeActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-
+        <activity android:name=".ui.activity.HomeActivity" />
         <activity android:name=".ui.activity.RoomActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -43,25 +43,7 @@
         <activity android:name=".ui.activity.MultiPlayerActivity" />
         <activity android:name=".ProfileActivity" />
         <activity android:name=".VerifyActivity" />
-        <activity android:name=".MainActivity">
-
-
-        </activity>
-            <!--<intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="polifywars.page.link"
-                    android:scheme="https" />
-            </intent-filter>-->
-
+        <activity android:name=".MainActivity"></activity>
     </application>
 
 </manifest>

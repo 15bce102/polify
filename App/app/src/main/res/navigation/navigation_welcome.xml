@@ -2,22 +2,21 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/navigation_login"
-    app:startDestination="@id/signupFragment">
+    android:id="@+id/navigation_welcome"
+    app:startDestination="@id/welcomeFragment"
+    tools:ignore="UnusedNavigation">
 
     <fragment
-        android:id="@+id/signupFragment"
-        android:name="com.example.polify.ui.fragment.SignupFragment"
-        android:label="fragment_signup"
-        tools:layout="@layout/fragment_signup">
+        android:id="@+id/welcomeFragment"
+        android:name="com.example.polify.ui.fragment.WelcomeFragment"
+        android:label="WelcomeFragment"
+        tools:layout="@layout/fragment_welcome">
         <action
-            android:id="@+id/action_signupFragment_to_loginFragment"
-            app:destination="@id/loginFragment"
-            app:popUpTo="@id/signupFragment"
-            app:popUpToInclusive="true" />
+            android:id="@+id/action_welcomeFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
         <action
-            android:id="@+id/action_signupFragment_to_otpFragment"
-            app:destination="@id/otpFragment" />
+            android:id="@+id/action_welcomeFragment_to_signupFragment"
+            app:destination="@id/signupFragment" />
     </fragment>
 
     <fragment
@@ -33,6 +32,21 @@
             app:destination="@id/signupFragment"
             app:popUpTo="@id/loginFragment"
             app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/signupFragment"
+        android:name="com.example.polify.ui.fragment.SignupFragment"
+        android:label="SignupFragment"
+        tools:layout="@layout/fragment_signup">
+        <action
+            android:id="@+id/action_signupFragment_to_loginFragment"
+            app:destination="@id/loginFragment"
+            app:popUpTo="@id/signupFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_signupFragment_to_otpFragment"
+            app:destination="@id/otpFragment" />
     </fragment>
 
     <fragment
