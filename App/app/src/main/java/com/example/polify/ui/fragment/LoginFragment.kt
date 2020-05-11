@@ -19,6 +19,12 @@ class LoginFragment : Fragment() {
                               savedInstanceState: Bundle?): View? {
         binding = FragmentLoginBinding.inflate(inflater, container, false)
 
+        initListeners()
+
+        return binding.root
+    }
+
+    private fun initListeners() {
         binding.apply {
             countryCodePicker.registerCarrierNumberEditText(phoneET)
 
@@ -37,8 +43,10 @@ class LoginFragment : Fragment() {
                 else
                     Toast.makeText(requireContext(), R.string.error_invalid_number, Toast.LENGTH_SHORT).show()
             }
-        }
 
-        return binding.root
+            textLogin.setOnClickListener {
+                findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToSignupFragment())
+            }
+        }
     }
 }

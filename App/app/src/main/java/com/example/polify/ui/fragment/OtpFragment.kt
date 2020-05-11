@@ -30,9 +30,9 @@ class OtpFragment : Fragment() {
     private var userName: String? = null
     private var avatarUri: String? = null
 
-    private val mAuth = FirebaseAuth.getInstance()
     private lateinit var verificationId: String
 
+    private val mAuth = FirebaseAuth.getInstance()
     private val mCallBack = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
         override fun onCodeSent(s: String, forceResendingToken: PhoneAuthProvider.ForceResendingToken) {
             super.onCodeSent(s, forceResendingToken)
@@ -100,7 +100,6 @@ class OtpFragment : Fragment() {
                         mAuth.currentUser?.updateProfile(profileUpdates)?.addOnCompleteListener { profileTask ->
                             if (profileTask.isSuccessful) {
                                 val intent = Intent(requireActivity(), HomeActivity::class.java)
-                                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                                 startActivity(intent)
                                 requireActivity().finish()
                             } else
