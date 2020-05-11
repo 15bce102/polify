@@ -44,7 +44,7 @@ class LoginFragment : Fragment() {
                     Toast.makeText(requireContext(), R.string.error_invalid_number, Toast.LENGTH_SHORT).show()
             }
 
-            textLogin.setOnClickListener {
+            textRegister.setOnClickListener {
                 findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToSignupFragment())
             }
         }
