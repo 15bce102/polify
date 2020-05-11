@@ -11,63 +11,132 @@
         android:id="@+id/img_profile"
         android:layout_width="100dp"
         android:layout_height="100dp"
+        android:layout_marginStart="14dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="40dp"
+        android:layout_marginBottom="69dp"
         android:background="@mipmap/ic_profile"
+        app:layout_constraintBottom_toTopOf="@+id/img_onevsone"
         app:layout_constraintEnd_toEndOf="parent"
-        tools:layout_editor_absoluteY="16dp" />
+        app:layout_constraintStart_toEndOf="@+id/txt_profile_name"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/img_dollar"
         android:layout_width="26dp"
         android:layout_height="24dp"
+        android:layout_marginStart="49dp"
+        android:layout_marginTop="19dp"
+        android:layout_marginBottom="33dp"
         android:background="@mipmap/ic_coins"
-        tools:layout_editor_absoluteX="47dp"
-        tools:layout_editor_absoluteY="38dp" />
+        app:layout_constraintBottom_toTopOf="@+id/txt_coins"
+        app:layout_constraintEnd_toStartOf="@+id/txt_profile_name"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/txt_level"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="48dp"
+        android:layout_marginEnd="42dp"
+        android:layout_marginBottom="115dp"
+        android:text="Level"
+        android:textColor="@color/white"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toTopOf="@+id/img_onevsone"
+        app:layout_constraintEnd_toStartOf="@+id/img_profile"
+        app:layout_constraintStart_toEndOf="@+id/img_plus"
+        app:layout_constraintTop_toBottomOf="@+id/txt_profile_name" />
+
 
     <TextView
         android:id="@+id/txt_coins"
-        android:layout_width="65dp"
-        android:layout_height="51dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="33dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="730dp"
         android:text="100"
         android:textColor="@color/white"
         android:textSize="30sp"
-        tools:layout_editor_absoluteX="90dp"
-        tools:layout_editor_absoluteY="30dp" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/img_plus"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/img_dollar" />
 
     <TextView
         android:id="@+id/txt_profile_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="79dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="14dp"
+        android:layout_marginBottom="14dp"
         android:text="Rohit Mittal"
         android:textColor="@color/white"
         android:textSize="20dp"
-        tools:layout_editor_absoluteX="263dp"
-        tools:layout_editor_absoluteY="133dp" />
-
-    <ImageView
-        android:id="@+id/img_edit"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:background="@mipmap/ic_edit"
-        tools:layout_editor_absoluteX="371dp"
-        tools:layout_editor_absoluteY="133dp" />
+        app:layout_constraintBottom_toTopOf="@+id/txt_level"
+        app:layout_constraintEnd_toStartOf="@+id/img_profile"
+        app:layout_constraintStart_toEndOf="@+id/img_dollar"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/img_plus"
         android:layout_width="40dp"
         android:layout_height="36dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="80dp"
+        android:layout_marginEnd="136dp"
+        android:layout_marginBottom="69dp"
         android:background="@mipmap/ic_plus"
-        tools:layout_editor_absoluteX="175dp"
-        tools:layout_editor_absoluteY="38dp" />
+        app:layout_constraintBottom_toTopOf="@+id/img_onevsone"
+        app:layout_constraintEnd_toStartOf="@+id/img_profile"
+        app:layout_constraintStart_toEndOf="@+id/txt_coins"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.169" />
 
+    <ImageView
+        android:id="@+id/img_onevsone"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_marginStart="107dp"
+        android:layout_marginTop="69dp"
+        android:layout_marginEnd="104dp"
+        android:background="@mipmap/ic_onevsone"
+        app:layout_constraintBottom_toTopOf="@+id/imageView2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/img_profile" />
 
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_marginStart="105dp"
+        android:layout_marginEnd="104dp"
+        android:layout_marginBottom="2dp"
+        android:background="@mipmap/ic_multiplayer"
+        app:layout_constraintBottom_toTopOf="@+id/imageView3"
+        app:layout_constraintEnd_toStartOf="@+id/img_onevsone"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/img_onevsone" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:layout_editor_absoluteX="175dp"
-        tools:layout_editor_absoluteY="282dp"
-        android:id="@+id/recyclerView"/>
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_marginStart="105dp"
+        android:layout_marginTop="1dp"
+        android:layout_marginEnd="105dp"
+        android:background="@mipmap/ic_practise"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/imageView2"
+        app:layout_constraintTop_toBottomOf="@+id/imageView2" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
