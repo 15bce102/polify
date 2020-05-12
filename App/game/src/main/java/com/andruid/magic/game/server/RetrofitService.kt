@@ -1,6 +1,7 @@
 package com.andruid.magic.game.server
 
 import com.andruid.magic.game.model.response.BattleResponse
+import com.andruid.magic.game.model.response.QuestionsResponse
 import com.andruid.magic.game.model.response.RoomResponse
 import com.andruid.magic.game.model.response.UserResponse
 import retrofit2.Response
@@ -23,6 +24,9 @@ interface RetrofitService {
 
     @GET("/join-waiting-room")
     suspend fun joinWaitingRoom(@Query("uid") uid: String): Response<BattleResponse>
+
+    @GET("/get-questions")
+    suspend fun getQuestions(@Query("bid") bid: String): Response<QuestionsResponse>
 
     @GET("/create-battle")
     suspend fun createBattle(@Query("uid") uid: String, @Query("coins") coins: Int): Response<BattleResponse>

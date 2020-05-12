@@ -28,7 +28,8 @@ class OneVsOneActivity : FullScreenActivity() {
                     intent.extras?.let {
                         battle = it.getParcelable(EXTRA_BATTLE)!!
 
-                        navController.navigate(WaitingFragmentDirections.actionWaitingFragmentToQuestionsFragment())
+                        navController.navigate(
+                                WaitingFragmentDirections.actionWaitingFragmentToQuestionsFragment(battle.battleId))
                     }
                 }
             }

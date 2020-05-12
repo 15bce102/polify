@@ -1,9 +1,6 @@
 package com.andruid.magic.game.api
 
-import com.andruid.magic.game.model.response.ApiResponse
-import com.andruid.magic.game.model.response.BattleResponse
-import com.andruid.magic.game.model.response.UserResponse
-import com.andruid.magic.game.model.response.RoomResponse
+import com.andruid.magic.game.model.response.*
 import com.andruid.magic.game.server.RetrofitClient
 import com.andruid.magic.game.server.RetrofitService
 import com.andruid.magic.game.util.sendNetworkRequest
@@ -41,6 +38,13 @@ object GameRepository {
 
     suspend fun joinWaitingRoom(uid: String): BattleResponse? {
         val response = sendNetworkRequest { service.joinWaitingRoom(uid) }
+        if (response?.isSuccessful == true)
+            return response.body()
+        return null
+    }
+
+    suspend fun getBattleQuestions(bid: String): QuestionsResponse? {
+        val response = sendNetworkRequest { service.getQuestions(bid) }
         if (response?.isSuccessful == true)
             return response.body()
         return null

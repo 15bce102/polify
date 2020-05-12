@@ -4,7 +4,8 @@ from pymongo.errors import PyMongoError
 import simplejson
 import uuid
 
-from api_utils.users import get_fcm_tokens
+from api_utils import users, questions
+
 from utils import send_multi_message
 
 DBNAME = 'polify_db'
@@ -42,16 +43,16 @@ def start_matchmaking():
 
             print('users in waiting room ', db[WAITING_ROOM].count())
             if db[WAITING_ROOM].count() >= 3:
-                users = list(db[WAITING_ROOM].aggregate([
+                random_users = list(db[WAITING_ROOM].aggregate([
                     {"$match": {"dummy_key": {"$exists": False}}},
                     {"$sample": {"size": 2}}
                 ]))
-                print(users)
+                print(random_users)
 
-                uids = [user['_id'] for user in users]
+                uids = [user['_id'] for user in random_users]
 
-                db[WAITING_ROOM].delete_many({"_id": {"$in": users}})
-                players = [{"uid": user['_id'], "score": -1} for user in users]
+                db[WAITING_ROOM].delete_many({"_id": {"$in": random_users}})
+                players = [{"uid": user['_id'], "score": -1} for user in random_users]
 
                 battle = {
                     "_id": str(uuid.uuid4()),
@@ -60,21 +61,40 @@ def start_matchmaking():
 
                 db[BATTLES].insert_one(battle)
 
-                tokens = get_fcm_tokens(uids)
-                print('tokens = ', tokens)
-
+                tokens = users.get_fcm_tokens(uids)
                 battle['players'] = simplejson.dumps(players)
-
-                print(battle)
-
                 send_multi_message(battle, tokens)
 
                 db[WAITING_ROOM].remove({"_id": {"$in": uids}})
+
+                random_questions = questions.get_random_questions(10)
+                db[BATTLES].update_one(
+                    {"_id": battle['_id']},
+                    {"$set": {"questions": random_questions}}
+                )
 
     except PyMongoError as e:
         # The ChangeStream encountered an unrecoverable error or the
         # resume attempt failed to recreate the cursor.
         print('stream error=', e)
+
+
+def get_battle_questions(bid):
+    resp = {}
+
+    battle_que = db[BATTLES].find_one(
+        {"_id": bid},
+        {"_id": 0, "questions": 1}
+    )['questions']
+
+    if battle_que is None:
+        resp['success'] = False
+        resp['message'] = 'Could not get questions'
+    else:
+        resp['success'] = True
+        resp['questions'] = battle_que
+
+    return resp
 
 
 def stop_matchmaking():

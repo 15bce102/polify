@@ -103,6 +103,14 @@ def join_1v1_waiting_room():
     return resp
 
 
+@app.route('/get-questions', methods=['GET'])
+def get_battle_questions():
+    bid = request.args['bid']
+
+    resp = battles.get_battle_questions(bid)
+    return resp
+
+
 def shut_down():
     try:
         battles.stop_matchmaking()

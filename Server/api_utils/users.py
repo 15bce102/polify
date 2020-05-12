@@ -97,6 +97,7 @@ def fetch_user_profile(uid):
         resp['success'] = True
         resp['user'] = user
 
+    print('profile resp = ', resp)
     return resp
 
 
