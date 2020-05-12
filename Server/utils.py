@@ -4,8 +4,6 @@ from firebase_admin import auth
 from firebase_admin.auth import UserNotFoundError
 from firebase_admin.messaging import Message, MulticastMessage, send, send_multicast
 
-from api_utils.users import get_fcm_tokens
-
 
 def current_milli_time():
     return int(round(time.time() * 1000))
@@ -25,15 +23,13 @@ def is_valid_user(uid):
         return True, resp
 
 
-def send_multi_message(data, uids):
-    tokens = get_fcm_tokens(uids)
+def send_multi_message(data, tokens):
     message = MulticastMessage(data, tokens)
     response = send_multicast(message)
     print('{0} messages were sent successfully'.format(response.success_count))
 
 
-def send_single_message(data, uid):
-    token = get_fcm_tokens(list(uid))[0]
+def send_single_message(data, token):
     message = Message(data, token)
     response = send(message)
     print('Successfully sent message:', response)

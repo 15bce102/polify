@@ -50,6 +50,34 @@ def update_status():
     return simplejson.dumps(resp)
 
 
+@app.route('/update-profile', methods=['GET'])
+def update_profile():
+    uid = request.args['uid']
+    user_name = request.args['user_name']
+    avatar_uri = request.args['avatar_uri']
+
+    print('checking user validity')
+    valid, resp = is_valid_user(uid)
+    if not valid:
+        return resp
+
+    print('now updating user profile')
+    resp = users.update_user_profile(uid, user_name, avatar_uri)
+    return simplejson.dumps(resp)
+
+
+@app.route('/profile', methods=['GET'])
+def fetch_profile():
+    uid = request.args['uid']
+
+    valid, resp = is_valid_user(uid)
+    if not valid:
+        return resp
+
+    resp = users.fetch_user_profile(uid)
+    return simplejson.dumps(resp)
+
+
 @app.route('/update-token', methods=['GET'])
 def update_token():
     uid = request.args['uid']
@@ -86,4 +114,4 @@ if __name__ == "__main__":
     # Shut down the scheduler when exiting the app
     atexit.register(lambda: shut_down())
 
-    app.run(host='0.0.0.0', debug=False)
+    app.run(host='0.0.0.0', debug=True)

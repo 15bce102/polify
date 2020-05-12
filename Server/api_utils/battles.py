@@ -3,6 +3,7 @@ from pymongo.errors import PyMongoError
 
 import uuid
 
+from api_utils.users import get_fcm_tokens
 from utils import send_multi_message
 
 DBNAME = 'polify_db'
@@ -43,7 +44,8 @@ def start_matchmaking():
                 }
                 db[BATTLES].insert_one(battle)
 
-                send_multi_message(battle, uids)
+                tokens = get_fcm_tokens(uids)
+                send_multi_message(battle, tokens)
 
     except PyMongoError as e:
         # The ChangeStream encountered an unrecoverable error or the

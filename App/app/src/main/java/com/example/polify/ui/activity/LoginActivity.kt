@@ -1,13 +1,12 @@
 package com.example.polify.ui.activity
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import com.example.polify.R
 import com.example.polify.util.isFirstTime
 import com.example.polify.util.setFirstTimeComplete
 
-class LoginActivity : AppCompatActivity() {
+class LoginActivity : FullScreenActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

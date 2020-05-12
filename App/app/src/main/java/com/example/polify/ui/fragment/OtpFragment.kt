@@ -1,7 +1,6 @@
 package com.example.polify.ui.fragment
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -9,6 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import com.andruid.magic.game.api.GameRepository
 import com.example.polify.databinding.FragmentOtpBinding
 import com.example.polify.ui.activity.HomeActivity
 import com.google.android.gms.tasks.TaskExecutors
@@ -16,7 +17,7 @@ import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthProvider
-import com.google.firebase.auth.ktx.userProfileChangeRequest
+import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 
 class OtpFragment : Fragment() {
@@ -34,14 +35,17 @@ class OtpFragment : Fragment() {
 
     private val mAuth = FirebaseAuth.getInstance()
     private val mCallBack = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
-        override fun onCodeSent(s: String, forceResendingToken: PhoneAuthProvider.ForceResendingToken) {
-            super.onCodeSent(s, forceResendingToken)
+        override fun onCodeSent(verificationId: String, forceResendingToken: PhoneAuthProvider.ForceResendingToken) {
+            super.onCodeSent(verificationId, forceResendingToken)
             Log.d(TAG, "onCodeSent: code sent")
-            verificationId = s
+            this@OtpFragment.verificationId = verificationId
         }
 
         override fun onVerificationCompleted(phoneAuthCredential: PhoneAuthCredential) {
             Log.d(TAG, "onVerificationCompleted: verify completed")
+            phoneAuthCredential.smsCode?.let { otp ->
+                binding.otpView.setText(otp)
+            }
             signInWithCredential(phoneAuthCredential)
         }
 
@@ -90,23 +94,39 @@ class OtpFragment : Fragment() {
     private fun signInWithCredential(credential: PhoneAuthCredential) {
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-
-                        val profileUpdates = userProfileChangeRequest {
-                            displayName = userName
-                            photoUri = Uri.parse(avatarUri)
-                        }
-
-                        mAuth.currentUser?.updateProfile(profileUpdates)?.addOnCompleteListener { profileTask ->
-                            if (profileTask.isSuccessful) {
-                                val intent = Intent(requireActivity(), HomeActivity::class.java)
-                                startActivity(intent)
-                                requireActivity().finish()
-                            } else
-                                Toast.makeText(requireContext(), task.exception!!.message, Toast.LENGTH_SHORT).show()
-                        }
-                    } else
+                    if (!task.isSuccessful) {
                         Toast.makeText(requireContext(), task.exception!!.message, Toast.LENGTH_SHORT).show()
+                        return@addOnCompleteListener
+                    }
+
+                    Log.d(TAG, "login successful")
+                    mAuth.currentUser?.let { user ->
+                        lifecycleScope.launch {
+                            if (userName != null && avatarUri != null) {
+                                val response = GameRepository.updateProfile(user.uid, userName!!, avatarUri!!)
+                                if (response == null)
+                                    Toast.makeText(requireContext(), "null response", Toast.LENGTH_SHORT).show()
+
+                                if (response?.success == true)
+                                    startHomeActivity()
+                                else
+                                    Toast.makeText(requireContext(), response?.message
+                                            ?: "null message", Toast.LENGTH_SHORT).show()
+                            } else {
+                                val response = GameRepository.login(user.uid)
+                                if (response?.success == true)
+                                    startHomeActivity()
+                                else
+                                    Toast.makeText(requireContext(), response?.message!!, Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    }
                 }
+    }
+
+    private fun startHomeActivity() {
+        val intent = Intent(requireContext(), HomeActivity::class.java)
+        requireContext().startActivity(intent)
+        requireActivity().finish()
     }
 }

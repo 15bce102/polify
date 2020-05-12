@@ -22,7 +22,8 @@ def create_user(uid):
     user = db[USERS].find_one_and_update(
         {"_id": uid},
         {"$set": {"status": STATUS_ONLINE, "last_seen": current_milli_time()},
-         "$setOnInsert": {"coins": 100}},
+         "$setOnInsert": {"coins": 100, "level": "Rookie"}
+         },
         upsert=True,
         return_document=ReturnDocument.AFTER
     )
@@ -48,6 +49,50 @@ def update_user_status(uid, status):
 
     if user is None:
         resp['success'] = False
+        resp['message'] = 'Cannot update user status'
+    else:
+        resp['success'] = True
+        resp['user'] = user
+
+    return resp
+
+
+def update_user_profile(uid, user_name, avatar_uri):
+    resp = {}
+
+    user = db[USERS].update_one(
+        {"_id": uid},
+        {"$set": {"user_name": user_name, "avatar_uri": avatar_uri,
+                  "status": STATUS_ONLINE, "last_seen": current_milli_time()
+                  },
+         "$setOnInsert": {"coins": 100, "level": "Rookie"}
+         },
+        upsert=True
+    )
+
+    print(user)
+
+    if user is not None:
+        resp['success'] = True
+    else:
+        resp['success'] = False
+        resp['message'] = 'Cannot update user profile'
+
+    print(resp)
+    return resp
+
+
+def fetch_user_profile(uid):
+    resp = {}
+
+    user = db[USERS].find_one(
+        {"_id": uid},
+        {"_id": 1, "user_name": 1, "level": 1, "coins": 1, "avatar_uri": 1}
+    )
+
+    if user is None:
+        resp['success'] = False
+        resp['message'] = 'Could not fetch profile'
     else:
         resp['success'] = True
         resp['user'] = user

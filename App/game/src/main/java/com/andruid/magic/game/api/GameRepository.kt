@@ -1,7 +1,7 @@
 package com.andruid.magic.game.api
 
 import com.andruid.magic.game.model.response.BattleResponse
-import com.andruid.magic.game.model.response.LoginResponse
+import com.andruid.magic.game.model.response.UserResponse
 import com.andruid.magic.game.model.response.RoomResponse
 import com.andruid.magic.game.server.RetrofitClient
 import com.andruid.magic.game.server.RetrofitService
@@ -10,8 +10,22 @@ import com.andruid.magic.game.util.sendNetworkRequest
 object GameRepository {
     private val service = RetrofitClient.getRetrofitInstance().create(RetrofitService::class.java)
 
-    suspend fun login(uid: String): LoginResponse? {
+    suspend fun login(uid: String): UserResponse? {
         val response = sendNetworkRequest { service.login(uid) }
+        if (response?.isSuccessful == true)
+            return response.body()
+        return null
+    }
+
+    suspend fun userProfile(uid: String): UserResponse? {
+        val response = sendNetworkRequest { service.getProfile(uid) }
+        if (response?.isSuccessful == true)
+            return response.body()
+        return null
+    }
+
+    suspend fun updateProfile(uid: String, userName: String, avatarUri: String): UserResponse? {
+        val response = sendNetworkRequest { service.updateProfile(uid, userName, avatarUri) }
         if (response?.isSuccessful == true)
             return response.body()
         return null
