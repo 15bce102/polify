@@ -15,6 +15,18 @@ from utils import current_milli_time, is_valid_user
 
 app = Flask(__name__)
 
+cred = credentials.Certificate('keys/key.json')
+firebase_admin.initialize_app(cred)
+
+scheduler = BackgroundScheduler()
+scheduler.add_job(func=users.update_all_users, trigger="interval", seconds=3 * 60)
+scheduler.add_job(func=battles.start_matchmaking)
+
+scheduler.start()
+
+# Shut down the scheduler when exiting the app
+atexit.register(lambda: shut_down())
+
 
 @app.route('/', methods=['GET'])
 def welcome():
@@ -121,17 +133,5 @@ def shut_down():
 
 
 if __name__ == "__main__":
-
-    cred = credentials.Certificate('keys/key.json')
-    firebase_admin.initialize_app(cred)
-
-    scheduler = BackgroundScheduler()
-    scheduler.add_job(func=users.update_all_users, trigger="interval", seconds=3 * 60)
-    scheduler.add_job(func=battles.start_matchmaking)
-
-    scheduler.start()
-
-    # Shut down the scheduler when exiting the app
-    atexit.register(lambda: shut_down())
 
     app.run(host='0.0.0.0', debug=False)
