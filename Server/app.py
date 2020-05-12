@@ -29,9 +29,9 @@ def welcome():
 def login_user():
     uid = request.args['uid']
 
-    valid, resp = is_valid_user(uid)
-    if not valid:
-        return resp
+    # valid, resp = is_valid_user(uid)
+    # if not valid:
+    #     return resp
 
     resp = users.create_user(uid)
     return simplejson.dumps(resp)
@@ -66,7 +66,7 @@ def update_profile():
     return simplejson.dumps(resp)
 
 
-@app.route('/profile', methods=['GET'])
+@app.route('/fetch-profile', methods=['GET'])
 def fetch_profile():
     uid = request.args['uid']
 
@@ -89,6 +89,18 @@ def update_token():
 
     resp = users.update_fcm_token(uid, token)
     return simplejson.dumps(resp)
+
+
+@app.route('/join-waiting-room', methods=['GET'])
+def join_1v1_waiting_room():
+    uid = request.args['uid']
+
+    # valid, resp = is_valid_user(uid)
+    # if not valid:
+    #     return resp
+
+    resp = battles.join_waiting_room(uid)
+    return resp
 
 
 def shut_down():
@@ -114,4 +126,4 @@ if __name__ == "__main__":
     # Shut down the scheduler when exiting the app
     atexit.register(lambda: shut_down())
 
-    app.run(host='0.0.0.0', debug=True)
+    app.run(host='0.0.0.0', debug=False)

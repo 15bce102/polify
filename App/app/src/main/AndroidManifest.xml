@@ -10,6 +10,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme.FullScreen"
         android:usesCleartextTraffic="true">
+        <activity android:name=".ui.activity.OneVsOneActivity"></activity>
+        <activity android:name=".ui.activity.QuestionsActivity" />
 
         <service
             android:name=".service.CloudMessagingService"
@@ -43,7 +45,7 @@
         <activity android:name=".ui.activity.MultiPlayerActivity" />
         <activity android:name=".ProfileActivity" />
         <activity android:name=".VerifyActivity" />
-        <activity android:name=".MainActivity"></activity>
+        <activity android:name=".MainActivity" />
     </application>
 
 </manifest>

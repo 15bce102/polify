@@ -24,7 +24,7 @@ def is_valid_user(uid):
 
 
 def send_multi_message(data, tokens):
-    message = MulticastMessage(data, tokens)
+    message = MulticastMessage(data=data, tokens=tokens)
     response = send_multicast(message)
     print('{0} messages were sent successfully'.format(response.success_count))
 

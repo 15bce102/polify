@@ -1,5 +1,6 @@
 package com.andruid.magic.game.api
 
+import com.andruid.magic.game.model.response.ApiResponse
 import com.andruid.magic.game.model.response.BattleResponse
 import com.andruid.magic.game.model.response.UserResponse
 import com.andruid.magic.game.model.response.RoomResponse
@@ -26,6 +27,20 @@ object GameRepository {
 
     suspend fun updateProfile(uid: String, userName: String, avatarUri: String): UserResponse? {
         val response = sendNetworkRequest { service.updateProfile(uid, userName, avatarUri) }
+        if (response?.isSuccessful == true)
+            return response.body()
+        return null
+    }
+
+    suspend fun updateFcmToken(uid: String, token: String): ApiResponse? {
+        val response = sendNetworkRequest { service.updateToken(uid, token) }
+        if (response?.isSuccessful == true)
+            return response.body()
+        return null
+    }
+
+    suspend fun joinWaitingRoom(uid: String): BattleResponse? {
+        val response = sendNetworkRequest { service.joinWaitingRoom(uid) }
         if (response?.isSuccessful == true)
             return response.body()
         return null

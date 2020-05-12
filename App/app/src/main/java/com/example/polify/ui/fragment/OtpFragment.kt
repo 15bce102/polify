@@ -17,6 +17,7 @@ import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthProvider
+import com.google.firebase.iid.FirebaseInstanceId
 import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 
@@ -101,6 +102,18 @@ class OtpFragment : Fragment() {
 
                     Log.d(TAG, "login successful")
                     mAuth.currentUser?.let { user ->
+
+                        FirebaseInstanceId.getInstance().instanceId.addOnSuccessListener { result ->
+                            val token = result.token
+                            lifecycleScope.launch {
+                                val response = GameRepository.updateFcmToken(user.uid, token)
+                                if (response?.success == true)
+                                    Log.d(TAG, "token updated successfully")
+                                else
+                                    Log.e(TAG, "token update failed: ${response?.message ?: "null response"}")
+                            }
+                        }
+
                         lifecycleScope.launch {
                             if (userName != null && avatarUri != null) {
                                 val response = GameRepository.updateProfile(user.uid, userName!!, avatarUri!!)

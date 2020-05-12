@@ -1,5 +1,6 @@
 package com.andruid.magic.game.model
 
+import com.andruid.magic.game.model.data.Player
 import com.google.gson.annotations.SerializedName
 
 data class Battle(

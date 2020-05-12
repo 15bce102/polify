@@ -1,5 +1,6 @@
 package com.example.polify.ui.activity
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
@@ -37,7 +38,7 @@ class HomeActivity : FullScreenActivity() {
 
     private fun initListeners() {
         binding.imgOnevsone.setOnClickListener {
-
+            startActivity(Intent(this, OneVsOneActivity::class.java))
         }
 
         binding.imgPrivateRoom.setOnClickListener {

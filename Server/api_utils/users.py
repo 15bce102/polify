@@ -196,8 +196,8 @@ def update_all_users():
 
 
 def get_fcm_tokens(uids):
-    tokens = db[USERS].find({"_id": {"$in": uids}}, {"_id:0", "token:1"})
-    return tokens
+    tokens = list(db[USERS].find({"_id": {"$in": uids}}, {"_id": 0, "token": 1}))
+    return [str(token['token']) for token in tokens]
 
 
 def update_fcm_token(uid, token):

@@ -11,12 +11,18 @@ interface RetrofitService {
     @GET("/login")
     suspend fun login(@Query("uid") uid: String): Response<UserResponse>
 
-    @GET("/profile")
+    @GET("/fetch-profile")
     suspend fun getProfile(@Query("uid") uid: String): Response<UserResponse>
 
     @GET("/update-profile")
-    suspend fun  updateProfile(@Query("uid") uid: String, @Query("user_name") userName: String,
+    suspend fun updateProfile(@Query("uid") uid: String, @Query("user_name") userName: String,
                               @Query("avatar_uri") avatarUri: String): Response<UserResponse>
+
+    @GET("/update-token")
+    suspend fun updateToken(@Query("uid") uid: String, @Query("token") token: String): Response<UserResponse>
+
+    @GET("/join-waiting-room")
+    suspend fun joinWaitingRoom(@Query("uid") uid: String): Response<BattleResponse>
 
     @GET("/create-battle")
     suspend fun createBattle(@Query("uid") uid: String, @Query("coins") coins: Int): Response<BattleResponse>
