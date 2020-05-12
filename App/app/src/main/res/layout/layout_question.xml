@@ -63,7 +63,7 @@
             tools:text="Which attraction in Montreal is one of the largest in the world?"
             android:textColor="@color/white"
             android:textSize="30sp"
-            app:layout_constraintBottom_toTopOf="@+id/optionsRV"
+            app:layout_constraintBottom_toTopOf="@id/optionsRV"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"

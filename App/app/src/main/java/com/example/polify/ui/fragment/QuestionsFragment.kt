@@ -8,11 +8,21 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
+import com.example.polify.R
 import com.example.polify.databinding.FragmentQuestionsBinding
+import com.example.polify.eventbus.OptionEvent
 import com.example.polify.ui.adapter.QuestionAdapter
+import com.example.polify.ui.viewholder.OptionViewHolder
 import com.example.polify.ui.viewmodel.BaseViewModelFactory
 import com.example.polify.ui.viewmodel.QuestionViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
 class QuestionsFragment : Fragment() {
     private val questionsAdapter = QuestionAdapter()
@@ -24,6 +34,10 @@ class QuestionsFragment : Fragment() {
 
     private lateinit var battleId: String
     private lateinit var binding: FragmentQuestionsBinding
+
+    private var score = 0
+    private var qid: String? = null
+    private var selectedOptId: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,7 +52,6 @@ class QuestionsFragment : Fragment() {
 
         binding.viewPager.apply {
             adapter = questionsAdapter
-            isUserInputEnabled = false
             registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
                 override fun onPageSelected(position: Int) {
                     super.onPageSelected(position)
@@ -49,10 +62,15 @@ class QuestionsFragment : Fragment() {
 
         binding.nextBtn.setOnClickListener {
             val pos = binding.viewPager.currentItem
-            if (pos < questionsAdapter.itemCount)
-                binding.viewPager.setCurrentItem(pos + 1, true)
-            else
-                Toast.makeText(requireContext(), "Finished!", Toast.LENGTH_SHORT).show()
+            highlightAns(pos)
+
+            lifecycleScope.launch {
+                delay(2000)
+                if (pos == questionsAdapter.itemCount - 1)
+                    Toast.makeText(requireContext(), "Your score = $score/10!", Toast.LENGTH_SHORT).show()
+                else
+                    binding.viewPager.setCurrentItem(pos + 1, true)
+            }
         }
 
         questionsViewModel.questions.observe(viewLifecycleOwner, Observer {
@@ -61,5 +79,61 @@ class QuestionsFragment : Fragment() {
         })
 
         return binding.root
+    }
+
+    override fun onResume() {
+        super.onResume()
+        EventBus.getDefault().register(this)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        EventBus.getDefault().unregister(this)
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onOptionEvent(optionEvent: OptionEvent) {
+        val (qid, opt) = optionEvent
+        this.qid = qid
+
+        highlightOption(opt.optId)
+    }
+
+    private fun highlightOption(optId: String) {
+        val optionRV = binding.viewPager.findViewById<RecyclerView>(R.id.optionsRV)
+        val pos = optId[0]-'A'
+
+        selectedOptId?.let {
+            val prevPos = it[0] - 'A'
+            val prevOptViewHolder = optionRV.findViewHolderForAdapterPosition(prevPos) as OptionViewHolder
+            prevOptViewHolder.highlightOption(false)
+        }
+
+        val optViewHolder = optionRV.findViewHolderForAdapterPosition(pos) as OptionViewHolder
+        optViewHolder.highlightOption(true)
+
+        selectedOptId = optId
+    }
+
+    private fun highlightAns(pos: Int) {
+        val question = questionsAdapter.currentList[pos]
+
+        if (qid == question.qid) {
+            val selPos = selectedOptId!![0] - 'A'
+            val correctPos = question.correctAnswer[0] - 'A'
+
+            val optionRV = binding.viewPager.findViewById<RecyclerView>(R.id.optionsRV)
+            val selViewHolder = optionRV.findViewHolderForAdapterPosition(selPos) as OptionViewHolder
+
+            if (selPos == correctPos) {
+                selViewHolder.highlightAnswer(true)
+                score++
+            } else {
+                val correctViewHolder = optionRV.findViewHolderForAdapterPosition(correctPos) as OptionViewHolder
+
+                selViewHolder.highlightAnswer(false)
+                correctViewHolder.highlightAnswer(true)
+            }
+        }
     }
 }

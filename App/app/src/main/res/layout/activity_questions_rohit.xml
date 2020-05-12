@@ -6,7 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/black">
 
-    <!--<ProgressBar
+    <ProgressBar
         android:id="@+id/bar_progressBar"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
@@ -225,5 +225,4 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/linearLayout4" />
 
--->
 </androidx.constraintlayout.widget.ConstraintLayout>

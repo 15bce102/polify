@@ -5,7 +5,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.andruid.magic.game.model.data.Option
 import com.example.polify.ui.viewholder.OptionViewHolder
 
-class OptionsAdapter(private val options: List<Option>) : RecyclerView.Adapter<OptionViewHolder>() {
+class OptionsAdapter(
+        private val options: List<Option>
+) : RecyclerView.Adapter<OptionViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
             OptionViewHolder.from(parent)
 
@@ -15,4 +17,8 @@ class OptionsAdapter(private val options: List<Option>) : RecyclerView.Adapter<O
         val option = options[position]
         holder.bind(option)
     }
+
+    override fun getItemId(position: Int) = position.toLong()
+
+    override fun getItemViewType(position: Int) = position
 }

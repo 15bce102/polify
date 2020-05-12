@@ -1,5 +1,6 @@
 package com.example.polify.ui.viewholder
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
@@ -21,5 +22,17 @@ class OptionViewHolder(private val binding: LayoutOptionBinding) : RecyclerView.
 
     fun bind(option: Option) {
         binding.option = option
+    }
+
+    fun highlightAnswer(correct: Boolean) {
+        val bg = if (correct) Color.GREEN else Color.RED
+        binding.linearLayout.setBackgroundColor(bg)
+    }
+
+    fun highlightOption(highlight: Boolean) {
+        if (highlight)
+            binding.linearLayout.setBackgroundColor(Color.LTGRAY)
+        else
+            binding.linearLayout.setBackgroundResource(R.drawable.layout)
     }
 }
