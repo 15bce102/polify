@@ -1,27 +1,32 @@
 package com.example.polify.ui.fragment
 
+import android.graphics.Color
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
+import android.widget.ListView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
+import com.andruid.magic.game.api.GameRepository
 import com.example.polify.R
 import com.example.polify.data.QUE_TIME_LIMIT_MS
 import com.example.polify.databinding.FragmentQuestionsBinding
 import com.example.polify.eventbus.OptionEvent
 import com.example.polify.ui.adapter.QuestionAdapter
-import com.example.polify.ui.viewholder.OptionViewHolder
 import com.example.polify.ui.viewmodel.BaseViewModelFactory
 import com.example.polify.ui.viewmodel.QuestionViewModel
+import com.example.polify.util.getViewByPosition
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
@@ -47,25 +52,25 @@ class QuestionsFragment : Fragment() {
     private var qid: String? = null
     private var selectedOptPos = -1
 
+    private val mAuth by lazy { FirebaseAuth.getInstance() }
     private val countDownTimer = object : CountDownTimer(QUE_TIME_LIMIT_MS, 1000) {
         override fun onFinish() {
             val pos = binding.viewPager.currentItem
-            highlightAns(pos)
+            val optionsLV = binding.viewPager.findViewById<ListView>(R.id.optionsLV)
+            highlightAns(optionsLV, pos)
 
             lifecycleScope.launch {
                 delay(1000)
                 if (pos == questionsAdapter.itemCount - 1) {
                     Toast.makeText(requireContext(), "Your score = $score/10!", Toast.LENGTH_SHORT).show()
-                    findNavController().navigate(QuestionsFragmentDirections.actionQuestionsFragmentToResultsFragment())
-                }
-                else
+                    findNavController().navigate(
+                            QuestionsFragmentDirections.actionQuestionsFragmentToResultsFragment(battleId, score))
+                } else
                     binding.viewPager.setCurrentItem(pos + 1, true)
             }
         }
 
-        override fun onTick(millisUntilFinished: Long) {
-            Log.d(TAG, "${millisUntilFinished / 1000} sec for question")
-        }
+        override fun onTick(millisUntilFinished: Long) {}
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -119,37 +124,35 @@ class QuestionsFragment : Fragment() {
         this.qid = qid
         Log.d("optionLog", "selected opt = ${opt.optId}")
         selectedOptPos = opt.optId[0] - 'A'
-        highlightOption()
+
+        val optionsLV = binding.viewPager.findViewById<ListView>(R.id.optionsLV)
+        highlightOption(optionsLV, selectedOptPos)
     }
 
-    private fun highlightOption() {
-        val optionRV = binding.viewPager.findViewById<RecyclerView>(R.id.optionsRV)
-
-        Log.d("optionLog", "selected option = $selectedOptPos")
-
-        val optViewHolder = optionRV.findViewHolderForItemId(selectedOptPos.toLong()) as OptionViewHolder
-        optViewHolder.highlightOption(true)
+    private fun highlightOption(listView: ListView, pos: Int) {
+        listView.getViewByPosition(pos)?.findViewById<LinearLayout>(R.id.linearLayout)?.setBackgroundColor(Color.LTGRAY)
     }
 
-    private fun highlightAns(pos: Int) {
+    private fun highlightAns(listView: ListView, pos: Int) {
         val question = questionsAdapter.currentList[pos]
+
         if (qid == question.qid) {
             Log.d(TAG, "selected option pos = $selectedOptPos")
             val correctPos = question.correctAnswer[0] - 'A'
-            val optionRV = binding.viewPager.findViewById<RecyclerView>(R.id.optionsRV)
-
-            val correctViewHolder = optionRV.findViewHolderForAdapterPosition(correctPos) as OptionViewHolder
-            correctViewHolder.highlightAnswer(true)
+            highlightAnswer(listView, correctPos, true)
 
             if (selectedOptPos == -1)
                 return
 
-            val selViewHolder = optionRV.findViewHolderForAdapterPosition(selectedOptPos) as OptionViewHolder
-            if (selectedOptPos == correctPos) {
-                selViewHolder.highlightAnswer(true)
+            if (selectedOptPos == correctPos)
                 score++
-            } else
-                selViewHolder.highlightAnswer(false)
+            else
+                highlightAnswer(listView, selectedOptPos, false)
         }
+    }
+
+    private fun highlightAnswer(listView: ListView, pos: Int, correct: Boolean) {
+        val bg = if (correct) Color.GREEN else Color.RED
+        listView.getViewByPosition(pos)?.findViewById<LinearLayout>(R.id.linearLayout)?.setBackgroundColor(bg)
     }
 }
