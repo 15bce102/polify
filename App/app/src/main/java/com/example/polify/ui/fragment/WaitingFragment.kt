@@ -19,6 +19,7 @@ class WaitingFragment : Fragment() {
     }
 
     private val timer = Timer()
+    private val mAuth by lazy { FirebaseAuth.getInstance() }
 
     private var seconds = 0
 
@@ -50,5 +51,14 @@ class WaitingFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         timer.cancel()
+        lifecycleScope.launch {
+            mAuth.currentUser?.let { user ->
+                val response = GameRepository.leaveWaitingRoom(user.uid)
+                if (response?.success == true)
+                    Log.d(TAG, "left waiting room")
+                else
+                    Log.e(TAG, "left waiting room error")
+            }
+        }
     }
 }

@@ -35,6 +35,19 @@ def join_waiting_room(uid):
     return resp
 
 
+def leave_waiting_room(uid):
+    resp = {}
+
+    count = db[WAITING_ROOM].delete_one({"_id": uid}).deleted_count
+
+    if count != 1:
+        resp['success'] = False
+        resp['message'] = 'Could not leave waiting room'
+    else:
+        resp['success'] = True
+    return resp
+
+
 def start_matchmaking():
     print('starting watching collection')
 
@@ -52,7 +65,7 @@ def start_matchmaking():
                 uids = [user['_id'] for user in random_users]
 
                 db[WAITING_ROOM].delete_many({"_id": {"$in": random_users}})
-                players = [{"uid": user['_id'], "score": -1} for user in random_users]
+                players = [{"uid": user['_id'], "score": 0} for user in random_users]
 
                 battle = {
                     "_id": str(uuid.uuid4()),

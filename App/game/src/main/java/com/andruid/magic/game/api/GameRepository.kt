@@ -43,6 +43,13 @@ object GameRepository {
         return null
     }
 
+    suspend fun leaveWaitingRoom(uid: String): BattleResponse? {
+        val response = sendNetworkRequest { service.leaveWaitingRoom(uid) }
+        if (response?.isSuccessful == true)
+            return response.body()
+        return null
+    }
+
     suspend fun getBattleQuestions(bid: String): QuestionsResponse? {
         val response = sendNetworkRequest { service.getQuestions(bid) }
         if (response?.isSuccessful == true)

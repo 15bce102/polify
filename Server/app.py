@@ -115,6 +115,18 @@ def join_1v1_waiting_room():
     return resp
 
 
+@app.route('/leave-waiting-room', methods=['GET'])
+def leave_1v1_waiting_room():
+    uid = request.args['uid']
+
+    # valid, resp = is_valid_user(uid)
+    # if not valid:
+    #     return resp
+
+    resp = battles.leave_waiting_room(uid)
+    return resp
+
+
 @app.route('/get-questions', methods=['GET'])
 def get_battle_questions():
     bid = request.args['bid']

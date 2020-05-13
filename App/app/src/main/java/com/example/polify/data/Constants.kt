@@ -5,3 +5,4 @@ const val FIRST_PAGE = 0
 
 const val ACTION_MATCH_FOUND = "com.example.polify.MATCH_FOUND"
 const val EXTRA_BATTLE = "battle"
+const val EXTRA_BATTLE_ID = "battle_id"

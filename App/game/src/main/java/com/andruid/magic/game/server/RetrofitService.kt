@@ -25,6 +25,9 @@ interface RetrofitService {
     @GET("/join-waiting-room")
     suspend fun joinWaitingRoom(@Query("uid") uid: String): Response<BattleResponse>
 
+    @GET("/leave-waiting-room")
+    suspend fun leaveWaitingRoom(@Query("uid") uid: String): Response<BattleResponse>
+
     @GET("/get-questions")
     suspend fun getQuestions(@Query("bid") bid: String): Response<QuestionsResponse>
 

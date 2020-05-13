@@ -65,7 +65,7 @@ class QuestionsFragment : Fragment() {
             highlightAns(pos)
 
             lifecycleScope.launch {
-                delay(2000)
+                delay(1000)
                 if (pos == questionsAdapter.itemCount - 1)
                     Toast.makeText(requireContext(), "Your score = $score/10!", Toast.LENGTH_SHORT).show()
                 else
