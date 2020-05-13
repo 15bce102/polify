@@ -1,139 +1,188 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/black"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/img_avatar"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_marginStart="155dp"
-        android:layout_marginTop="199dp"
 
-        android:layout_marginEnd="156dp"
-        android:layout_marginBottom="45dp"
-        android:src="@mipmap/ic_profile"
-        app:civ_border_color="@color/black"
-        app:civ_border_width="2dp"
-        app:layout_constraintBottom_toTopOf="@+id/userNameTextInput"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <ImageView
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:background="@drawable/logo"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/userNameTextInput"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="55dp"
-        android:layout_marginEnd="56dp"
-        android:layout_marginBottom="57dp"
-        android:gravity="center_horizontal"
-        app:errorEnabled="true"
-        app:hintEnabled="true"
-        app:layout_constraintBottom_toTopOf="@+id/phoneTextInput"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/img_avatar">
-
-        <EditText
-            android:id="@+id/userNameET"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/edittext"
-            android:fontFamily="@font/regular"
-            android:hint="Avatar Name"
-            android:textColor="@color/black"
-            android:textSize="30sp" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.hbb20.CountryCodePicker
-        android:id="@+id/countryCodePicker"
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="268dp"
-        app:ccp_autoFormatNumber="false"
-        app:ccp_countryPreference="in"
+        android:fontFamily="@font/bold"
+        android:gravity="center"
+        android:text="Welcome to the battlefield!"
+        android:textColor="@color/white"
+        android:textSize="30dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/phoneTextInput"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/phoneTextInput"
-        android:layout_width="250dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="113dp"
-        android:layout_marginEnd="24dp"
-        android:layout_marginBottom="75dp"
-        android:gravity="center_horizontal"
-        app:errorEnabled="true"
-        app:hintEnabled="true"
-        app:layout_constraintBottom_toTopOf="@+id/submitBtn"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.4"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/userNameTextInput">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.25"/>
 
-        <EditText
-            android:id="@+id/phoneET"
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/regular"
+        android:gravity="center"
+        android:text="Please Register to enter the arena"
+        android:textColor="@color/white"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.30" />
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="350dp"
+        android:layout_height="300dp"
+        android:background="@drawable/linear_layout"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.70" >
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/userNameTextInput"
+            style="@style/Widget.Shrine.TextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/edittext"
-            android:fontFamily="@font/regular"
-            android:hint="Mobile No."
-            android:inputType="phone"
-            android:textColor="@color/black"
-            android:textSize="30sp" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:hint="Avatar Name"
+            app:errorEnabled="true"
+            app:hintEnabled="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.05"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.20">
 
-    <Button
-        android:id="@+id/submitBtn"
-        android:layout_width="125dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="161dp"
-        android:layout_marginEnd="125dp"
-        android:layout_marginBottom="199dp"
-        android:background="@drawable/button"
-        android:fontFamily="@font/regular"
-        android:text="SUBMIT"
-        android:textColor="@color/white"
-        android:textSize="22dp"
-        app:layout_constraintBottom_toTopOf="@+id/text_member"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/phoneTextInput" />
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/userNameET"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/bold"
+                android:textColor="@color/black"
+                android:inputType="text"
+                android:maxLines="1" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <com.hbb20.CountryCodePicker
+            android:id="@+id/countryCodePicker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:ccp_autoFormatNumber="false"
+            app:ccp_countryPreference="in"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.00"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.50" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/phoneTextInput"
+            style="@style/Widget.Shrine.TextInputLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="Mobile no."
+            app:errorEnabled="true"
+            app:hintEnabled="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.99"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.55">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/phoneET"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/bold"
+                android:inputType="phone"
+                android:maxLines="1"
+                android:textColor="@color/black" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/submitBtn"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@mipmap/ic_forward"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.50"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.90"/>
+
+
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView
         android:id="@+id/text_member"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
         android:fontFamily="@font/light"
-        android:text="You are not a member? "
-        android:textColor="@color/black"
+        android:text="You are member? "
+        android:textColor="@color/white"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.047"
+        app:layout_constraintHorizontal_bias="0.05"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.977" />
 
+
     <TextView
         android:id="@+id/text_login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="184dp"
-        android:layout_marginBottom="8dp"
         android:fontFamily="@font/bold"
         android:text="Login"
         android:textColor="@color/red"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.019"
+        app:layout_constraintHorizontal_bias="0.4"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.988" />
+        app:layout_constraintVertical_bias="0.977" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/img_avatar"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:background="@mipmap/ic_profile"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.45" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

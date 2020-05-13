@@ -13,139 +13,133 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:paddingTop="20dp"
         android:background="@color/black">
+
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/img_profile"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:layout_marginStart="14dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="40dp"
-            android:layout_marginBottom="69dp"
-            app:imageUrl="@{viewModel.user.avatarUri}"
-            app:layout_constraintBottom_toTopOf="@+id/img_onevsone"
+            android:background="@mipmap/ic_profile"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/txt_profile_name"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/img_dollar"
-            android:layout_width="26dp"
-            android:layout_height="24dp"
-            android:layout_marginStart="49dp"
-            android:layout_marginTop="19dp"
-            android:layout_marginBottom="33dp"
-            android:background="@mipmap/ic_coins"
-            app:layout_constraintBottom_toTopOf="@+id/txt_coins"
-            app:layout_constraintEnd_toStartOf="@+id/txt_profile_name"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/txt_level"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="48dp"
-            android:layout_marginEnd="42dp"
-            android:layout_marginBottom="115dp"
-            tools:text="Level"
-            android:text="@{viewModel.user.level}"
-            android:textColor="@color/white"
-            android:textSize="20sp"
-            app:layout_constraintBottom_toTopOf="@+id/img_onevsone"
-            app:layout_constraintEnd_toStartOf="@+id/img_profile"
-            app:layout_constraintStart_toEndOf="@+id/img_plus"
-            app:layout_constraintTop_toBottomOf="@+id/txt_profile_name" />
-
-        <TextView
-            android:id="@+id/txt_coins"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="33dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginBottom="730dp"
-            android:text="@{String.valueOf(viewModel.user.coins)}"
-            android:textColor="@color/white"
-            android:textSize="30sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/img_plus"
+            app:layout_constraintHorizontal_bias="0.90"
+            app:layout_constraintVertical_bias="0.03"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/img_dollar"
-            tools:text="100" />
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <TextView
             android:id="@+id/txt_profile_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="79dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="14dp"
-            android:layout_marginBottom="14dp"
-            android:text="@{viewModel.user.userName}"
+            android:fontFamily="@font/bold"
+            android:text="Rohit"
+            android:gravity="center"
             android:textColor="@color/white"
-            android:textSize="20sp"
-            app:layout_constraintBottom_toTopOf="@+id/txt_level"
-            app:layout_constraintEnd_toStartOf="@+id/img_profile"
-            app:layout_constraintStart_toEndOf="@+id/img_dollar"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="Rohit Mittal" />
+            android:textSize="25sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_bias="0.55"
+            app:layout_constraintVertical_bias="0.06"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:background="@drawable/button"
+            android:fontFamily="@font/regular"
+            android:text="@{viewModel.user.level}"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_bias="0.55"
+            app:layout_constraintVertical_bias="0.10"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/img_dollar"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:background="@drawable/coins"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintVertical_bias="0.0005"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <TextView
+            android:id="@+id/txt_coins"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/bold"
+            android:text="@{String.valueOf(viewModel.user.coins)}"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="25sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_bias="0.05"
+            app:layout_constraintVertical_bias="0.095"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/img_plus"
-            android:layout_width="40dp"
-            android:layout_height="36dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="80dp"
-            android:layout_marginEnd="136dp"
-            android:layout_marginBottom="69dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:background="@mipmap/ic_plus"
-            app:layout_constraintBottom_toTopOf="@+id/img_onevsone"
-            app:layout_constraintEnd_toStartOf="@+id/img_profile"
-            app:layout_constraintStart_toEndOf="@+id/txt_coins"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.169" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_bias="0.20"
+            app:layout_constraintVertical_bias="0.10"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <ImageView
             android:id="@+id/img_onevsone"
             android:layout_width="200dp"
             android:layout_height="200dp"
-            android:layout_marginStart="107dp"
-            android:layout_marginTop="69dp"
-            android:layout_marginEnd="104dp"
-            android:background="@drawable/one_vs_one"
-            app:layout_constraintBottom_toTopOf="@+id/img_private_room"
+            android:background="@drawable/single"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_bias="0.05"
+            app:layout_constraintVertical_bias="0.40"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/img_profile" />
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <ImageView
             android:id="@+id/img_private_room"
             android:layout_width="200dp"
             android:layout_height="200dp"
-            android:layout_marginStart="105dp"
-            android:layout_marginEnd="104dp"
-            android:layout_marginBottom="2dp"
-            android:background="@drawable/private_room"
-            app:layout_constraintBottom_toTopOf="@+id/img_practice"
-            app:layout_constraintEnd_toStartOf="@+id/img_onevsone"
-            app:layout_constraintHorizontal_bias="0.0"
+            android:background="@drawable/multiplayer"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_bias="0.99"
+            app:layout_constraintVertical_bias="0.40"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/img_onevsone" />
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <ImageView
             android:id="@+id/img_practice"
             android:layout_width="200dp"
             android:layout_height="200dp"
-            android:layout_marginStart="105dp"
-            android:layout_marginTop="1dp"
-            android:layout_marginEnd="105dp"
-            android:background="@drawable/practice"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:background="@drawable/practise"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toEndOf="@+id/img_private_room"
-            app:layout_constraintTop_toBottomOf="@+id/img_private_room" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_bias="0.50"
+            app:layout_constraintVertical_bias="0.77"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
