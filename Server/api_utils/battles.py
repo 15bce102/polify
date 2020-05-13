@@ -18,7 +18,7 @@ BATTLES = 'battles'
 
 # db[WAITING_ROOM] should not be empty
 
-pipeline = [{'$match': {'operationType': 'insert'}}]
+pipeline = [{"$match": {"operationType": {"$in": ['insert', 'delete']}}}]
 stream = db[WAITING_ROOM].watch(pipeline)
 
 
