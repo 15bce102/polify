@@ -4,5 +4,16 @@ const val PAGE_SIZE = 10
 const val FIRST_PAGE = 0
 
 const val ACTION_MATCH_FOUND = "com.example.polify.MATCH_FOUND"
+
 const val EXTRA_BATTLE = "battle"
 const val EXTRA_BATTLE_ID = "battle_id"
+
+const val QUE_TIME_LIMIT_MS = (15 * 1000).toLong()
+
+const val KEY_TYPE = "type"
+const val KEY_PAYLOAD = "payload"
+
+const val TYPE_MATCHMAKING = "matchmaking"
+const val TYPE_SCORE_UPDATE = "score-update"
+
+const val VIEW_TYPE_OPTIONS = 1

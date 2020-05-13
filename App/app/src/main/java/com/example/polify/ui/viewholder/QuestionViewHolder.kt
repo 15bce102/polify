@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.RecyclerView
 import com.andruid.magic.game.model.data.Question
 import com.example.polify.R
+import com.example.polify.data.VIEW_TYPE_OPTIONS
 import com.example.polify.databinding.LayoutQuestionBinding
 import com.example.polify.eventbus.OptionEvent
 import com.example.polify.ui.adapter.OptionsAdapter
@@ -26,29 +27,38 @@ class QuestionViewHolder(private val binding: LayoutQuestionBinding) : RecyclerV
         }
     }
 
-    fun bind(question: Question, position: Int) {
+    private lateinit var itemTouchListener: RecyclerTouchListener
+
+    fun bind(question: Question, pos: Int) {
         binding.question = question
-        binding.position = position
+        binding.position = pos
 
         binding.textMainQuestion.setOnClickListener {
             Log.d("optionLog", "question text click")
         }
 
+        itemTouchListener = RecyclerTouchListener(binding.root.context, binding.optionsRV,
+                object : RecyclerTouchListener.ClickListener {
+                    override fun onClick(view: View?, position: Int) {
+                        onOptionClick(question, position)
+                    }
+
+                    override fun onLongClick(view: View?, position: Int) {}
+                })
+
         binding.optionsRV.apply {
             adapter = OptionsAdapter(question.options).apply {
                 setHasFixedSize(true)
             }
+            recycledViewPool.setMaxRecycledViews(VIEW_TYPE_OPTIONS, 0)
             itemAnimator = DefaultItemAnimator()
-            addOnItemTouchListener(RecyclerTouchListener(rootView.context, this, object : RecyclerTouchListener.ClickListener {
-                override fun onClick(view: View?, position: Int) {
-                    Log.d("optionLog", "on option button click")
-
-                    val option = question.options[position]
-                    EventBus.getDefault().post(OptionEvent(question.qid, option))
-                }
-
-                override fun onLongClick(view: View?, position: Int) {}
-            }))
+            addOnItemTouchListener(itemTouchListener)
         }
+    }
+
+    private fun onOptionClick(question: Question, position: Int) {
+        val option = question.options[position]
+        EventBus.getDefault().post(OptionEvent(question.qid, option))
+        binding.optionsRV.removeOnItemTouchListener(itemTouchListener)
     }
 }

@@ -5,7 +5,7 @@ from firebase_admin import credentials
 
 import simplejson
 
-from apscheduler.schedulers.background import BackgroundScheduler
+from api_utils.scheduling import scheduler
 
 from flask import Flask, request
 
@@ -18,7 +18,6 @@ app = Flask(__name__)
 cred = credentials.Certificate('keys/key.json')
 firebase_admin.initialize_app(cred)
 
-scheduler = BackgroundScheduler()
 scheduler.add_job(func=users.update_all_users, trigger="interval", seconds=3 * 60)
 scheduler.add_job(func=battles.start_matchmaking)
 
@@ -119,9 +118,9 @@ def join_1v1_waiting_room():
 def leave_1v1_waiting_room():
     uid = request.args['uid']
 
-    # valid, resp = is_valid_user(uid)
-    # if not valid:
-    #     return resp
+    valid, resp = is_valid_user(uid)
+    if not valid:
+        return resp
 
     resp = battles.leave_waiting_room(uid)
     return resp
@@ -135,6 +134,20 @@ def get_battle_questions():
     return resp
 
 
+@app.route('/update-score', methods=['GET'])
+def update_score():
+    bid = request.args['bid']
+    uid = request.args['uid']
+    score = int(request.args['score'])
+
+    # valid, resp = is_valid_user(uid)
+    # if not valid:
+    #     return resp
+
+    resp = battles.update_battle_score(bid, uid, score)
+    return resp
+
+
 def shut_down():
     try:
         battles.stop_matchmaking()
@@ -145,5 +158,4 @@ def shut_down():
 
 
 if __name__ == "__main__":
-
-    app.run(host='0.0.0.0', debug=False)
+    app.run(host='0.0.0.0', debug=True)

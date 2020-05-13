@@ -31,6 +31,9 @@ interface RetrofitService {
     @GET("/get-questions")
     suspend fun getQuestions(@Query("bid") bid: String): Response<QuestionsResponse>
 
+    suspend fun updateScore(@Query("bid") bid: String, @Query("uid") uid: String,
+                            @Query("score") score: Int): Response<BattleResponse>
+
     @GET("/create-battle")
     suspend fun createBattle(@Query("uid") uid: String, @Query("coins") coins: Int): Response<BattleResponse>
 

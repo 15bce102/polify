@@ -6,8 +6,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.andruid.magic.game.api.GameRepository
 import com.andruid.magic.game.model.data.OneVsOneBattle
 import com.andruid.magic.game.model.data.Player
-import com.example.polify.data.ACTION_MATCH_FOUND
-import com.example.polify.data.EXTRA_BATTLE
+import com.example.polify.data.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
@@ -45,22 +44,38 @@ class CloudMessagingService : FirebaseMessagingService(), CoroutineScope {
     override fun onMessageReceived(message: RemoteMessage) {
         super.onMessageReceived(message)
 
-        val battle = message.data.toOneVsOneBattle()
-        Log.d(TAG, "battle = $battle")
+        val map = message.data
 
-        val intent = Intent(ACTION_MATCH_FOUND)
-                .putExtra(EXTRA_BATTLE, battle)
-        LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
+        Log.d(TAG, "received: $map")
+
+        when (map[KEY_TYPE]) {
+            TYPE_MATCHMAKING -> {
+                map[KEY_PAYLOAD]?.toOneVsOneBattle().let { battle ->
+                    Log.d(TAG, "battle = $battle")
+
+                    val intent = Intent(ACTION_MATCH_FOUND)
+                            .putExtra(EXTRA_BATTLE, battle)
+                    LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
+                }
+            }
+
+            TYPE_SCORE_UPDATE -> {
+                Log.d(TAG, "score update = ${map[KEY_PAYLOAD]}")
+            }
+        }
     }
 
-    private fun Map<String, String>.toOneVsOneBattle(): OneVsOneBattle {
-        val json = get("players")
-        val players: List<Player> = Gson().fromJson(json, object : TypeToken<List<Player>>() {}.type)
+    private fun String.toOneVsOneBattle(): OneVsOneBattle {
+        val gson = Gson()
+        val map: Map<String, String> = gson.fromJson(this, object : TypeToken<Map<String, String>>() {}.type)
+
+        val playersJson = map["players"]
+        val players: List<Player> = Gson().fromJson(playersJson, object : TypeToken<List<Player>>() {}.type)
 
         return OneVsOneBattle(
-                battleId = getOrDefault("_id", "defaultId"),
-                startTime = getOrDefault("start_time", System.currentTimeMillis().toString()).toLong(),
-                coinsPool = getOrDefault("coins_pool", 10.toString()).toInt(),
+                battleId = map.getOrDefault("_id", "defaultId"),
+                startTime = map.getOrDefault("start_time", System.currentTimeMillis().toString()).toLong(),
+                coinsPool = map.getOrDefault("coins_pool", 10.toString()).toInt(),
                 players = players
         )
     }

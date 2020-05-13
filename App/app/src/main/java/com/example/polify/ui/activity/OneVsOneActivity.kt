@@ -7,19 +7,18 @@ import android.content.IntentFilter
 import android.os.Bundle
 import android.util.Log
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import androidx.navigation.findNavController
 import com.andruid.magic.game.model.data.OneVsOneBattle
 import com.example.polify.R
 import com.example.polify.data.ACTION_MATCH_FOUND
 import com.example.polify.data.EXTRA_BATTLE
-import com.example.polify.ui.fragment.WaitingFragmentDirections
+import com.example.polify.eventbus.BattleEvent
+import org.greenrobot.eventbus.EventBus
 
 class OneVsOneActivity : FullScreenActivity() {
     companion object {
         private val TAG = "${OneVsOneActivity::class.java.simpleName}Log"
     }
 
-    private val navController by lazy { findNavController(R.id.nav_host_fragment) }
     private val gameReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             when (intent.action) {
@@ -27,9 +26,7 @@ class OneVsOneActivity : FullScreenActivity() {
                     Log.d(TAG, "match found")
                     intent.extras?.let {
                         battle = it.getParcelable(EXTRA_BATTLE)!!
-                        //R.id.questionsFragment, bundleOf(EXTRA_BATTLE_ID to battle.battleId)
-                        navController.navigate(
-                                WaitingFragmentDirections.actionWaitingFragmentToQuestionsFragment(battle.battleId))
+                        EventBus.getDefault().post(BattleEvent(battle))
                     }
                 }
             }
