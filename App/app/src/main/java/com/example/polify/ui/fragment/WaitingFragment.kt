@@ -7,10 +7,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.andruid.magic.game.api.GameRepository
 import com.example.polify.databinding.FragmentWaitingBinding
+import com.example.polify.eventbus.BattleEvent
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import java.util.*
 
 class WaitingFragment : Fragment() {
@@ -24,6 +29,11 @@ class WaitingFragment : Fragment() {
     private var seconds = 0
 
     private lateinit var binding: FragmentWaitingBinding
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        EventBus.getDefault().register(this)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentWaitingBinding.inflate(inflater, container, false)
@@ -50,7 +60,9 @@ class WaitingFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
+        EventBus.getDefault().unregister(this)
         timer.cancel()
+
         lifecycleScope.launch {
             mAuth.currentUser?.let { user ->
                 val response = GameRepository.leaveWaitingRoom(user.uid)
@@ -60,5 +72,11 @@ class WaitingFragment : Fragment() {
                     Log.e(TAG, "left waiting room error")
             }
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onBattleEvent(battleEvent: BattleEvent) {
+        val battleId = battleEvent.battle.battleId
+        findNavController().navigate(WaitingFragmentDirections.actionWaitingFragmentToQuestionsFragment(battleId))
     }
 }

@@ -77,11 +77,7 @@ dependencies {
     implementation 'com.github.mukeshsolanki:android-otpview-pinview:2.1.0'
     implementation "io.coil-kt:coil:0.10.1"
     implementation 'org.greenrobot:eventbus:3.2.0'
+    implementation 'com.airbnb.android:lottie:3.4.0'
 
     implementation project(path: ':game')
-    implementation 'com.google.firebase:firebase-auth:16.0.5'
-
-    implementation 'com.google.android.material:material:1.0.0'
-
-    api 'com.google.android.material:material:1.1.0-alpha06'
 }

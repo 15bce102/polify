@@ -23,21 +23,20 @@
         android:id="@+id/viewPager"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@id/nextBtn"
+        app:layout_constraintBottom_toTopOf="@id/timerAnimView"
         app:layout_constraintTop_toBottomOf="@id/bar_progressBar" />
 
-    <Button
-        android:id="@+id/nextBtn"
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/timerAnimView"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="80dp"
         android:layout_marginEnd="80dp"
         android:layout_marginBottom="53dp"
-        android:background="@drawable/button"
+        app:lottie_rawRes="@raw/question_timer"
+        app:lottie_loop="false"
+        app:lottie_autoPlay="false"
         android:gravity="center"
-        android:text="NEXT"
-        android:textColor="@color/white"
-        android:textSize="30sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
