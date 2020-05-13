@@ -6,14 +6,13 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
 import android.util.Log
-import androidx.core.os.bundleOf
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.findNavController
 import com.andruid.magic.game.model.data.OneVsOneBattle
 import com.example.polify.R
 import com.example.polify.data.ACTION_MATCH_FOUND
 import com.example.polify.data.EXTRA_BATTLE
-import com.example.polify.data.EXTRA_BATTLE_ID
+import com.example.polify.ui.fragment.WaitingFragmentDirections
 
 class OneVsOneActivity : FullScreenActivity() {
     companion object {
@@ -28,8 +27,9 @@ class OneVsOneActivity : FullScreenActivity() {
                     Log.d(TAG, "match found")
                     intent.extras?.let {
                         battle = it.getParcelable(EXTRA_BATTLE)!!
-
-                        navController.navigate(R.id.questionsFragment, bundleOf(EXTRA_BATTLE_ID to battle.battleId))
+                        //R.id.questionsFragment, bundleOf(EXTRA_BATTLE_ID to battle.battleId)
+                        navController.navigate(
+                                WaitingFragmentDirections.actionWaitingFragmentToQuestionsFragment(battle.battleId))
                     }
                 }
             }

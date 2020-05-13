@@ -52,6 +52,7 @@ class QuestionsFragment : Fragment() {
 
         binding.viewPager.apply {
             adapter = questionsAdapter
+            isUserInputEnabled = false
             registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
                 override fun onPageSelected(position: Int) {
                     super.onPageSelected(position)

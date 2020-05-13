@@ -2,6 +2,7 @@ import pymongo
 from pymongo.errors import PyMongoError
 
 import simplejson
+import time
 import uuid
 
 from api_utils import users, questions
@@ -76,7 +77,6 @@ def start_matchmaking():
 
                 tokens = users.get_fcm_tokens(uids)
                 battle['players'] = simplejson.dumps(players)
-                send_multi_message(battle, tokens)
 
                 db[WAITING_ROOM].remove({"_id": {"$in": uids}})
 
@@ -85,6 +85,7 @@ def start_matchmaking():
                     {"_id": battle['_id']},
                     {"$set": {"questions": random_questions}}
                 )
+                send_multi_message(battle, tokens)
 
     except PyMongoError as e:
         # The ChangeStream encountered an unrecoverable error or the

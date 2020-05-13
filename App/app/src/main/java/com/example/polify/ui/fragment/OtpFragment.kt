@@ -105,6 +105,8 @@ class OtpFragment : Fragment() {
 
                         FirebaseInstanceId.getInstance().instanceId.addOnSuccessListener { result ->
                             val token = result.token
+                            Log.d(TAG, "token = $token")
+                            Toast.makeText(requireContext(), "token = $token", Toast.LENGTH_SHORT).show()
                             lifecycleScope.launch {
                                 val response = GameRepository.updateFcmToken(user.uid, token)
                                 if (response?.success == true)
