@@ -57,6 +57,13 @@ object GameRepository {
         return null
     }
 
+    suspend fun updateBattleScore(bid: String, uid: String, score: Int): BattleResponse? {
+        val response = sendNetworkRequest { service.updateScore(bid, uid, score) }
+        if (response?.isSuccessful == true)
+            return response.body()
+        return null
+    }
+
     suspend fun createBattle(uid: String, coins: Int): BattleResponse? {
         val response = sendNetworkRequest { service.createBattle(uid, coins) }
         if (response?.isSuccessful == true)

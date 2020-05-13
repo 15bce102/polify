@@ -63,20 +63,18 @@
             tools:text="Which attraction in Montreal is one of the largest in the world?"
             android:textColor="@color/white"
             android:textSize="30sp"
-            app:layout_constraintBottom_toTopOf="@id/optionsRV"
+            app:layout_constraintBottom_toTopOf="@id/optionsLV"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/txt_question" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/optionsRV"
+        <ListView
+            android:id="@+id/optionsLV"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintTop_toBottomOf="@id/text_main_question"
             app:layout_constraintBottom_toBottomOf="parent"
-            tools:listitem="@layout/layout_option"
-            tools:itemCount="4" />
+            tools:listitem="@layout/layout_option" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

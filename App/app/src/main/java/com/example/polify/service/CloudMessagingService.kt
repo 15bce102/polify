@@ -1,4 +1,4 @@
-package com.example.polify.service
+    package com.example.polify.service
 
 import android.content.Intent
 import android.util.Log
@@ -60,7 +60,12 @@ class CloudMessagingService : FirebaseMessagingService(), CoroutineScope {
             }
 
             TYPE_SCORE_UPDATE -> {
-                Log.d(TAG, "score update = ${map[KEY_PAYLOAD]}")
+                map[KEY_PAYLOAD]?.toPlayerResults().let { players ->
+
+                    val intent = Intent(ACTION_MATCH_RESULTS)
+                            .putExtra(EXTRA_PLAYERS, players)
+                    LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
+                }
             }
         }
     }
@@ -79,4 +84,7 @@ class CloudMessagingService : FirebaseMessagingService(), CoroutineScope {
                 players = players
         )
     }
+
+    private fun String.toPlayerResults() =
+            Gson().fromJson<ArrayList<Player>>(this, object: TypeToken<ArrayList<Player>>() {}.type)
 }

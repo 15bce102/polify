@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
 import android.util.Log
+import android.view.WindowManager
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.andruid.magic.game.model.data.OneVsOneBattle
 import com.example.polify.R
@@ -38,6 +39,8 @@ class OneVsOneActivity : FullScreenActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_one_vs_one)
+
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
         LocalBroadcastManager.getInstance(this).registerReceiver(gameReceiver, IntentFilter(ACTION_MATCH_FOUND))
     }
