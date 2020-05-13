@@ -1,13 +1,13 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.DarkActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="otpViewStyle">@style/OtpWidget.OtpView</item>
     </style>
 
-    <style name="AppTheme.FullScreen" parent="@style/Theme.AppCompat.Light.NoActionBar">
+    <style name="AppTheme.FullScreen" parent="@style/Theme.MaterialComponents.Light.NoActionBar">
         <item name="otpViewStyle">@style/OtpWidget.OtpView</item>
         <item name="android:windowLayoutInDisplayCutoutMode"
             tools:targetApi="o_mr1">shortEdges</item>
@@ -21,4 +21,26 @@
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+
+    <style name="Widget.Shrine.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="hintTextAppearance">@style/TextAppearance.Shrine.TextInputLayout.HintText</item>
+        <item name="hintTextColor">@color/red</item>
+        <item name="android:paddingBottom">8dp</item>
+        <item name="boxStrokeColor">@color/red</item>
+    </style>
+
+    <style name="TextAppearance.Shrine.TextInputLayout.HintText" parent="TextAppearance.MaterialComponents.Subtitle2">
+        <item name="android:textColor">@color/red</item>
+    </style>
+
+    <style name="Widget.Shrine.Button" parent="Widget.MaterialComponents.Button">
+        <item name="android:textColor">@color/white</item>
+        <item name="backgroundTint">@color/red</item>
+        <item name="android:stateListAnimator" tools:ignore="NewApi">
+            @animator/button_state_list_anim
+        </item>
+    </style>
+
+
 </resources>

@@ -21,11 +21,14 @@ import com.google.firebase.iid.FirebaseInstanceId
 import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 
+
 class OtpFragment : Fragment() {
     companion object {
         private val TAG = "${OtpFragment::class.java.simpleName}Log"
+
     }
 
+    private var check = false
     private lateinit var binding: FragmentOtpBinding
     private lateinit var phoneNumber: String
 
@@ -34,13 +37,17 @@ class OtpFragment : Fragment() {
 
     private lateinit var verificationId: String
 
+
     private val mAuth = FirebaseAuth.getInstance()
     private val mCallBack = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
         override fun onCodeSent(verificationId: String, forceResendingToken: PhoneAuthProvider.ForceResendingToken) {
             super.onCodeSent(verificationId, forceResendingToken)
-            Log.d(TAG, "onCodeSent: code sent")
+            check = true
+            Log.d("hello", "onCodeSent: code sent")
             this@OtpFragment.verificationId = verificationId
         }
+
+
 
         override fun onVerificationCompleted(phoneAuthCredential: PhoneAuthCredential) {
             Log.d(TAG, "onVerificationCompleted: verify completed")
@@ -69,14 +76,17 @@ class OtpFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         binding = FragmentOtpBinding.inflate(inflater, container, false)
-
+        sendVerificationCode()
         binding.verifyBtn.setOnClickListener {
             val code = binding.otpView.text.toString().trim()
-            if (code.length == 6)
+            if (check&&code.length == 6)
                 verifyCode(code)
+            else{
+                Toast.makeText(context,"Please Enter the valid code or wai for same",Toast.LENGTH_LONG).show()
+            }
         }
 
-        sendVerificationCode()
+
 
         return binding.root
     }
@@ -137,7 +147,11 @@ class OtpFragment : Fragment() {
                         }
                     }
                 }
+
+
     }
+
+
 
     private fun startHomeActivity() {
         val intent = Intent(requireContext(), HomeActivity::class.java)
