@@ -7,15 +7,16 @@ import android.content.IntentFilter
 import android.os.Bundle
 import android.util.Log
 import android.view.WindowManager
-import androidx.core.os.bundleOf
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.OnLifecycleEvent
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.findNavController
 import com.andruid.magic.game.model.data.OneVsOneBattle
 import com.example.polify.R
 import com.example.polify.data.ACTION_MATCH_FOUND
 import com.example.polify.data.EXTRA_BATTLE
-import com.example.polify.eventbus.BattleEvent
-import org.greenrobot.eventbus.EventBus
+import com.example.polify.ui.fragment.WaitingFragmentDirections
 
 class OneVsOneActivity : FullScreenActivity() {
     companion object {
@@ -29,9 +30,20 @@ class OneVsOneActivity : FullScreenActivity() {
                     Log.d("cloudLog", "broadcast of match found in activity")
                     intent.extras?.let {
                         battle = it.getParcelable(EXTRA_BATTLE)!!
-                        EventBus.getDefault().post(BattleEvent(battle))
-                        findNavController(R.id.nav_host_fragment).navigate(
-                                R.id.questionsFragment, bundleOf("battleId" to battle.battleId))
+
+                        if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED))
+                            startBattle(battle.battleId)
+                        else {
+                            val startTime = System.currentTimeMillis()
+
+                            lifecycle.addObserver(object : LifecycleObserver {
+
+                                @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+                                fun onForeground() {
+                                    startBattle(battle.battleId, startTime)
+                                }
+                            })
+                        }
                     }
                 }
             }
@@ -52,5 +64,10 @@ class OneVsOneActivity : FullScreenActivity() {
     override fun onDestroy() {
         super.onDestroy()
         LocalBroadcastManager.getInstance(this).unregisterReceiver(gameReceiver)
+    }
+
+    private fun startBattle(battleId: String, startTime: Long = -1L) {
+        findNavController(R.id.nav_host_fragment).navigate(
+                WaitingFragmentDirections.actionWaitingFragmentToQuestionsFragment(battleId, startTime))
     }
 }

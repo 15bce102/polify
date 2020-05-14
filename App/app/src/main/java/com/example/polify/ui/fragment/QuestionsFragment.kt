@@ -16,6 +16,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
+import com.andruid.magic.game.model.data.Question
 import com.example.polify.R
 import com.example.polify.data.QUE_TIME_LIMIT_MS
 import com.example.polify.databinding.FragmentQuestionsBinding
@@ -49,6 +50,7 @@ class QuestionsFragment : Fragment() {
     private var score = 0
     private var qid: String? = null
     private var selectedOptPos = -1
+    private var startTime = -1L
 
     private val countDownTimer = object : CountDownTimer(QUE_TIME_LIMIT_MS, 1000) {
         override fun onFinish() {
@@ -59,9 +61,7 @@ class QuestionsFragment : Fragment() {
             lifecycleScope.launch {
                 delay(1000)
                 if (pos == questionsAdapter.itemCount - 1) {
-                    Toast.makeText(requireContext(), "Your score = $score/10!", Toast.LENGTH_SHORT).show()
-                    findNavController().navigate(
-                            QuestionsFragmentDirections.actionQuestionsFragmentToResultsFragment(battleId, score))
+                    finishGame()
                 } else
                     binding.viewPager.setCurrentItem(pos + 1, true)
             }
@@ -70,12 +70,21 @@ class QuestionsFragment : Fragment() {
         override fun onTick(millisUntilFinished: Long) {}
     }
 
+    private fun finishGame() {
+        Toast.makeText(requireContext(), "Your score = $score/10!", Toast.LENGTH_SHORT).show()
+        findNavController().navigate(
+                QuestionsFragmentDirections.actionQuestionsFragmentToResultsFragment(battleId, score))
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d("cloudLog", "on create questions")
         super.onCreate(savedInstanceState)
 
         arguments?.let {
-            battleId = QuestionsFragmentArgs.fromBundle(it).battleId
+            val safeArgs = QuestionsFragmentArgs.fromBundle(it)
+
+            battleId = safeArgs.battleId
+            startTime = safeArgs.startTime
         }
     }
 
@@ -100,9 +109,27 @@ class QuestionsFragment : Fragment() {
         questionsViewModel.questions.observe(viewLifecycleOwner, Observer {
             questionsAdapter.submitList(it)
             binding.barProgressBar.max = it.size
+            startMatch(it)
         })
 
         return binding.root
+    }
+
+    private fun startMatch(questions: List<Question>) {
+        if (startTime == -1L)
+            return
+
+        val elapsedSeconds = (System.currentTimeMillis() - startTime)/1000
+        val questionPos = elapsedSeconds / questions.size
+
+        Log.d("cloudLog", "questionPos = $questionPos")
+
+        if (questionPos < questions.size)
+            binding.viewPager.currentItem = questionPos.toInt() - 1
+        else {
+            binding.timerAnimView.progress = 100F
+            finishGame()
+        }
     }
 
     override fun onResume() {

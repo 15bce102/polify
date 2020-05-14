@@ -8,6 +8,7 @@ const val ACTION_MATCH_RESULTS = "com.example.polify.MATCH_RESULTS"
 
 const val EXTRA_BATTLE = "battle"
 const val EXTRA_PLAYERS = "players"
+const val EXTRA_START_TIME = "start_time"
 
 const val QUE_TIME_LIMIT_MS = (15 * 1000).toLong()
 

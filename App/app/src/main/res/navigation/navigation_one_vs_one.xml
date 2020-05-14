@@ -15,8 +15,7 @@
         android:id="@+id/waitingFragment"
         android:name="com.example.polify.ui.fragment.WaitingFragment"
         android:label="fragment_waiting"
-        tools:layout="@layout/fragment_waiting">
-    </fragment>
+        tools:layout="@layout/fragment_waiting" />
 
     <fragment
         android:id="@+id/questionsFragment"
@@ -25,7 +24,12 @@
         tools:layout="@layout/fragment_questions">
         <argument
             android:name="battle_id"
-            app:argType="string" />
+            app:argType="string"
+            app:nullable="false" />
+        <argument
+            android:name="start_time"
+            app:argType="long"
+            android:defaultValue="-1L" />
         <action
             android:id="@+id/action_questionsFragment_to_resultsFragment"
             app:destination="@id/resultsFragment"
