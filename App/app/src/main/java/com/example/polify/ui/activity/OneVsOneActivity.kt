@@ -24,7 +24,7 @@ class OneVsOneActivity : FullScreenActivity() {
         override fun onReceive(context: Context, intent: Intent) {
             when (intent.action) {
                 ACTION_MATCH_FOUND -> {
-                    Log.d(TAG, "match found")
+                    Log.d("cloudLog", "broadcast of match found in activity")
                     intent.extras?.let {
                         battle = it.getParcelable(EXTRA_BATTLE)!!
                         EventBus.getDefault().post(BattleEvent(battle))

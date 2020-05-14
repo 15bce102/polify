@@ -204,7 +204,7 @@ def get_fcm_tokens(uids):
 
 def update_fcm_token(uid, token):
     resp = {}
-    count = db[USERS].update_one({"_id": uid}, {"$set": {"token": token}}).matched_count
+    count = db[USERS].update_one({"_id": uid}, {"$set": {"token": token}}, upsert=True).matched_count
 
     if count == 1:
         resp['success'] = True
@@ -212,4 +212,35 @@ def update_fcm_token(uid, token):
         resp['success'] = False
         resp['message'] = 'Could not update FCM token'
 
+    return resp
+
+
+def get_my_coins(uid):
+    coins = db[USERS].find_one(
+        {"_id": uid},
+        {"_id": 0, "coins": 1}
+    )["coins"]
+    return coins
+
+
+def update_coins_from_scores(coins, players):
+    resp = {}
+
+    top_score = max(player['score'] for player in players)
+    winners = [player for player in players if player['score'] == top_score]
+
+    db[USERS].update(
+        {"_id": {"$in": [winner['uid'] for winner in winners]}},
+        {"$inc": {"coins": coins // len(winners)}}
+    )
+
+    player_uids = [player['uid'] for player in players]
+    winner_uids = [winner['uid'] for winner in winners]
+
+    db[USERS].update(
+        {"_id": {"$in": [player for player in list(set(player_uids) - set(winner_uids))]}},
+        {"$inc": {"coins": -coins}}
+    )
+
+    resp['success'] = True
     return resp

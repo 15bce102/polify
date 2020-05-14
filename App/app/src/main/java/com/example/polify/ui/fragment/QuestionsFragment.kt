@@ -16,17 +16,15 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
-import com.andruid.magic.game.api.GameRepository
 import com.example.polify.R
 import com.example.polify.data.QUE_TIME_LIMIT_MS
 import com.example.polify.databinding.FragmentQuestionsBinding
 import com.example.polify.eventbus.OptionEvent
+import com.example.polify.ui.adapter.OptionsAdapter
 import com.example.polify.ui.adapter.QuestionAdapter
 import com.example.polify.ui.viewmodel.BaseViewModelFactory
 import com.example.polify.ui.viewmodel.QuestionViewModel
 import com.example.polify.util.getViewByPosition
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
@@ -52,7 +50,6 @@ class QuestionsFragment : Fragment() {
     private var qid: String? = null
     private var selectedOptPos = -1
 
-    private val mAuth by lazy { FirebaseAuth.getInstance() }
     private val countDownTimer = object : CountDownTimer(QUE_TIME_LIMIT_MS, 1000) {
         override fun onFinish() {
             val pos = binding.viewPager.currentItem
@@ -74,6 +71,7 @@ class QuestionsFragment : Fragment() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        Log.d("cloudLog", "on create questions")
         super.onCreate(savedInstanceState)
 
         arguments?.let {
@@ -126,6 +124,7 @@ class QuestionsFragment : Fragment() {
         selectedOptPos = opt.optId[0] - 'A'
 
         val optionsLV = binding.viewPager.findViewById<ListView>(R.id.optionsLV)
+        (optionsLV.adapter as OptionsAdapter).disableClicks()
         highlightOption(optionsLV, selectedOptPos)
     }
 
@@ -148,6 +147,8 @@ class QuestionsFragment : Fragment() {
                 score++
             else
                 highlightAnswer(listView, selectedOptPos, false)
+
+            selectedOptPos++
         }
     }
 

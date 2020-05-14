@@ -5,21 +5,23 @@ from firebase_admin import credentials
 
 import simplejson
 
+import utils
 from api_utils.scheduling import scheduler
 
-from flask import Flask, request
+from flask import Flask, request, send_from_directory
 
 from api_utils import battles, users
 
 from utils import current_milli_time, is_valid_user
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='')
 
 cred = credentials.Certificate('keys/key.json')
 firebase_admin.initialize_app(cred)
 
 scheduler.add_job(func=users.update_all_users, trigger="interval", seconds=3 * 60)
 scheduler.add_job(func=battles.start_matchmaking)
+scheduler.add_job(func=battles.watch_battles)
 
 scheduler.start()
 
@@ -148,6 +150,16 @@ def update_score():
     return resp
 
 
+@app.route('/get-avatars')
+def get_avatar_url():
+    return utils.get_avatars()
+
+
+@app.route('/avatars/<path:path>')
+def send_avatar_img(path):
+    return send_from_directory('avatars', path)
+
+
 def shut_down():
     try:
         battles.stop_matchmaking()
@@ -158,4 +170,4 @@ def shut_down():
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', debug=True)
+    app.run(host='0.0.0.0', debug=False)

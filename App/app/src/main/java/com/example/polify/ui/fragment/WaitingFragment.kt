@@ -76,6 +76,7 @@ class WaitingFragment : Fragment() {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onBattleEvent(battleEvent: BattleEvent) {
+        Log.d("cloudLog", "eventbus event received")
         val battleId = battleEvent.battle.battleId
         findNavController().navigate(WaitingFragmentDirections.actionWaitingFragmentToQuestionsFragment(battleId))
     }

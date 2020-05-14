@@ -19,6 +19,10 @@ db = client[DBNAME]
 WAITING_ROOM = 'waiting_room'
 BATTLES = 'battles'
 
+SCORE_WAIT_INTERVAL = 30
+COINS_POOL_ONE_VS_ONE = 50
+COINS_POOL_MULTIPLAYER = 25
+
 # db[WAITING_ROOM] should not be empty
 
 pipeline = [{"$match": {"operationType": {"$in": ['insert', 'delete']}}}]
@@ -30,6 +34,13 @@ battle_stream = db[BATTLES].watch(pipeline)
 
 def join_waiting_room(uid):
     resp = {}
+
+    coins = users.get_my_coins(uid)
+
+    if coins < COINS_POOL_ONE_VS_ONE:
+        resp['success'] = False
+        resp['message'] = 'You do not have enough coins'
+        return resp
 
     room = db[WAITING_ROOM].insert_one({"_id": uid})
 
@@ -151,7 +162,7 @@ def update_battle_score(bid, uid, score):
 
 def wait_for_score_updates(bid):
     scheduler.add_job(func=send_score_updates, args=[bid], trigger="date", id=bid,
-                      run_date=datetime.now() + timedelta(seconds=15))
+                      run_date=datetime.now() + timedelta(seconds=SCORE_WAIT_INTERVAL))
 
 
 def send_score_updates(bid):
@@ -162,6 +173,9 @@ def send_score_updates(bid):
     )["players"]
 
     uids = [player['uid'] for player in players]
+
+    users.update_coins_from_scores(COINS_POOL_ONE_VS_ONE, players)
+
     tokens = users.get_fcm_tokens(uids)
 
     data = {
@@ -176,6 +190,7 @@ def watch_battles():
 
     try:
         for change in battle_stream:
+            print(change)
             battle = change['fullDocument']
 
             remaining = len(list(filter(lambda player: player['score'] == -1, battle['players'])))

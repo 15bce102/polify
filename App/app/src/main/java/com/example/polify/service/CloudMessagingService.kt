@@ -56,6 +56,7 @@ class CloudMessagingService : FirebaseMessagingService(), CoroutineScope {
                     val intent = Intent(ACTION_MATCH_FOUND)
                             .putExtra(EXTRA_BATTLE, battle)
                     LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
+                    Log.d("cloudLog", "sent match found broadcast")
                 }
             }
 

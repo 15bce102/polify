@@ -177,7 +177,7 @@
         android:id="@+id/img_avatar"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:background="@mipmap/ic_profile"
+        tools:src="@mipmap/ic_profile"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintLeft_toLeftOf="parent"

@@ -1,5 +1,8 @@
 import time
 
+from os import listdir
+from os.path import isfile, join
+
 from firebase_admin import auth
 from firebase_admin.auth import UserNotFoundError
 from firebase_admin.messaging import Message, MulticastMessage, send, send_multicast
@@ -34,3 +37,14 @@ def send_single_message(data, token):
     message = Message(data, token)
     response = send(message)
     print('Successfully sent message:', response)
+
+
+def get_avatars():
+    path = 'avatars'
+    avatars = [f for f in listdir(path) if isfile(join(path, f))]
+
+    resp = {
+        "success": True,
+        "avatars": ['avatars/' + a for a in avatars]
+    }
+    return resp

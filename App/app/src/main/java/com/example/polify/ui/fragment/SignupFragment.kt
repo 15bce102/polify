@@ -8,6 +8,8 @@ import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import coil.api.load
+import com.andruid.magic.game.server.RetrofitClient.DEFAULT_AVATAR_URL
 import com.example.polify.R
 import com.example.polify.databinding.FragmentSignupBinding
 import com.example.polify.util.isValidPhoneNumber
@@ -26,6 +28,8 @@ class SignupFragment : Fragment() {
 
     private fun initListeners() {
         binding.apply {
+            imgAvatar.load(DEFAULT_AVATAR_URL)
+
             countryCodePicker.registerCarrierNumberEditText(phoneET)
 
             phoneET.addTextChangedListener {
@@ -38,7 +42,7 @@ class SignupFragment : Fragment() {
             submitBtn.setOnClickListener {
                 val number = countryCodePicker.fullNumberWithPlus
                 val userName = userNameET.text.toString().trim()
-                val avatarUri = "https://images.app.goo.gl/8y6cxrZPicwQFEK69"
+                val avatarUri = DEFAULT_AVATAR_URL
 
                 if (isValidPhoneNumber(number) && isValidUserName(userName) && avatarUri.isNotEmpty())
                     findNavController().navigate(
