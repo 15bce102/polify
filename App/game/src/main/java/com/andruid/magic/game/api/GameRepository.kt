@@ -71,6 +71,24 @@ object GameRepository {
         return null
     }
 
+    suspend fun updateStatus(uid: String, status: Int): UserResponse? {
+        val response = sendNetworkRequest { service.updateStatus(uid, status) }
+        if (response?.isSuccessful == true)
+            return response.body()
+        return null
+    }
+
+    suspend fun updateFriends(uid: String, phoneNumbers: List<String>): UserResponse? {
+        val map = mapOf(
+                "uid" to uid,
+                "phoneNumbers" to phoneNumbers
+        )
+        val response = sendNetworkRequest { service.updateFriends(map) }
+        if (response?.isSuccessful == true)
+            return response.body()
+        return null
+    }
+
     suspend fun createBattle(uid: String, coins: Int): BattleResponse? {
         val response = sendNetworkRequest { service.createBattle(uid, coins) }
         if (response?.isSuccessful == true)

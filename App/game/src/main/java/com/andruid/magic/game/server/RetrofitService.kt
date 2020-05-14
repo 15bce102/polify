@@ -2,6 +2,7 @@ package com.andruid.magic.game.server
 
 import com.andruid.magic.game.model.response.*
 import retrofit2.Response
+import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -34,6 +35,13 @@ interface RetrofitService {
 
     @GET("/get-avatars")
     suspend fun getAvatars(): Response<AvatarResponse>
+
+    @GET("/update-status")
+    suspend fun updateStatus(@Query("uid") uid: String,
+                             @Query("status") status: Int): Response<UserResponse>
+
+    @GET("/update-friends")
+    suspend fun updateFriends(@Body map: Map<String, Any>): Response<UserResponse>
 
     @GET("/create-battle")
     suspend fun createBattle(@Query("uid") uid: String, @Query("coins") coins: Int): Response<BattleResponse>

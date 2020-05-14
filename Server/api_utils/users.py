@@ -52,7 +52,6 @@ def update_user_status(uid, status):
         resp['message'] = 'Cannot update user status'
     else:
         resp['success'] = True
-        resp['user'] = user
 
     return resp
 
