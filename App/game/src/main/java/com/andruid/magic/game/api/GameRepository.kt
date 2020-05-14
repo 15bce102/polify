@@ -64,6 +64,13 @@ object GameRepository {
         return null
     }
 
+    suspend fun getAvatars(): AvatarResponse? {
+        val response = sendNetworkRequest { service.getAvatars() }
+        if (response?.isSuccessful == true)
+            return response.body()
+        return null
+    }
+
     suspend fun createBattle(uid: String, coins: Int): BattleResponse? {
         val response = sendNetworkRequest { service.createBattle(uid, coins) }
         if (response?.isSuccessful == true)

@@ -225,13 +225,15 @@ def get_my_coins(uid):
 
 def update_coins_from_scores(coins, players):
     resp = {}
+	
+	total_coins = coins * len(players)
 
     top_score = max(player['score'] for player in players)
     winners = [player for player in players if player['score'] == top_score]
 
     db[USERS].update(
         {"_id": {"$in": [winner['uid'] for winner in winners]}},
-        {"$inc": {"coins": coins // len(winners)}}
+        {"$inc": {"coins": total_coins // len(winners)}}
     )
 
     player_uids = [player['uid'] for player in players]

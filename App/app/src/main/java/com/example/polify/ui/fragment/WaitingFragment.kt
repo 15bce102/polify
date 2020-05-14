@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
 import com.andruid.magic.game.api.GameRepository
 import com.example.polify.databinding.FragmentWaitingBinding
 import com.example.polify.eventbus.BattleEvent
@@ -60,6 +59,7 @@ class WaitingFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
+        Log.d("cloudLog", "onDestroy")
         EventBus.getDefault().unregister(this)
         timer.cancel()
 
@@ -76,8 +76,8 @@ class WaitingFragment : Fragment() {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onBattleEvent(battleEvent: BattleEvent) {
-        Log.d("cloudLog", "eventbus event received")
         val battleId = battleEvent.battle.battleId
-        findNavController().navigate(WaitingFragmentDirections.actionWaitingFragmentToQuestionsFragment(battleId))
+        Log.d("cloudLog", "eventbus event received: $battleId")
+        Log.d("cloudLog", "after navigation to questions fragment command")
     }
 }

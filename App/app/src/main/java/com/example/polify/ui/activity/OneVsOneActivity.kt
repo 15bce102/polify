@@ -7,7 +7,9 @@ import android.content.IntentFilter
 import android.os.Bundle
 import android.util.Log
 import android.view.WindowManager
+import androidx.core.os.bundleOf
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.navigation.findNavController
 import com.andruid.magic.game.model.data.OneVsOneBattle
 import com.example.polify.R
 import com.example.polify.data.ACTION_MATCH_FOUND
@@ -28,6 +30,8 @@ class OneVsOneActivity : FullScreenActivity() {
                     intent.extras?.let {
                         battle = it.getParcelable(EXTRA_BATTLE)!!
                         EventBus.getDefault().post(BattleEvent(battle))
+                        findNavController(R.id.nav_host_fragment).navigate(
+                                R.id.questionsFragment, bundleOf("battleId" to battle.battleId))
                     }
                 }
             }

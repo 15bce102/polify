@@ -5,16 +5,17 @@
     android:id="@+id/navigation_one_vs_one"
     app:startDestination="@id/waitingFragment">
 
+    <action
+        android:id="@+id/action_waitingFragment_to_questionsFragment"
+        app:destination="@id/questionsFragment"
+        app:popUpTo="@id/waitingFragment"
+        app:popUpToInclusive="true" />
+
     <fragment
         android:id="@+id/waitingFragment"
         android:name="com.example.polify.ui.fragment.WaitingFragment"
         android:label="fragment_waiting"
         tools:layout="@layout/fragment_waiting">
-        <action
-            android:id="@+id/action_waitingFragment_to_questionsFragment"
-            app:destination="@id/questionsFragment"
-            app:popUpTo="@id/waitingFragment"
-            app:popUpToInclusive="true" />
     </fragment>
 
     <fragment
