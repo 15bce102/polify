@@ -9,6 +9,6 @@ data class User(
         val userName: String,
         val level: String,
         val coins: Int,
-        @SerializedName("avatar_uri")
-        val avatarUri: String
+        @SerializedName("avatar")
+        val avatar: String
 )

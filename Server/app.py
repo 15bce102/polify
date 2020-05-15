@@ -65,7 +65,7 @@ def update_status():
 def update_profile():
     uid = request.args['uid']
     user_name = request.args['user_name']
-    avatar_uri = request.args['avatar_uri']
+    avatar = request.args['avatar']
 
     print('checking user validity')
     valid, resp = is_valid_user(uid)
@@ -73,7 +73,7 @@ def update_profile():
         return resp
 
     print('now updating user profile')
-    resp = users.update_user_profile(uid, user_name, avatar_uri)
+    resp = users.update_user_profile(uid, user_name, avatar)
     return resp
 
 

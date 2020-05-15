@@ -56,12 +56,12 @@ def update_user_status(uid, status):
     return resp
 
 
-def update_user_profile(uid, user_name, avatar_uri):
+def update_user_profile(uid, user_name, avatar):
     resp = {}
 
     user = db[USERS].update_one(
         {"_id": uid},
-        {"$set": {"user_name": user_name, "avatar": avatar_uri,
+        {"$set": {"user_name": user_name, "avatar": avatar,
                   "status": STATUS_ONLINE, "last_seen": current_milli_time()
                   },
          "$setOnInsert": {"coins": 100, "level": "Rookie"}

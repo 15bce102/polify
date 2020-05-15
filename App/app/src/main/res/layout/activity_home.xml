@@ -22,7 +22,7 @@
             android:layout_width="100dp"
             android:layout_height="100dp"
             tools:src="@mipmap/ic_profile"
-            app:imageUrl="@{viewModel.user.avatarUri}"
+            app:imageUrl="@{viewModel.user.avatar}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintHorizontal_bias="0.90"
