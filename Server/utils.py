@@ -26,6 +26,15 @@ def is_valid_user(uid):
         return True, resp
 
 
+def get_user_from_phone_number(phone_number):
+    try:
+        user = auth.get_user_by_phone_number(phone_number)
+        return user
+    except UserNotFoundError as e:
+        print(e)
+        return None
+
+
 def send_multi_message(data, tokens):
     print('sending multi message')
     message = MulticastMessage(data=data, tokens=tokens)

@@ -1,7 +1,7 @@
 import pymongo
 from pymongo import ReturnDocument
 
-from utils import current_milli_time
+from utils import current_milli_time, get_user_from_phone_number
 
 DBNAME = 'polify_db'
 
@@ -61,7 +61,7 @@ def update_user_profile(uid, user_name, avatar_uri):
 
     user = db[USERS].update_one(
         {"_id": uid},
-        {"$set": {"user_name": user_name, "avatar_uri": avatar_uri,
+        {"$set": {"user_name": user_name, "avatar": avatar_uri,
                   "status": STATUS_ONLINE, "last_seen": current_milli_time()
                   },
          "$setOnInsert": {"coins": 100, "level": "Rookie"}
@@ -86,7 +86,7 @@ def fetch_user_profile(uid):
 
     user = db[USERS].find_one(
         {"_id": uid},
-        {"_id": 1, "user_name": 1, "level": 1, "coins": 1, "avatar_uri": 1}
+        {"_id": 1, "user_name": 1, "level": 1, "coins": 1, "avatar": 1}
     )
 
     if user is None:
@@ -159,7 +159,7 @@ def get_my_friends(uid):
 
     friends = list(db[USERS].find(
         {"_id": {"$in": friends_uid}},
-        {"status": 1}
+        {"status": 1, "user_name": 1, "avatar": 1}
     ))
 
     if friends is None:
@@ -224,24 +224,41 @@ def get_my_coins(uid):
 
 def update_coins_from_scores(coins, players):
     resp = {}
-	
-	total_coins = coins * len(players)
+
+    total_coins = coins * len(players)
 
     top_score = max(player['score'] for player in players)
-    winners = [player for player in players if player['score'] == top_score]
+    winners = [player['uid'] for player in players if player['score'] == top_score]
 
     db[USERS].update(
-        {"_id": {"$in": [winner['uid'] for winner in winners]}},
+        {"_id": {"$in": winners}},
         {"$inc": {"coins": total_coins // len(winners)}}
     )
 
-    player_uids = [player['uid'] for player in players]
-    winner_uids = [winner['uid'] for winner in winners]
+    resp['success'] = True
+    return resp
 
-    db[USERS].update(
-        {"_id": {"$in": [player for player in list(set(player_uids) - set(winner_uids))]}},
-        {"$inc": {"coins": -coins}}
+
+def charge_entry_fee(uids, entry_fee):
+    db[USERS].update_many(
+        {"_id": {"$in": uids}},
+        {"$inc": {"coins": -entry_fee}}
     )
 
-    resp['success'] = True
+
+def get_friends_from_phone_numbers(uid, phone_numbers):
+    friends = filter(lambda x: x is not None,
+                     [get_user_from_phone_number(number) for number in phone_numbers])
+    print('friends=', friends)
+
+    f_uids = [f['uid'] for f in friends]
+
+    db[USERS].update_one(
+        {"_id": uid},
+        {"$addToSet": {"friends": f_uids}}
+    )
+
+    resp = {
+        'success': True
+    }
     return resp

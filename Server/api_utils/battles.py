@@ -90,6 +90,7 @@ def start_matchmaking():
                 }
 
                 db[BATTLES].insert_one(battle)
+                users.charge_entry_fee(uids, COINS_POOL_ONE_VS_ONE)
 
                 tokens = users.get_fcm_tokens(uids)
                 battle['players'] = simplejson.dumps(players)

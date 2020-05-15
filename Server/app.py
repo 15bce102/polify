@@ -3,8 +3,6 @@ import atexit
 import firebase_admin
 from firebase_admin import credentials
 
-import simplejson
-
 import utils
 from api_utils.scheduling import scheduler
 
@@ -35,7 +33,7 @@ def welcome():
         "message": "Welcome to polify",
         "time": current_milli_time()
     }
-    return simplejson.dumps(resp)
+    return resp
 
 
 @app.route('/login', methods=['GET'])
@@ -47,7 +45,7 @@ def login_user():
     #     return resp
 
     resp = users.create_user(uid)
-    return simplejson.dumps(resp)
+    return resp
 
 
 @app.route('/update-status', methods=['GET'])
@@ -60,7 +58,7 @@ def update_status():
         return resp
 
     resp = users.update_user_status(uid, status)
-    return simplejson.dumps(resp)
+    return resp
 
 
 @app.route('/update-profile', methods=['GET'])
@@ -76,7 +74,7 @@ def update_profile():
 
     print('now updating user profile')
     resp = users.update_user_profile(uid, user_name, avatar_uri)
-    return simplejson.dumps(resp)
+    return resp
 
 
 @app.route('/fetch-profile', methods=['GET'])
@@ -88,7 +86,7 @@ def fetch_profile():
         return resp
 
     resp = users.fetch_user_profile(uid)
-    return simplejson.dumps(resp)
+    return resp
 
 
 @app.route('/update-token', methods=['GET'])
@@ -101,7 +99,7 @@ def update_token():
         return resp
 
     resp = users.update_fcm_token(uid, token)
-    return simplejson.dumps(resp)
+    return resp
 
 
 @app.route('/join-waiting-room', methods=['GET'])
@@ -150,14 +148,38 @@ def update_score():
     return resp
 
 
-@app.route('/get-avatars')
+@app.route('/get-avatars', methods=['GET'])
 def get_avatar_url():
-    return utils.get_avatars()
+    resp = utils.get_avatars()
+    return resp
 
 
 @app.route('/avatars/<path:path>')
 def send_avatar_img(path):
     return send_from_directory('avatars', path)
+
+
+@app.route('/update-friends', methods=['POST'])
+def update_friends():
+    uid = request.values['uid']
+    phone_numbers = request.values['phone_numbers']
+
+    print("uid=${0}, contacts={1}".format(uid, phone_numbers))
+
+    resp = users.get_friends_from_phone_numbers(uid, phone_numbers)
+    return resp
+
+
+@app.route('/my-friends', methods=['GET'])
+def my_friends():
+    uid = request.args['uid']
+
+    valid, resp = is_valid_user(uid)
+    if not valid:
+        return resp
+
+    resp = users.get_my_friends(uid)
+    return resp
 
 
 def shut_down():
