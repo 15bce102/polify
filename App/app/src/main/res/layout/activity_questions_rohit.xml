@@ -6,73 +6,55 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/black">
 
-    <ProgressBar
-        android:id="@+id/bar_progressBar"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="50dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="50dp"
-        android:progressDrawable="@drawable/progress"
-        app:layout_constraintBottom_toTopOf="@+id/txt_qustion"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
 
     <TextView
         android:id="@+id/txt_qustion"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginBottom="20dp"
         android:fontFamily="@font/light"
         android:text="Question"
         android:textColor="@color/white"
-        android:textSize="40dp"
-        app:layout_constraintBottom_toTopOf="@id/text_main_question"
-        app:layout_constraintRight_toLeftOf="@+id/txt_question_no"
+        android:textSize="30dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.07"
+        app:layout_constraintVertical_bias="0.06"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bar_progressBar" />
+        app:layout_constraintTop_toTopOf="parent"  />
 
 
     <TextView
         android:id="@+id/txt_question_no"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="213dp"
-        android:layout_marginBottom="20dp"
         android:fontFamily="@font/light"
         android:text="1"
         android:textColor="@color/white"
-        android:textSize="40dp"
-        app:layout_constraintBottom_toTopOf="@+id/text_main_question"
+        android:textSize="30dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/txt_qustion"
-        app:layout_constraintTop_toBottomOf="@+id/bar_progressBar"
-        app:layout_constraintVertical_bias="0.729" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.38"
+        app:layout_constraintVertical_bias="0.06"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"  />
 
     <TextView
         android:id="@+id/text_main_question"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="50dp"
-        android:fontFamily="@font/bold"
+        android:gravity="fill_horizontal"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:fontFamily="@font/regular"
         android:text="Which attraction in Montreal is one of the largest in the world?"
         android:textColor="@color/white"
-        android:textSize="30dp"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+        android:textSize="25dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.07"
+        app:layout_constraintVertical_bias="0.18"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txt_qustion" />
+        app:layout_constraintTop_toTopOf="parent"  />
 
     <LinearLayout
         android:id="@+id/linearLayout2"
@@ -80,13 +62,14 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="20dp"
         android:background="@drawable/layout"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout3"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.07"
+        app:layout_constraintVertical_bias="0.74"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout">
+        app:layout_constraintTop_toTopOf="parent">
 
         <CheckBox
             android:layout_width="30dp"
@@ -101,9 +84,7 @@
             android:fontFamily="@font/bold"
             android:text="The Science"
             android:textColor="@color/white"
-            android:textSize="20dp"
-            tools:layout_editor_absoluteX="15dp"
-            tools:layout_editor_absoluteY="342dp" />
+            android:textSize="15dp" />
 
 
     </LinearLayout>
@@ -114,13 +95,14 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="20dp"
         android:background="@drawable/layout"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@id/linearLayout4"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.07"
+        app:layout_constraintVertical_bias="0.66"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/linearLayout2">
+        app:layout_constraintTop_toTopOf="parent">
 
         <CheckBox
             android:layout_width="30dp"
@@ -135,9 +117,7 @@
             android:fontFamily="@font/bold"
             android:text="The Science"
             android:textColor="@color/white"
-            android:textSize="20dp"
-            tools:layout_editor_absoluteX="15dp"
-            tools:layout_editor_absoluteY="342dp" />
+            android:textSize="15dp" />
 
 
     </LinearLayout>
@@ -148,13 +128,14 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="30dp"
         android:background="@drawable/layout"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@id/button"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.07"
+        app:layout_constraintVertical_bias="0.9"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/linearLayout3">
+        app:layout_constraintTop_toTopOf="parent">
 
         <CheckBox
             android:layout_width="30dp"
@@ -169,9 +150,7 @@
             android:fontFamily="@font/bold"
             android:text="The Science"
             android:textColor="@color/white"
-            android:textSize="20dp"
-            tools:layout_editor_absoluteX="15dp"
-            tools:layout_editor_absoluteY="342dp" />
+            android:textSize="15dp" />
 
 
     </LinearLayout>
@@ -182,13 +161,14 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="20dp"
         android:background="@drawable/layout"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@id/linearLayout2"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.07"
+        app:layout_constraintVertical_bias="0.82"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_main_question">
+        app:layout_constraintTop_toTopOf="parent">
 
         <CheckBox
             android:layout_width="30dp"
@@ -203,26 +183,9 @@
             android:fontFamily="@font/bold"
             android:text="The Science"
             android:textColor="@color/white"
-            android:textSize="20dp"
-            tools:layout_editor_absoluteX="15dp"
-            tools:layout_editor_absoluteY="342dp" />
+            android:textSize="15dp" />
     </LinearLayout>
 
-    <Button
-        android:id="@+id/button"
-        android:layout_width="250dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="80dp"
-        android:layout_marginEnd="80dp"
-        android:layout_marginBottom="53dp"
-        android:background="@drawable/button"
-        android:gravity="center"
-        android:text="NEXT"
-        android:textColor="@color/white"
-        android:textSize="30dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/linearLayout4" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
