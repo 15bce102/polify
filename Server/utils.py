@@ -57,3 +57,18 @@ def get_avatars():
         "avatars": ['avatars/' + a for a in avatars]
     }
     return resp
+
+
+def upgrade_tier(score):
+    if score < 10:
+        return "Newbie"
+    elif 10 <= score < 30:
+        return "Veteran 1"
+    elif 30 <= score < 75:
+        return "Veteran 2"
+    elif 75 <= score < 150:
+        return "Elite 1"
+    elif 150 <= score < 300:
+        return "Elite 2"
+    else:
+        return "Professional"

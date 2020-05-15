@@ -1,7 +1,7 @@
 import pymongo
 from pymongo import ReturnDocument
 
-from utils import current_milli_time, get_user_from_phone_number
+from utils import current_milli_time, get_user_from_phone_number, upgrade_tier
 
 from constants import DBNAME, USERS
 from constants import STATUS_ONLINE, STATUS_OFFLINE
@@ -216,21 +216,16 @@ def get_my_coins(uid):
     return coins
 
 
-def update_coins_from_scores(coins, players):
-    resp = {}
-
+def update_stats_from_scores(coins, players):
     total_coins = coins * len(players)
 
     top_score = max(player['score'] for player in players)
     winners = [player['uid'] for player in players if player['score'] == top_score]
 
-    db[USERS].update(
+    db[USERS].update_many(
         {"_id": {"$in": winners}},
         {"$inc": {"coins": total_coins // len(winners)}}
     )
-
-    resp['success'] = True
-    return resp
 
 
 def charge_entry_fee(uids, entry_fee):
@@ -264,3 +259,26 @@ def get_status(uid):
         {"_id": 0, "status": 1}
     )['status']
     return status
+
+
+def update_level(player):
+    user = db[USERS].find_one(
+        {"_id": player['uid']},
+        {"totalScore": 1, "level": 1}
+    )
+
+    inc = lambda x: x if x != -1 else 0
+    new_score = user['totalScore'] + inc(player['score'])
+
+    new_tier = upgrade_tier(new_score)
+    old_tier = user['level']
+
+    db[USERS].update_one(
+        {"_id": player['uid']},
+        {"$set": {"totalScore": new_score, "level": new_tier}}
+    )
+
+    if old_tier == new_tier:
+        return new_tier, False
+    else:
+        return new_tier, True

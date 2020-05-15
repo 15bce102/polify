@@ -176,7 +176,10 @@ def send_score_updates(bid):
     for uid in uids:
         users.update_user_status(uid, STATUS_ONLINE)
 
-    users.update_coins_from_scores(COINS_POOL_ONE_VS_ONE, players)
+    users.update_stats_from_scores(COINS_POOL_ONE_VS_ONE, players)
+
+    for player in players:
+        player['new_level'], player['updated'] = users.update_level(player)
 
     tokens = users.get_fcm_tokens(uids)
 
