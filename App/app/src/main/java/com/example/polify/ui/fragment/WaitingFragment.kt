@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.andruid.magic.game.api.GameRepository
@@ -24,6 +25,25 @@ class WaitingFragment : Fragment() {
     private var seconds = 0
 
     private lateinit var binding: FragmentWaitingBinding
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        val backPressedCallback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                lifecycleScope.launch {
+                    mAuth.currentUser?.let { user ->
+                        val response = GameRepository.leaveWaitingRoom(user.uid)
+                        if (response?.success == true)
+                            Log.d(TAG, "left waiting room")
+                        else
+                            Log.e(TAG, "left waiting room error")
+                    }
+                }
+            }
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(this, backPressedCallback)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentWaitingBinding.inflate(inflater, container, false)
@@ -52,15 +72,5 @@ class WaitingFragment : Fragment() {
         super.onDestroy()
         Log.d("cloudLog", "onDestroy")
         timer.cancel()
-
-        lifecycleScope.launch {
-            mAuth.currentUser?.let { user ->
-                val response = GameRepository.leaveWaitingRoom(user.uid)
-                if (response?.success == true)
-                    Log.d(TAG, "left waiting room")
-                else
-                    Log.e(TAG, "left waiting room error")
-            }
-        }
     }
 }

@@ -1,0 +1,122 @@
+[
+  {
+    "_id": "10975c0b",
+    "category": "current-affairs",
+    "question": "International Day of Reflection on the 1994 Genocide against the Tutsi in Rwanda is observed on which of the following dates?",
+    "correctAnswer": "C",
+    "options": [
+      {
+        "id": "A",
+        "opt": "12 April"
+      },
+      {
+        "id": "B",
+        "opt": "4 April"
+      },
+      {
+        "id": "C",
+        "opt": "7 April"
+      },
+      {
+        "id": "D",
+        "opt": "5 April"
+      }
+    ]
+  },
+  {
+    "_id": "d763dd08",
+    "category": "current-affairs",
+    "question": "NHAI has accomplished the construction of how many kms of national highways in the financial Year 2019-20 which is also the highest ever highway construction achieved in a financial year?",
+    "correctAnswer": "D",
+    "options": [
+      {
+        "id": "A",
+        "opt": "2,979 km"
+      },
+      {
+        "id": "B",
+        "opt": "4,979 km"
+      },
+      {
+        "id": "C",
+        "opt": "5,979 km"
+      },
+      {
+        "id": "D",
+        "opt": "3,979 km"
+      }
+    ]
+  },
+  {
+    "_id": "a7afe691",
+    "category": "current-affairs",
+    "question": "Indian Smart Cities namely Bengaluru, Pune, Surat, and Tumakuru are using the integrated data dashboards to provide up-to-date information about the status of coronavirus in different administrative zones of their cities. When was smart city mission launched?",
+    "correctAnswer": "D",
+    "options": [
+      {
+        "id": "A",
+        "opt": "2012"
+      },
+      {
+        "id": "B",
+        "opt": "2016"
+      },
+      {
+        "id": "C",
+        "opt": "2014"
+      },
+      {
+        "id": "D",
+        "opt": "2015"
+      }
+    ]
+  },
+  {
+    "_id": "34cd86c8",
+    "category": "current-affairs",
+    "question": "Which online delivery platform has tied up with packaged foods company Britannia Industries to deliver range of products to its customers?",
+    "correctAnswer": "C",
+    "options": [
+      {
+        "id": "A",
+        "opt": "Swiggy"
+      },
+      {
+        "id": "B",
+        "opt": "Zomato"
+      },
+      {
+        "id": "C",
+        "opt": "Dunzo"
+      },
+      {
+        "id": "D",
+        "opt": "Flipkart"
+      }
+    ]
+  },
+  {
+    "_id": "a301b02b",
+    "category": "current-affairs",
+    "question": "What is name of Former Libya Prime Minister who passed away due to COVID-19 and he was the former head of the Libyan rebel government that ousted the long term ruler Muammar Gaddafi in 2011?",
+    "correctAnswer": "B",
+    "options": [
+      {
+        "id": "A",
+        "opt": "Khalifa al-Ghawil"
+      },
+      {
+        "id": "B",
+        "opt": "Mahmoud Jibril"
+      },
+      {
+        "id": "C",
+        "opt": "Shukri Mohammed Ghanem"
+      },
+      {
+        "id": "D",
+        "opt": "Baghdadi Ali Mahmudi"
+      }
+    ]
+  }
+]

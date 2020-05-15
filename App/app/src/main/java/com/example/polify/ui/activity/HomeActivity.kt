@@ -85,7 +85,7 @@ class HomeActivity : FullScreenActivity() {
         }
 
         binding.imgPractice.setOnClickListener {
-
+            startActivity(Intent(this, PracticeActivity::class.java))
         }
     }
 }

@@ -2,12 +2,10 @@ import pymongo
 
 from data_collection.question_scrape import get_questions
 
-DBNAME = 'polify_db'
+from constants import DBNAME, QUESTIONS
 
 client = pymongo.MongoClient("mongodb+srv://polify:polify@cluster0-dhuyw.mongodb.net/test?retryWrites=true&w=majority")
 db = client[DBNAME]
-
-QUESTIONS = 'questions'
 
 
 def insert_questions(url, category, date):

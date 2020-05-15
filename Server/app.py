@@ -12,19 +12,29 @@ from api_utils import battles, users
 
 from utils import current_milli_time, is_valid_user
 
+from constants import STATUS_BUSY, STATUS_ONLINE
+
 app = Flask(__name__, static_url_path='')
 
 cred = credentials.Certificate('keys/key.json')
 firebase_admin.initialize_app(cred)
 
-scheduler.add_job(func=users.update_all_users, trigger="interval", seconds=3 * 60)
-scheduler.add_job(func=battles.start_matchmaking)
-scheduler.add_job(func=battles.watch_battles)
 
-scheduler.start()
+@app.before_first_request
+def init_scheduler():
+    scheduler.add_job(func=users.update_all_users, trigger="interval", seconds=3 * 60, id='update_status_job',
+                      replace_existing=True)
+    scheduler.add_job(func=battles.start_matchmaking, id='matchmaking_job',
+                      replace_existing=True)
+    scheduler.add_job(func=battles.watch_battles, id='score_update_job',
+                      replace_existing=True)
 
-# Shut down the scheduler when exiting the app
-atexit.register(lambda: shut_down())
+    print('before scheduler start')
+    scheduler.start()
+    print('after scheduler start')
+
+    # Shut down the scheduler when exiting the app
+    atexit.register(lambda: shut_down())
 
 
 @app.route('/', methods=['GET'])
@@ -55,6 +65,13 @@ def update_status():
 
     valid, resp = is_valid_user(uid)
     if not valid:
+        return resp
+
+    if users.get_status(uid) == STATUS_BUSY and status == STATUS_ONLINE:
+        resp = {
+            "success": False,
+            "message": "Busy status can be changed to online only by the server"
+        }
         return resp
 
     resp = users.update_user_status(uid, status)
@@ -192,4 +209,6 @@ def shut_down():
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', debug=False)
+    print('before app.run')
+    app.run(debug=False, use_reloader=False)
+    print('after app.run')

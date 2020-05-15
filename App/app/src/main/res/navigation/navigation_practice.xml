@@ -2,20 +2,8 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/navigation_one_vs_one"
-    app:startDestination="@id/waitingFragment">
-
-    <action
-        android:id="@+id/action_waitingFragment_to_questionsFragment"
-        app:destination="@id/questionsFragment"
-        app:popUpTo="@id/waitingFragment"
-        app:popUpToInclusive="true" />
-
-    <fragment
-        android:id="@+id/waitingFragment"
-        android:name="com.example.polify.ui.fragment.WaitingFragment"
-        android:label="fragment_waiting"
-        tools:layout="@layout/fragment_waiting" />
+    android:id="@+id/navigation_practice"
+    app:startDestination="@id/questionsFragment">
 
     <fragment
         android:id="@+id/questionsFragment"

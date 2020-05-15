@@ -7,6 +7,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.lifecycle.ProcessLifecycleOwner
+import com.andruid.magic.game.api.GameRepository
 import com.example.polify.data.ACTION_START_STATUS_UPDATE
 import com.example.polify.service.StatusUpdateService
 
@@ -18,6 +19,7 @@ class GameApplication : Application(), LifecycleObserver {
     override fun onCreate() {
         super.onCreate()
         ProcessLifecycleOwner.get().lifecycle.addObserver(this)
+        GameRepository.init(this)
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)

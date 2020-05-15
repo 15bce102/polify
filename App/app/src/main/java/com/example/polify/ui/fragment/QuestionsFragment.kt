@@ -40,13 +40,14 @@ class QuestionsFragment : Fragment() {
     private val questionsAdapter = QuestionAdapter()
     private val questionsViewModel by viewModels<QuestionViewModel> {
         BaseViewModelFactory {
-            QuestionViewModel(battleId)
+            QuestionViewModel(battleId, offline)
         }
     }
 
     private lateinit var battleId: String
     private lateinit var binding: FragmentQuestionsBinding
 
+    private var offline = false
     private var score = 0
     private var qid: String? = null
     private var selectedOptPos = -1
@@ -73,7 +74,7 @@ class QuestionsFragment : Fragment() {
     private fun finishGame() {
         Toast.makeText(requireContext(), "Your score = $score/10!", Toast.LENGTH_SHORT).show()
         findNavController().navigate(
-                QuestionsFragmentDirections.actionQuestionsFragmentToResultsFragment(battleId, score))
+                QuestionsFragmentDirections.actionQuestionsFragmentToResultsFragment(battleId, score, offline))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -85,6 +86,7 @@ class QuestionsFragment : Fragment() {
 
             battleId = safeArgs.battleId
             startTime = safeArgs.startTime
+            offline = safeArgs.offline
         }
     }
 

@@ -25,11 +25,13 @@ class ResultsFragment : Fragment() {
         private val TAG = "${ResultsFragment::class.java.simpleName}Log"
     }
 
-    private val mAuth by lazy { FirebaseAuth.getInstance() }
-
     private lateinit var binding: FragmentResultsBinding
     private lateinit var battleId: String
 
+    private var score = 0
+    private var offline = false
+
+    private val mAuth by lazy { FirebaseAuth.getInstance() }
     private val resultsReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             if (intent.action == ACTION_MATCH_RESULTS) {
@@ -42,20 +44,25 @@ class ResultsFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        LocalBroadcastManager.getInstance(requireContext())
-                .registerReceiver(resultsReceiver, IntentFilter(ACTION_MATCH_RESULTS))
 
         arguments?.let {
-            val (battleId, score) = ResultsFragmentArgs.fromBundle(it)
+            val (battleId, score, offline) = ResultsFragmentArgs.fromBundle(it)
             this.battleId = battleId
+            this.offline = offline
+            this.score = score
 
-            lifecycleScope.launch {
-                mAuth.currentUser?.let { user ->
-                    val response = GameRepository.updateBattleScore(battleId, user.uid, score)
-                    if (response?.success == true)
-                        Log.d(TAG, "score updated")
-                    else
-                        Log.d(TAG, "score not updated")
+            if (!offline) {
+                LocalBroadcastManager.getInstance(requireContext())
+                        .registerReceiver(resultsReceiver, IntentFilter(ACTION_MATCH_RESULTS))
+
+                lifecycleScope.launch {
+                    mAuth.currentUser?.let { user ->
+                        val response = GameRepository.updateBattleScore(battleId, user.uid, score)
+                        if (response?.success == true)
+                            Log.d(TAG, "score updated")
+                        else
+                            Log.d(TAG, "score not updated")
+                    }
                 }
             }
         }
@@ -64,11 +71,16 @@ class ResultsFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         binding = FragmentResultsBinding.inflate(inflater, container, false)
+
+        if (offline)
+            binding.textView.text = "You scored $score / 10"
+
         return binding.root
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        LocalBroadcastManager.getInstance(requireContext()).unregisterReceiver(resultsReceiver)
+        if (!offline)
+            LocalBroadcastManager.getInstance(requireContext()).unregisterReceiver(resultsReceiver)
     }
 }
