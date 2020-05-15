@@ -6,4 +6,4 @@ requests~=2.23.0
 beautifulsoup4~=4.9.0
 APScheduler~=3.6.3
 gunicorn~=20.0.4
-setuptools==40.3.0
+setuptools~=40.3.0
