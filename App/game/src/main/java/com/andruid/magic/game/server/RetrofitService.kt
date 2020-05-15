@@ -15,7 +15,7 @@ interface RetrofitService {
 
     @GET("/update-profile")
     suspend fun updateProfile(@Query("uid") uid: String, @Query("user_name") userName: String,
-                              @Query("avatar_uri") avatarUri: String): Response<UserResponse>
+                              @Query("avatar") avatar: String): Response<UserResponse>
 
     @GET("/update-token")
     suspend fun updateToken(@Query("uid") uid: String, @Query("token") token: String): Response<UserResponse>
