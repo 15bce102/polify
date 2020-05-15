@@ -51,6 +51,8 @@ class OptionsAdapter(
 
     override fun areAllItemsEnabled() = clicksEnabled
 
+    override fun isEnabled(position: Int) = clicksEnabled
+
     fun disableClicks() {
         clicksEnabled = false
     }

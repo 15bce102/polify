@@ -16,17 +16,16 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
-import com.andruid.magic.game.api.GameRepository
+import com.andruid.magic.game.model.data.Question
 import com.example.polify.R
 import com.example.polify.data.QUE_TIME_LIMIT_MS
 import com.example.polify.databinding.FragmentQuestionsBinding
 import com.example.polify.eventbus.OptionEvent
+import com.example.polify.ui.adapter.OptionsAdapter
 import com.example.polify.ui.adapter.QuestionAdapter
 import com.example.polify.ui.viewmodel.BaseViewModelFactory
 import com.example.polify.ui.viewmodel.QuestionViewModel
 import com.example.polify.util.getViewByPosition
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
@@ -41,18 +40,19 @@ class QuestionsFragment : Fragment() {
     private val questionsAdapter = QuestionAdapter()
     private val questionsViewModel by viewModels<QuestionViewModel> {
         BaseViewModelFactory {
-            QuestionViewModel(battleId)
+            QuestionViewModel(battleId, offline)
         }
     }
 
     private lateinit var battleId: String
     private lateinit var binding: FragmentQuestionsBinding
 
+    private var offline = false
     private var score = 0
     private var qid: String? = null
     private var selectedOptPos = -1
+    private var startTime = -1L
 
-    private val mAuth by lazy { FirebaseAuth.getInstance() }
     private val countDownTimer = object : CountDownTimer(QUE_TIME_LIMIT_MS, 1000) {
         override fun onFinish() {
             val pos = binding.viewPager.currentItem
@@ -62,9 +62,7 @@ class QuestionsFragment : Fragment() {
             lifecycleScope.launch {
                 delay(1000)
                 if (pos == questionsAdapter.itemCount - 1) {
-                    Toast.makeText(requireContext(), "Your score = $score/10!", Toast.LENGTH_SHORT).show()
-                    findNavController().navigate(
-                            QuestionsFragmentDirections.actionQuestionsFragmentToResultsFragment(battleId, score))
+                    finishGame()
                 } else
                     binding.viewPager.setCurrentItem(pos + 1, true)
             }
@@ -73,11 +71,22 @@ class QuestionsFragment : Fragment() {
         override fun onTick(millisUntilFinished: Long) {}
     }
 
+    private fun finishGame() {
+        Toast.makeText(requireContext(), "Your score = $score/10!", Toast.LENGTH_SHORT).show()
+        findNavController().navigate(
+                QuestionsFragmentDirections.actionQuestionsFragmentToResultsFragment(battleId, score, offline))
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        Log.d("cloudLog", "on create questions")
         super.onCreate(savedInstanceState)
 
         arguments?.let {
-            battleId = QuestionsFragmentArgs.fromBundle(it).battleId
+            val safeArgs = QuestionsFragmentArgs.fromBundle(it)
+
+            battleId = safeArgs.battleId
+            startTime = safeArgs.startTime
+            offline = safeArgs.offline
         }
     }
 
@@ -102,9 +111,27 @@ class QuestionsFragment : Fragment() {
         questionsViewModel.questions.observe(viewLifecycleOwner, Observer {
             questionsAdapter.submitList(it)
             binding.barProgressBar.max = it.size
+            startMatch(it)
         })
 
         return binding.root
+    }
+
+    private fun startMatch(questions: List<Question>) {
+        if (startTime == -1L)
+            return
+
+        val elapsedSeconds = (System.currentTimeMillis() - startTime)/1000
+        val questionPos = elapsedSeconds / questions.size
+
+        Log.d("cloudLog", "questionPos = $questionPos")
+
+        if (questionPos < questions.size)
+            binding.viewPager.currentItem = questionPos.toInt() - 1
+        else {
+            binding.timerAnimView.progress = 100F
+            finishGame()
+        }
     }
 
     override fun onResume() {
@@ -126,6 +153,7 @@ class QuestionsFragment : Fragment() {
         selectedOptPos = opt.optId[0] - 'A'
 
         val optionsLV = binding.viewPager.findViewById<ListView>(R.id.optionsLV)
+        (optionsLV.adapter as OptionsAdapter).disableClicks()
         highlightOption(optionsLV, selectedOptPos)
     }
 
@@ -148,6 +176,8 @@ class QuestionsFragment : Fragment() {
                 score++
             else
                 highlightAnswer(listView, selectedOptPos, false)
+
+            selectedOptPos++
         }
     }
 

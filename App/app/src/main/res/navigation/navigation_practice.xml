@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation_practice"
+    app:startDestination="@id/questionsFragment">
+
+    <fragment
+        android:id="@+id/questionsFragment"
+        android:name="com.example.polify.ui.fragment.QuestionsFragment"
+        android:label="fragment_questions"
+        tools:layout="@layout/fragment_questions">
+        <argument
+            android:name="battle_id"
+            app:argType="string"
+            android:defaultValue="Practice battle" />
+        <argument
+            android:name="start_time"
+            app:argType="long"
+            android:defaultValue="-1L" />
+        <argument android:name="offline"
+            app:argType="boolean"
+            android:defaultValue="true" />
+        <action
+            android:id="@+id/action_questionsFragment_to_resultsFragment"
+            app:destination="@id/resultsFragment"
+            app:popUpTo="@id/questionsFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/resultsFragment"
+        android:name="com.example.polify.ui.fragment.ResultsFragment"
+        android:label="fragment_results"
+        tools:layout="@layout/fragment_results">
+        <argument
+            android:name="battleId"
+            app:argType="string"
+            android:defaultValue="Practice battle" />
+        <argument
+            android:name="score"
+            android:defaultValue="0"
+            app:argType="integer" />
+        <argument
+            android:name="offline"
+            android:defaultValue="true"
+            app:argType="boolean" />
+    </fragment>
+</navigation>

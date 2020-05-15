@@ -32,17 +32,6 @@
 #     return simplejson.dumps(resp)
 #
 #
-# @app.route('/my-friends', methods=['GET'])
-# def my_friends():
-#     uid = request.args['uid']
-#
-#     valid, resp = is_valid_user(uid)
-#     if not valid:
-#         return resp
-#
-#     resp = users.get_my_friends(uid)
-#     return simplejson.dumps(resp)
-#
 #
 # @app.route('/create-battle', methods=['GET'])
 # def create_battle():

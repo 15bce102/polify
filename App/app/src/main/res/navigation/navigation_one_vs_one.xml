@@ -5,17 +5,17 @@
     android:id="@+id/navigation_one_vs_one"
     app:startDestination="@id/waitingFragment">
 
+    <action
+        android:id="@+id/action_waitingFragment_to_questionsFragment"
+        app:destination="@id/questionsFragment"
+        app:popUpTo="@id/waitingFragment"
+        app:popUpToInclusive="true" />
+
     <fragment
         android:id="@+id/waitingFragment"
         android:name="com.example.polify.ui.fragment.WaitingFragment"
         android:label="fragment_waiting"
-        tools:layout="@layout/fragment_waiting">
-        <action
-            android:id="@+id/action_waitingFragment_to_questionsFragment"
-            app:destination="@id/questionsFragment"
-            app:popUpTo="@id/waitingFragment"
-            app:popUpToInclusive="true" />
-    </fragment>
+        tools:layout="@layout/fragment_waiting" />
 
     <fragment
         android:id="@+id/questionsFragment"
@@ -24,7 +24,15 @@
         tools:layout="@layout/fragment_questions">
         <argument
             android:name="battle_id"
-            app:argType="string" />
+            app:argType="string"
+            android:defaultValue="Practice battle" />
+        <argument
+            android:name="start_time"
+            app:argType="long"
+            android:defaultValue="-1L" />
+        <argument android:name="offline"
+            app:argType="boolean"
+            android:defaultValue="true" />
         <action
             android:id="@+id/action_questionsFragment_to_resultsFragment"
             app:destination="@id/resultsFragment"
@@ -40,10 +48,14 @@
         <argument
             android:name="battleId"
             app:argType="string"
-            app:nullable="false" />
+            android:defaultValue="Practice battle" />
         <argument
             android:name="score"
             android:defaultValue="0"
             app:argType="integer" />
+        <argument
+            android:name="offline"
+            android:defaultValue="true"
+            app:argType="boolean" />
     </fragment>
 </navigation>

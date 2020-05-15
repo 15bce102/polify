@@ -4,10 +4,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
 import com.andruid.magic.game.api.GameRepository
 
-class QuestionViewModel(bid: String) : ViewModel() {
+class QuestionViewModel(bid: String, offline: Boolean = false) : ViewModel() {
     val questions = liveData {
-        val response = GameRepository.getBattleQuestions(bid)
-        if (response?.success == true)
-            emit(response.questions)
+        if (offline) {
+            val questions = GameRepository.getPracticeQuestions()
+            emit(questions)
+        } else {
+            val response = GameRepository.getBattleQuestions(bid)
+            if (response?.success == true)
+                emit(response.questions)
+        }
     }
 }

@@ -3,28 +3,38 @@ import atexit
 import firebase_admin
 from firebase_admin import credentials
 
-import simplejson
-
+import utils
 from api_utils.scheduling import scheduler
 
-from flask import Flask, request
+from flask import Flask, request, send_from_directory
 
 from api_utils import battles, users
 
 from utils import current_milli_time, is_valid_user
 
-app = Flask(__name__)
+from constants import STATUS_BUSY, STATUS_ONLINE
+
+app = Flask(__name__, static_url_path='')
 
 cred = credentials.Certificate('keys/key.json')
 firebase_admin.initialize_app(cred)
 
-scheduler.add_job(func=users.update_all_users, trigger="interval", seconds=3 * 60)
-scheduler.add_job(func=battles.start_matchmaking)
 
-scheduler.start()
+@app.before_first_request
+def init_scheduler():
+    scheduler.add_job(func=users.update_all_users, trigger="interval", seconds=3 * 60, id='update_status_job',
+                      replace_existing=True)
+    scheduler.add_job(func=battles.start_matchmaking, id='matchmaking_job',
+                      replace_existing=True)
+    scheduler.add_job(func=battles.watch_battles, id='score_update_job',
+                      replace_existing=True)
 
-# Shut down the scheduler when exiting the app
-atexit.register(lambda: shut_down())
+    print('before scheduler start')
+    scheduler.start()
+    print('after scheduler start')
+
+    # Shut down the scheduler when exiting the app
+    atexit.register(lambda: shut_down())
 
 
 @app.route('/', methods=['GET'])
@@ -33,7 +43,7 @@ def welcome():
         "message": "Welcome to polify",
         "time": current_milli_time()
     }
-    return simplejson.dumps(resp)
+    return resp
 
 
 @app.route('/login', methods=['GET'])
@@ -45,7 +55,7 @@ def login_user():
     #     return resp
 
     resp = users.create_user(uid)
-    return simplejson.dumps(resp)
+    return resp
 
 
 @app.route('/update-status', methods=['GET'])
@@ -57,15 +67,22 @@ def update_status():
     if not valid:
         return resp
 
+    if users.get_status(uid) == STATUS_BUSY and status == STATUS_ONLINE:
+        resp = {
+            "success": False,
+            "message": "Busy status can be changed to online only by the server"
+        }
+        return resp
+
     resp = users.update_user_status(uid, status)
-    return simplejson.dumps(resp)
+    return resp
 
 
 @app.route('/update-profile', methods=['GET'])
 def update_profile():
     uid = request.args['uid']
     user_name = request.args['user_name']
-    avatar_uri = request.args['avatar_uri']
+    avatar = request.args['avatar']
 
     print('checking user validity')
     valid, resp = is_valid_user(uid)
@@ -73,8 +90,8 @@ def update_profile():
         return resp
 
     print('now updating user profile')
-    resp = users.update_user_profile(uid, user_name, avatar_uri)
-    return simplejson.dumps(resp)
+    resp = users.update_user_profile(uid, user_name, avatar)
+    return resp
 
 
 @app.route('/fetch-profile', methods=['GET'])
@@ -86,7 +103,7 @@ def fetch_profile():
         return resp
 
     resp = users.fetch_user_profile(uid)
-    return simplejson.dumps(resp)
+    return resp
 
 
 @app.route('/update-token', methods=['GET'])
@@ -99,7 +116,7 @@ def update_token():
         return resp
 
     resp = users.update_fcm_token(uid, token)
-    return simplejson.dumps(resp)
+    return resp
 
 
 @app.route('/join-waiting-room', methods=['GET'])
@@ -148,6 +165,40 @@ def update_score():
     return resp
 
 
+@app.route('/get-avatars', methods=['GET'])
+def get_avatar_url():
+    resp = utils.get_avatars()
+    return resp
+
+
+@app.route('/avatars/<path:path>')
+def send_avatar_img(path):
+    return send_from_directory('avatars', path)
+
+
+@app.route('/update-friends', methods=['POST'])
+def update_friends():
+    uid = request.values['uid']
+    phone_numbers = request.values['phone_numbers']
+
+    print("uid=${0}, contacts={1}".format(uid, phone_numbers))
+
+    resp = users.get_friends_from_phone_numbers(uid, phone_numbers)
+    return resp
+
+
+@app.route('/my-friends', methods=['GET'])
+def my_friends():
+    uid = request.args['uid']
+
+    valid, resp = is_valid_user(uid)
+    if not valid:
+        return resp
+
+    resp = users.get_my_friends(uid)
+    return resp
+
+
 def shut_down():
     try:
         battles.stop_matchmaking()
@@ -158,4 +209,6 @@ def shut_down():
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', debug=True)
+    print('before app.run')
+    app.run(debug=False, use_reloader=False)
+    print('after app.run')

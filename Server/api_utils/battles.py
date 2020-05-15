@@ -10,14 +10,11 @@ from api_utils import users, questions
 from api_utils.scheduling import scheduler
 from utils import send_multi_message
 
-
-DBNAME = 'polify_db'
+from constants import DBNAME, WAITING_ROOM, BATTLES
+from constants import COINS_POOL_ONE_VS_ONE, SCORE_WAIT_INTERVAL, STATUS_BUSY, STATUS_ONLINE
 
 client = pymongo.MongoClient("mongodb+srv://polify:polify@cluster0-dhuyw.mongodb.net/test?retryWrites=true&w=majority")
 db = client[DBNAME]
-
-WAITING_ROOM = 'waiting_room'
-BATTLES = 'battles'
 
 # db[WAITING_ROOM] should not be empty
 
@@ -25,13 +22,21 @@ pipeline = [{"$match": {"operationType": {"$in": ['insert', 'delete']}}}]
 wait_stream = db[WAITING_ROOM].watch(pipeline)
 
 pipeline = [{"$match": {"operationType": {"$in": ['update']}}}]
-battle_stream = db[BATTLES].watch(pipeline)
+battle_stream = db[BATTLES].watch(pipeline=pipeline, full_document="updateLookup")
 
 
 def join_waiting_room(uid):
     resp = {}
 
+    coins = users.get_my_coins(uid)
+
+    if coins < COINS_POOL_ONE_VS_ONE:
+        resp['success'] = False
+        resp['message'] = 'You do not have enough coins'
+        return resp
+
     room = db[WAITING_ROOM].insert_one({"_id": uid})
+    users.update_user_status(uid, STATUS_BUSY)
 
     if room is None:
         resp['success'] = False
@@ -45,6 +50,7 @@ def leave_waiting_room(uid):
     resp = {}
 
     count = db[WAITING_ROOM].delete_one({"_id": uid}).deleted_count
+    users.update_user_status(uid, STATUS_ONLINE)
 
     if count != 1:
         resp['success'] = False
@@ -79,6 +85,10 @@ def start_matchmaking():
                 }
 
                 db[BATTLES].insert_one(battle)
+                users.charge_entry_fee(uids, COINS_POOL_ONE_VS_ONE)
+
+                for uid in uids:
+                    users.update_user_status(uid, STATUS_BUSY)
 
                 tokens = users.get_fcm_tokens(uids)
                 battle['players'] = simplejson.dumps(players)
@@ -151,7 +161,7 @@ def update_battle_score(bid, uid, score):
 
 def wait_for_score_updates(bid):
     scheduler.add_job(func=send_score_updates, args=[bid], trigger="date", id=bid,
-                      run_date=datetime.now() + timedelta(seconds=15))
+                      run_date=datetime.now() + timedelta(seconds=SCORE_WAIT_INTERVAL))
 
 
 def send_score_updates(bid):
@@ -162,6 +172,12 @@ def send_score_updates(bid):
     )["players"]
 
     uids = [player['uid'] for player in players]
+
+    for uid in uids:
+        users.update_user_status(uid, STATUS_ONLINE)
+
+    users.update_coins_from_scores(COINS_POOL_ONE_VS_ONE, players)
+
     tokens = users.get_fcm_tokens(uids)
 
     data = {
@@ -176,6 +192,7 @@ def watch_battles():
 
     try:
         for change in battle_stream:
+            print(change)
             battle = change['fullDocument']
 
             remaining = len(list(filter(lambda player: player['score'] == -1, battle['players'])))

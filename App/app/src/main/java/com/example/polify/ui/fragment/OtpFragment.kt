@@ -82,7 +82,7 @@ class OtpFragment : Fragment() {
             if (check&&code.length == 6)
                 verifyCode(code)
             else{
-                Toast.makeText(context,"Please Enter the valid code or wai for same",Toast.LENGTH_LONG).show()
+                Toast.makeText(requireActivity(),"Please Enter the valid code or wai for same",Toast.LENGTH_LONG).show()
             }
         }
 
@@ -106,7 +106,7 @@ class OtpFragment : Fragment() {
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener { task ->
                     if (!task.isSuccessful) {
-                        Toast.makeText(requireContext(), task.exception!!.message, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireActivity(), task.exception!!.message, Toast.LENGTH_SHORT).show()
                         return@addOnCompleteListener
                     }
 
@@ -116,7 +116,7 @@ class OtpFragment : Fragment() {
                         FirebaseInstanceId.getInstance().instanceId.addOnSuccessListener { result ->
                             val token = result.token
                             Log.d(TAG, "token = $token")
-                            Toast.makeText(requireContext(), "token = $token", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(requireActivity(), "token = $token", Toast.LENGTH_SHORT).show()
                             lifecycleScope.launch {
                                 val response = GameRepository.updateFcmToken(user.uid, token)
                                 if (response?.success == true)
