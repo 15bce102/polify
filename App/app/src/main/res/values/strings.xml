@@ -31,4 +31,9 @@
 
     <string name="first">Made in</string>
     <string name="second">with India</string>
+    <string name="message_win">YOU WIN !!!</string>
+    <string name="message_lose">YOU LOSE!!!</string>
+    <string name="message_tie">Scores level</string>
+
+    <string name="score">Score %1$s</string>
 </resources>

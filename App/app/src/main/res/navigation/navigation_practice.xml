@@ -13,14 +13,14 @@
         <argument
             android:name="battle_id"
             app:argType="string"
-            android:defaultValue="Practice battle" />
+            android:defaultValue="test" />
         <argument
             android:name="start_time"
             app:argType="long"
             android:defaultValue="-1L" />
-        <argument android:name="offline"
-            app:argType="boolean"
-            android:defaultValue="true" />
+        <argument android:name="battleType"
+            app:argType="string"
+            android:defaultValue="test" />
         <action
             android:id="@+id/action_questionsFragment_to_resultsFragment"
             app:destination="@id/resultsFragment"
@@ -32,18 +32,17 @@
         android:id="@+id/resultsFragment"
         android:name="com.example.polify.ui.fragment.ResultsFragment"
         android:label="fragment_results"
-        tools:layout="@layout/fragment_results">
+        tools:layout="@layout/fragment_results_one_vs_one">
         <argument
-            android:name="battleId"
+            android:name="battle_id"
             app:argType="string"
-            android:defaultValue="Practice battle" />
+            android:defaultValue="test" />
+        <argument android:name="battleType"
+            app:argType="string"
+            android:defaultValue="test" />
         <argument
             android:name="score"
             android:defaultValue="0"
             app:argType="integer" />
-        <argument
-            android:name="offline"
-            android:defaultValue="true"
-            app:argType="boolean" />
     </fragment>
 </navigation>

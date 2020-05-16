@@ -17,6 +17,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.andruid.magic.game.model.data.Question
 import com.example.polify.R
+import com.example.polify.data.BATTLE_TEST
 import com.example.polify.data.QUE_TIME_LIMIT_MS
 import com.example.polify.databinding.FragmentQuestionsBinding
 import com.example.polify.eventbus.OptionEvent
@@ -40,14 +41,14 @@ class QuestionsFragment : Fragment() {
     private val questionsAdapter = QuestionAdapter()
     private val questionsViewModel by viewModels<QuestionViewModel> {
         BaseViewModelFactory {
-            QuestionViewModel(battleId, offline)
+            QuestionViewModel(battleId, battleType)
         }
     }
 
     private lateinit var battleId: String
     private lateinit var binding: FragmentQuestionsBinding
 
-    private var offline = false
+    private var battleType = BATTLE_TEST
     private var score = 0
     private var qid: String? = null
     private var selectedOptPos = -1
@@ -74,7 +75,7 @@ class QuestionsFragment : Fragment() {
     private fun finishGame() {
         toast("Your score = $score/10!")
         findNavController().navigate(
-                QuestionsFragmentDirections.actionQuestionsFragmentToResultsFragment(battleId, score, offline))
+                QuestionsFragmentDirections.actionQuestionsFragmentToResultsFragment(battleId, battleType, score))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -86,7 +87,7 @@ class QuestionsFragment : Fragment() {
 
             battleId = safeArgs.battleId
             startTime = safeArgs.startTime
-            offline = safeArgs.offline
+            battleType = safeArgs.battleType
         }
     }
 

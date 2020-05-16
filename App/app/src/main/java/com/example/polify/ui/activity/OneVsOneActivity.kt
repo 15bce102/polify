@@ -15,6 +15,7 @@ import androidx.navigation.findNavController
 import com.andruid.magic.game.model.data.OneVsOneBattle
 import com.example.polify.R
 import com.example.polify.data.ACTION_MATCH_FOUND
+import com.example.polify.data.BATTLE_ONE_VS_ONE
 import com.example.polify.data.EXTRA_BATTLE
 import com.example.polify.ui.fragment.WaitingFragmentDirections
 
@@ -68,6 +69,6 @@ class OneVsOneActivity : FullScreenActivity() {
 
     private fun startBattle(battleId: String, startTime: Long = -1L) {
         findNavController(R.id.nav_host_fragment).navigate(
-                WaitingFragmentDirections.actionWaitingFragmentToQuestionsFragment(battleId, startTime, false))
+                WaitingFragmentDirections.actionWaitingFragmentToQuestionsFragment(battleId, startTime, BATTLE_ONE_VS_ONE))
     }
 }
