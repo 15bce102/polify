@@ -19,6 +19,7 @@ import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthProvider
 import com.google.firebase.iid.FirebaseInstanceId
 import kotlinx.coroutines.launch
+import splitties.toast.toast
 import java.util.concurrent.TimeUnit
 
 
@@ -46,7 +47,6 @@ class OtpFragment : Fragment() {
             Log.d("hello", "onCodeSent: code sent")
             this@OtpFragment.verificationId = verificationId
         }
-
 
 
         override fun onVerificationCompleted(phoneAuthCredential: PhoneAuthCredential) {
@@ -79,10 +79,10 @@ class OtpFragment : Fragment() {
         sendVerificationCode()
         binding.verifyBtn.setOnClickListener {
             val code = binding.otpView.text.toString().trim()
-            if (check&&code.length == 6)
+            if (check && code.length == 6)
                 verifyCode(code)
-            else{
-                Toast.makeText(requireActivity(),"Please Enter the valid code or wai for same",Toast.LENGTH_LONG).show()
+            else {
+                toast("Please Enter the valid code or wai for same")
             }
         }
 
@@ -106,7 +106,7 @@ class OtpFragment : Fragment() {
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener { task ->
                     if (!task.isSuccessful) {
-                        Toast.makeText(requireActivity(), task.exception!!.message, Toast.LENGTH_SHORT).show()
+                        toast(task.exception!!.message.toString())
                         return@addOnCompleteListener
                     }
 
@@ -116,7 +116,7 @@ class OtpFragment : Fragment() {
                         FirebaseInstanceId.getInstance().instanceId.addOnSuccessListener { result ->
                             val token = result.token
                             Log.d(TAG, "token = $token")
-                            Toast.makeText(requireActivity(), "token = $token", Toast.LENGTH_SHORT).show()
+                            toast("token = $token")
                             lifecycleScope.launch {
                                 val response = GameRepository.updateFcmToken(user.uid, token)
                                 if (response?.success == true)
@@ -130,19 +130,18 @@ class OtpFragment : Fragment() {
                             if (userName != null && avatarUri != null) {
                                 val response = GameRepository.updateProfile(user.uid, userName!!, avatarUri!!)
                                 if (response == null)
-                                    Toast.makeText(requireContext(), "null response", Toast.LENGTH_SHORT).show()
+                                    toast("null response")
 
                                 if (response?.success == true)
                                     startHomeActivity()
                                 else
-                                    Toast.makeText(requireContext(), response?.message
-                                            ?: "null message", Toast.LENGTH_SHORT).show()
+                                    toast(response?.message ?: "null message")
                             } else {
                                 val response = GameRepository.login(user.uid)
                                 if (response?.success == true)
                                     startHomeActivity()
                                 else
-                                    Toast.makeText(requireContext(), response?.message!!, Toast.LENGTH_SHORT).show()
+                                    toast(response?.message!!)
                             }
                         }
                     }
@@ -150,7 +149,6 @@ class OtpFragment : Fragment() {
 
 
     }
-
 
 
     private fun startHomeActivity() {

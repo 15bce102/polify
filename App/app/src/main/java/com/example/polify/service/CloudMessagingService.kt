@@ -4,8 +4,10 @@ import android.content.Intent
 import android.util.Log
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.andruid.magic.game.api.GameRepository
+import com.andruid.magic.game.model.data.Battle
 import com.andruid.magic.game.model.data.OneVsOneBattle
 import com.andruid.magic.game.model.data.Player
+import com.andruid.magic.game.model.data.PlayerResult
 import com.example.polify.data.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.messaging.FirebaseMessagingService
@@ -50,7 +52,7 @@ class CloudMessagingService : FirebaseMessagingService(), CoroutineScope {
 
         when (map[KEY_TYPE]) {
             TYPE_MATCHMAKING -> {
-                map[KEY_PAYLOAD]?.toOneVsOneBattle().let { battle ->
+                map[KEY_PAYLOAD]?.toBattle()?.let { battle ->
                     Log.d(TAG, "battle = $battle")
 
                     val intent = Intent(ACTION_MATCH_FOUND)
@@ -71,21 +73,27 @@ class CloudMessagingService : FirebaseMessagingService(), CoroutineScope {
         }
     }
 
-    private fun String.toOneVsOneBattle(): OneVsOneBattle {
+    private fun String.toBattle(): Battle? {
         val gson = Gson()
         val map: Map<String, String> = gson.fromJson(this, object : TypeToken<Map<String, String>>() {}.type)
 
         val playersJson = map["players"]
         val players: List<Player> = Gson().fromJson(playersJson, object : TypeToken<List<Player>>() {}.type)
 
-        return OneVsOneBattle(
-                battleId = map.getOrDefault("_id", "defaultId"),
-                startTime = map.getOrDefault("start_time", System.currentTimeMillis().toString()).toLong(),
-                coinsPool = map.getOrDefault("coins_pool", 10.toString()).toInt(),
-                players = players
-        )
+        return when (map.getOrDefault("type", BATTLE_ONE_VS_ONE)) {
+            BATTLE_ONE_VS_ONE -> {
+                OneVsOneBattle(
+                        battleId = map.getOrDefault("_id", "defaultId"),
+                        startTime = map.getOrDefault("start_time", System.currentTimeMillis().toString()).toLong(),
+                        coinsPool = map.getOrDefault("coins_pool", 10.toString()).toInt(),
+                        players = players
+                )
+            }
+            else -> null
+        }
     }
 
-    private fun String.toPlayerResults() =
-            Gson().fromJson<ArrayList<Player>>(this, object: TypeToken<ArrayList<Player>>() {}.type)
+    private fun String.toPlayerResults(): ArrayList<PlayerResult> {
+        return Gson().fromJson(this, object: TypeToken<ArrayList<PlayerResult>>() {}.type)
+    }
 }

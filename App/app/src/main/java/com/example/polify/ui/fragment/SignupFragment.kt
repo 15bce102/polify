@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -19,6 +18,7 @@ import com.example.polify.util.isValidUserName
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import splitties.toast.toast
 
 class SignupFragment : Fragment() {
     private lateinit var binding: FragmentSignupBinding
@@ -69,7 +69,7 @@ class SignupFragment : Fragment() {
                     findNavController().navigate(
                             SignupFragmentDirections.actionSignupFragmentToOtpFragment(number, userName, avatarUrl))
                 else
-                    Toast.makeText(requireContext(), R.string.error_invalid_number, Toast.LENGTH_SHORT).show()
+                    toast(R.string.error_invalid_number)
             }
 
             textLogin.setOnClickListener {

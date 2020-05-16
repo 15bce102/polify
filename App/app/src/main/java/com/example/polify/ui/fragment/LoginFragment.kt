@@ -4,13 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.polify.R
 import com.example.polify.databinding.FragmentLoginBinding
 import com.example.polify.util.isValidPhoneNumber
+import splitties.toast.toast
 
 class LoginFragment : Fragment() {
     private lateinit var binding: FragmentLoginBinding
@@ -41,7 +41,7 @@ class LoginFragment : Fragment() {
                     findNavController().navigate(
                             LoginFragmentDirections.actionLoginFragmentToOtpFragment(number, null, null))
                 else
-                    Toast.makeText(requireContext(), R.string.error_invalid_number, Toast.LENGTH_SHORT).show()
+                    toast(R.string.error_invalid_number)
             }
 
             textRegister.setOnClickListener {

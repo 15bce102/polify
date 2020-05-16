@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.ListView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -31,6 +30,7 @@ import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import splitties.toast.toast
 
 class QuestionsFragment : Fragment() {
     companion object {
@@ -72,7 +72,7 @@ class QuestionsFragment : Fragment() {
     }
 
     private fun finishGame() {
-        Toast.makeText(requireContext(), "Your score = $score/10!", Toast.LENGTH_SHORT).show()
+        toast("Your score = $score/10!")
         findNavController().navigate(
                 QuestionsFragmentDirections.actionQuestionsFragmentToResultsFragment(battleId, score, offline))
     }
@@ -121,7 +121,7 @@ class QuestionsFragment : Fragment() {
         if (startTime == -1L)
             return
 
-        val elapsedSeconds = (System.currentTimeMillis() - startTime)/1000
+        val elapsedSeconds = (System.currentTimeMillis() - startTime) / 1000
         val questionPos = elapsedSeconds / questions.size
 
         Log.d("cloudLog", "questionPos = $questionPos")

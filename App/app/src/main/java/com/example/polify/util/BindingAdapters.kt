@@ -11,3 +11,10 @@ fun ImageView.setImageUrl(url: String?) {
         placeholder(R.mipmap.ic_profile)
     }
 }
+
+@BindingAdapter("imageRes")
+fun ImageView.setImageUrl(res: Int) {
+    load(res) {
+        placeholder(R.mipmap.ic_profile)
+    }
+}

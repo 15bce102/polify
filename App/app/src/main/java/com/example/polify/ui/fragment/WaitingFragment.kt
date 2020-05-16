@@ -31,6 +31,7 @@ class WaitingFragment : Fragment() {
 
         val backPressedCallback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
+                Log.d(TAG, "on back pressed fragment")
                 lifecycleScope.launch {
                     mAuth.currentUser?.let { user ->
                         val response = GameRepository.leaveWaitingRoom(user.uid)
@@ -38,6 +39,7 @@ class WaitingFragment : Fragment() {
                             Log.d(TAG, "left waiting room")
                         else
                             Log.e(TAG, "left waiting room error")
+                        requireActivity().finish()
                     }
                 }
             }

@@ -14,6 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.andruid.magic.game.api.GameRepository
 import com.andruid.magic.game.model.data.Player
+import com.andruid.magic.game.model.data.PlayerResult
 import com.example.polify.data.ACTION_MATCH_RESULTS
 import com.example.polify.data.EXTRA_PLAYERS
 import com.example.polify.databinding.FragmentResultsBinding
@@ -35,7 +36,7 @@ class ResultsFragment : Fragment() {
     private val resultsReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             if (intent.action == ACTION_MATCH_RESULTS) {
-                val players: ArrayList<Player> = intent.extras?.getParcelableArrayList(EXTRA_PLAYERS)
+                val players: ArrayList<PlayerResult> = intent.extras?.getParcelableArrayList(EXTRA_PLAYERS)
                         ?: arrayListOf()
                 binding.textView.text = players.joinToString(", ", "[", "]")
             }

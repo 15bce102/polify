@@ -18,4 +18,17 @@
     <string name="error_invalid_number">Invalid number format</string>
     <string name="verify">Verify</string>
     <string name="practice_battle">Practice battle</string>
+
+    <string name="title_1v1">1 vs 1</string>
+    <string name="desc_1v1">Play with random players online and get a chance to win more.</string>
+    <string name="coins_1v1">50 Coins</string>
+    <string name="title_multiplayer">Multiplayer</string>
+    <string name="desc_multiplayer">Challenge Your Friends and beat \'em all</string>
+    <string name="coins_multiplayer">20 coins</string>
+    <string name="title_test">How to play?</string>
+    <string name="desc_test">Test the interface by giving answers to some fixed questions</string>
+    <string name="coins_test">FREE</string>
+
+    <string name="first">Made in</string>
+    <string name="second">with India</string>
 </resources>
