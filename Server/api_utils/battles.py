@@ -1,28 +1,40 @@
 import uuid
 from datetime import datetime, timedelta
 
-import pymongo
 import simplejson
-from pymongo import ReturnDocument
+from pymongo import ReturnDocument, MongoClient
 from pymongo.errors import PyMongoError
+from pymongo.database import Database
+from pymongo.change_stream import CollectionChangeStream
+from apscheduler.jobstores.base import JobLookupError
 
 from api_utils import users, questions
-from api_utils.scheduling import scheduler
-from utils import send_multi_message
-
-from constants import DBNAME, WAITING_ROOM, BATTLES
+from singleton import scheduler
+from constants import BATTLE_ONE_VS_ONE, DBNAME
 from constants import COINS_POOL_ONE_VS_ONE, SCORE_WAIT_INTERVAL, STATUS_BUSY, STATUS_ONLINE
+from constants import WAITING_ROOM, BATTLES
+from utils import send_multi_message, current_milli_time
 
-client = pymongo.MongoClient("mongodb+srv://polify:polify@cluster0-dhuyw.mongodb.net/test?retryWrites=true&w=majority")
-db = client[DBNAME]
+db: Database
+wait_stream: CollectionChangeStream
+battle_stream: CollectionChangeStream
 
-# db[WAITING_ROOM] should not be empty
 
-pipeline = [{"$match": {"operationType": {"$in": ['insert', 'delete']}}}]
-wait_stream = db[WAITING_ROOM].watch(pipeline)
+def init():
+    client = MongoClient(
+        "mongodb+srv://polify:polify@cluster0-dhuyw.mongodb.net/test?retryWrites=true&w=majority")
+    global db
+    db = client[DBNAME]
 
-pipeline = [{"$match": {"operationType": {"$in": ['update']}}}]
-battle_stream = db[BATTLES].watch(pipeline=pipeline, full_document="updateLookup")
+    # db[WAITING_ROOM] should not be empty
+
+    pipeline = [{"$match": {"operationType": {"$in": ['insert', 'delete']}}}]
+    global wait_stream
+    wait_stream = db[WAITING_ROOM].watch(pipeline)
+
+    pipeline = [{"$match": {"operationType": {"$in": ['update']}}}]
+    global battle_stream
+    battle_stream = db[BATTLES].watch(pipeline=pipeline, full_document="updateLookup")
 
 
 def join_waiting_room(uid):
@@ -74,32 +86,43 @@ def start_matchmaking():
                 ]))
                 print(random_users)
 
+                random_users = [users.get_player_profile(user['_id']) for user in random_users]
+
                 uids = [user['_id'] for user in random_users]
 
                 db[WAITING_ROOM].delete_many({"_id": {"$in": random_users}})
-                players = [{"uid": user['_id'], "score": -1} for user in random_users]
+                players = [{"uid": user['_id'], "score": -1, "user_name": user['user_name'],
+                            "avatar": user['avatar'], "level": user['level']}
+                           for user in random_users]
 
                 battle = {
                     "_id": str(uuid.uuid4()),
+                    "type": BATTLE_ONE_VS_ONE,
+                    "start_time": current_milli_time(),
+                    "coins_pool": COINS_POOL_ONE_VS_ONE,
                     "players": players
                 }
-
                 db[BATTLES].insert_one(battle)
+
                 users.charge_entry_fee(uids, COINS_POOL_ONE_VS_ONE)
 
                 for uid in uids:
                     users.update_user_status(uid, STATUS_BUSY)
 
                 tokens = users.get_fcm_tokens(uids)
-                battle['players'] = simplejson.dumps(players)
 
                 db[WAITING_ROOM].remove({"_id": {"$in": uids}})
 
                 random_questions = questions.get_random_questions(10)
+
                 db[BATTLES].update_one(
                     {"_id": battle['_id']},
                     {"$set": {"questions": random_questions}}
                 )
+
+                battle['start_time'] = str(battle['start_time'])
+                battle['coins_pool'] = str(battle['coins_pool'])
+                battle['players'] = simplejson.dumps(battle['players'])
 
                 data = {
                     "type": "matchmaking",
@@ -142,14 +165,20 @@ def update_battle_score(bid, uid, score):
     try:
         battle = db[BATTLES].find_one_and_update(
             {"_id": bid, "players.uid": uid},
-            {"$set": {"players.$.score": score}},
+            {"$set": {"players.$.score": score, "endTime": current_milli_time()}},
             return_document=ReturnDocument.AFTER
         )
 
+        print('battle scores = ', battle['players'])
+        print('scores = ', list(filter(lambda player: player['score'] != -1, battle['players'])))
         updated = len(list(filter(lambda player: player['score'] != -1, battle['players'])))
+        print('score updated for ', updated)
 
         if updated == 1:
+            print('triggered score wait job')
             wait_for_score_updates(bid)
+        else:
+            print('score wait job already present')
 
         resp['success'] = True
     except PyMongoError as e:
@@ -178,14 +207,22 @@ def send_score_updates(bid):
 
     users.update_stats_from_scores(COINS_POOL_ONE_VS_ONE, players)
 
+    results = []
+
     for player in players:
-        player['new_level'], player['updated'] = users.update_level(player)
+        new_level, updated = users.update_level(player)
+        results.append({
+            "new_level": new_level,
+            "updated": updated,
+            "player": player
+        })
 
     tokens = users.get_fcm_tokens(uids)
 
     data = {
         "type": "score-update",
-        "payload": simplejson.dumps(players)
+        "battleId": bid,
+        "payload": simplejson.dumps(results)
     }
     send_multi_message(data, tokens)
 
@@ -201,7 +238,10 @@ def watch_battles():
             remaining = len(list(filter(lambda player: player['score'] == -1, battle['players'])))
             if remaining == 0:
                 send_score_updates(battle['_id'])
-                scheduler.remove_job(job_id=battle['_id'])
+                try:
+                    scheduler.remove_job(job_id=battle['_id'])
+                except JobLookupError as e:
+                    print('job error=', e)
 
     except PyMongoError as e:
         # The ChangeStream encountered an unrecoverable error or the

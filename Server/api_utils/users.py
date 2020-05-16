@@ -1,13 +1,18 @@
-import pymongo
-from pymongo import ReturnDocument
+from pymongo import ReturnDocument, MongoClient
+from pymongo.database import Database
 
+from constants import STATUS_ONLINE, STATUS_OFFLINE, DBNAME
+from constants import USERS
 from utils import current_milli_time, get_user_from_phone_number, upgrade_tier
 
-from constants import DBNAME, USERS
-from constants import STATUS_ONLINE, STATUS_OFFLINE
+db: Database
 
-client = pymongo.MongoClient("mongodb+srv://polify:polify@cluster0-dhuyw.mongodb.net/test?retryWrites=true&w=majority")
-db = client[DBNAME]
+
+def init():
+    client = MongoClient(
+        "mongodb+srv://polify:polify@cluster0-dhuyw.mongodb.net/test?retryWrites=true&w=majority")
+    global db
+    db = client[DBNAME]
 
 
 def create_user(uid):
@@ -16,7 +21,7 @@ def create_user(uid):
     user = db[USERS].find_one_and_update(
         {"_id": uid},
         {"$set": {"status": STATUS_ONLINE, "last_seen": current_milli_time()},
-         "$setOnInsert": {"coins": 100, "level": "Rookie"}
+         "$setOnInsert": {"coins": 1000, "level": upgrade_tier(0), "totalScore": 0}
          },
         upsert=True,
         return_document=ReturnDocument.AFTER
@@ -58,7 +63,7 @@ def update_user_profile(uid, user_name, avatar):
         {"$set": {"user_name": user_name, "avatar": avatar,
                   "status": STATUS_ONLINE, "last_seen": current_milli_time()
                   },
-         "$setOnInsert": {"coins": 100, "level": "Rookie"}
+         "$setOnInsert": {"coins": 1000, "level": "Newbie", "totalScore": 0}
          },
         upsert=True
     )
@@ -282,3 +287,11 @@ def update_level(player):
         return new_tier, False
     else:
         return new_tier, True
+
+
+def get_player_profile(uid):
+    user = db[USERS].find_one(
+        {"_id": uid},
+        {"user_name": 1, "avatar": 1, "level": 1}
+    )
+    return user

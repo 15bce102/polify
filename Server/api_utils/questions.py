@@ -1,11 +1,17 @@
-import pymongo
+from pymongo import MongoClient
+from pymongo.database import Database
 
+from constants import QUESTIONS, DBNAME
 from data_collection.question_scrape import get_questions
 
-from constants import DBNAME, QUESTIONS
+db: Database
 
-client = pymongo.MongoClient("mongodb+srv://polify:polify@cluster0-dhuyw.mongodb.net/test?retryWrites=true&w=majority")
-db = client[DBNAME]
+
+def init():
+    client = MongoClient(
+        "mongodb+srv://polify:polify@cluster0-dhuyw.mongodb.net/test?retryWrites=true&w=majority")
+    global db
+    db = client[DBNAME]
 
 
 def insert_questions(url, category, date):

@@ -4,11 +4,11 @@ import firebase_admin
 from firebase_admin import credentials
 
 import utils
-from api_utils.scheduling import scheduler
+from singleton import scheduler
 
 from flask import Flask, request, send_from_directory
 
-from api_utils import battles, users
+from api_utils import battles, users, questions
 
 from utils import current_milli_time, is_valid_user
 
@@ -20,8 +20,11 @@ cred = credentials.Certificate('keys/key.json')
 firebase_admin.initialize_app(cred)
 
 
-@app.before_first_request
-def init_scheduler():
+def init():
+    users.init()
+    battles.init()
+    questions.init()
+
     scheduler.add_job(func=users.update_all_users, trigger="interval", seconds=3 * 60, id='update_status_job',
                       replace_existing=True)
     scheduler.add_job(func=battles.start_matchmaking, id='matchmaking_job',
@@ -35,6 +38,9 @@ def init_scheduler():
 
     # Shut down the scheduler when exiting the app
     atexit.register(lambda: shut_down())
+
+
+init()
 
 
 @app.route('/', methods=['GET'])

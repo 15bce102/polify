@@ -36,10 +36,11 @@ def get_user_from_phone_number(phone_number):
 
 
 def send_multi_message(data, tokens):
-    print('sending multi message')
+    print('sending multi message: ', data)
     message = MulticastMessage(data=data, tokens=tokens)
     response = send_multicast(message)
-    print('{0} messages were sent successfully'.format(response.success_count))
+    print('Messages sent: failed = {0}, success = {1}, other fields = {2}'
+          .format(response.failure_count, response.success_count, [r.exception for r in response.responses]))
 
 
 def send_single_message(data, token):
