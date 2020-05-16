@@ -6,7 +6,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.andruid.magic.game.api.GameRepository
@@ -26,18 +25,15 @@ import java.util.concurrent.TimeUnit
 class OtpFragment : Fragment() {
     companion object {
         private val TAG = "${OtpFragment::class.java.simpleName}Log"
-
     }
 
     private var check = false
-    private lateinit var binding: FragmentOtpBinding
-    private lateinit var phoneNumber: String
-
     private var userName: String? = null
     private var avatarUri: String? = null
 
     private lateinit var verificationId: String
-
+    private lateinit var binding: FragmentOtpBinding
+    private lateinit var phoneNumber: String
 
     private val mAuth = FirebaseAuth.getInstance()
     private val mCallBack = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
@@ -47,7 +43,6 @@ class OtpFragment : Fragment() {
             Log.d("hello", "onCodeSent: code sent")
             this@OtpFragment.verificationId = verificationId
         }
-
 
         override fun onVerificationCompleted(phoneAuthCredential: PhoneAuthCredential) {
             Log.d(TAG, "onVerificationCompleted: verify completed")
@@ -76,7 +71,9 @@ class OtpFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         binding = FragmentOtpBinding.inflate(inflater, container, false)
+
         sendVerificationCode()
+
         binding.verifyBtn.setOnClickListener {
             val code = binding.otpView.text.toString().trim()
             if (check && code.length == 6)
@@ -85,9 +82,6 @@ class OtpFragment : Fragment() {
                 toast("Please Enter the valid code or wai for same")
             }
         }
-
-
-
         return binding.root
     }
 
@@ -112,7 +106,6 @@ class OtpFragment : Fragment() {
 
                     Log.d(TAG, "login successful")
                     mAuth.currentUser?.let { user ->
-
                         FirebaseInstanceId.getInstance().instanceId.addOnSuccessListener { result ->
                             val token = result.token
                             Log.d(TAG, "token = $token")
@@ -146,10 +139,7 @@ class OtpFragment : Fragment() {
                         }
                     }
                 }
-
-
     }
-
 
     private fun startHomeActivity() {
         val intent = Intent(requireContext(), HomeActivity::class.java)

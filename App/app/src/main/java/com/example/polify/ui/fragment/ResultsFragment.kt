@@ -45,6 +45,8 @@ class ResultsFragment : Fragment() {
                     val results: ArrayList<PlayerResult> = extras.getParcelableArrayList(EXTRA_PLAYERS)
                             ?: arrayListOf()
 
+                    Log.d(TAG, "battle score received: size = ${results.size}")
+
                     when (battleType) {
                         BATTLE_ONE_VS_ONE -> showOneVsOneResults(results)
                     }
@@ -54,6 +56,7 @@ class ResultsFragment : Fragment() {
     }
 
     private fun showOneVsOneResults(results: List<PlayerResult>) {
+        Log.d(TAG, "battle showing results  = ${results.size}")
         if (results.size != 2)
             return
 
@@ -91,6 +94,8 @@ class ResultsFragment : Fragment() {
             this.battleId = battleId
             this.battleType = battleType
             this.score = score
+
+            Log.d(TAG, "battle type = $battleType, 1v1 = $BATTLE_ONE_VS_ONE")
 
             if (battleType != BATTLE_TEST) {
                 LocalBroadcastManager.getInstance(requireContext())

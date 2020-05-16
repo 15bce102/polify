@@ -12,7 +12,11 @@ class LoginActivity : FullScreenActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        val navGraph = if (isFirstTime()) R.navigation.navigation_welcome else R.navigation.navigation_login
+        val navGraph =
+                if (isFirstTime())
+                    R.navigation.navigation_welcome
+                else
+                    R.navigation.navigation_login
         findNavController(R.id.nav_host_fragment).setGraph(navGraph)
 
         setFirstTimeComplete()

@@ -11,6 +11,7 @@ import com.example.polify.R
 import com.example.polify.databinding.LayoutQuestionBinding
 import com.example.polify.eventbus.OptionEvent
 import com.example.polify.ui.adapter.OptionsAdapter
+import com.example.polify.util.RecyclerTouchListener
 import org.greenrobot.eventbus.EventBus
 
 class QuestionViewHolder(private val binding: LayoutQuestionBinding) : RecyclerView.ViewHolder(binding.root) {
@@ -24,7 +25,10 @@ class QuestionViewHolder(private val binding: LayoutQuestionBinding) : RecyclerV
         }
     }
 
+    private lateinit var itemTouchListener: RecyclerTouchListener
+
     fun bind(question: Question, pos: Int) {
+
         binding.question = question
         binding.position = pos
 
@@ -32,18 +36,27 @@ class QuestionViewHolder(private val binding: LayoutQuestionBinding) : RecyclerV
             Log.d("optionLog", "question text click")
         }
 
-        binding.optionsLV.apply {
-            adapter = OptionsAdapter(context, question.options)
-            setOnItemClickListener { _, view, position, _ ->
-                Log.d("OptionsAdapterLog", "list view item click for $position")
-                onOptionClick(question, position, view)
+        binding.optionsRV.apply {
+            itemTouchListener = RecyclerTouchListener(context, this, object : RecyclerTouchListener.ClickListener {
+                override fun onClick(view: View?, position: Int) {
+                    onOptionClick(question, position, view!!)
+                }
+
+                override fun onLongClick(view: View?, position: Int) {}
+            })
+
+            adapter = OptionsAdapter().apply {
+                submitList(question.options)
+                setHasStableIds(true)
             }
+            setHasFixedSize(true)
+            addOnItemTouchListener(itemTouchListener)
         }
     }
 
     private fun onOptionClick(question: Question, position: Int, view: View) {
         val option = question.options[position]
-        (binding.optionsLV.adapter as OptionsAdapter).disableClicks()
+        binding.optionsRV.removeOnItemTouchListener(itemTouchListener)
         EventBus.getDefault().post(OptionEvent(question.qid, option, view))
     }
 }

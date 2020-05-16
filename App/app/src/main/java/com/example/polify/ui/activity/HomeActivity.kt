@@ -33,7 +33,7 @@ class HomeActivity : FullScreenActivity() {
     private val mAuth by lazy { FirebaseAuth.getInstance() }
     private val userViewModel by viewModels<UserViewModel> {
         BaseViewModelFactory {
-            UserViewModel(mAuth.currentUser?.uid ?: "")
+            UserViewModel(mAuth.currentUser!!.uid)
         }
     }
 

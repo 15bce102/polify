@@ -1,19 +1,17 @@
 package com.example.polify.ui.fragment
 
-import android.graphics.Color
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
-import android.widget.ListView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.andruid.magic.game.model.data.Question
 import com.example.polify.R
@@ -21,11 +19,10 @@ import com.example.polify.data.BATTLE_TEST
 import com.example.polify.data.QUE_TIME_LIMIT_MS
 import com.example.polify.databinding.FragmentQuestionsBinding
 import com.example.polify.eventbus.OptionEvent
-import com.example.polify.ui.adapter.OptionsAdapter
 import com.example.polify.ui.adapter.QuestionAdapter
+import com.example.polify.ui.viewholder.OptionViewHolder
 import com.example.polify.ui.viewmodel.BaseViewModelFactory
 import com.example.polify.ui.viewmodel.QuestionViewModel
-import com.example.polify.util.getViewByPosition
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
@@ -53,12 +50,13 @@ class QuestionsFragment : Fragment() {
     private var qid: String? = null
     private var selectedOptPos = -1
     private var startTime = -1L
+    private var optionsEnabled = true
 
     private val countDownTimer = object : CountDownTimer(QUE_TIME_LIMIT_MS, 1000) {
         override fun onFinish() {
             val pos = binding.viewPager.currentItem
-            val optionsLV = binding.viewPager.findViewById<ListView>(R.id.optionsLV)
-            highlightAns(optionsLV, pos)
+            val optionsRV = binding.viewPager.findViewById<RecyclerView>(R.id.optionsRV)
+            highlightAns(optionsRV, pos)
 
             lifecycleScope.launch {
                 delay(1000)
@@ -101,7 +99,11 @@ class QuestionsFragment : Fragment() {
                 override fun onPageSelected(position: Int) {
                     super.onPageSelected(position)
                     binding.barProgressBar.progress = position + 1
+
                     qid = questionsAdapter.currentList[position].qid
+
+                    optionsEnabled = true
+
                     countDownTimer.cancel()
                     countDownTimer.start()
                     binding.timerAnimView.playAnimation()
@@ -145,45 +147,50 @@ class QuestionsFragment : Fragment() {
         EventBus.getDefault().unregister(this)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d("cloudLog", "onDestroy questions fragment")
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onOptionEvent(optionEvent: OptionEvent) {
+        if (!optionsEnabled)
+            return
+
         val (qid, opt) = optionEvent
 
         this.qid = qid
         Log.d("optionLog", "selected opt = ${opt.optId}")
         selectedOptPos = opt.optId[0] - 'A'
 
-        val optionsLV = binding.viewPager.findViewById<ListView>(R.id.optionsLV)
-        (optionsLV.adapter as OptionsAdapter).disableClicks()
-        highlightOption(optionsLV, selectedOptPos)
+        val optionsRV = binding.viewPager.findViewById<RecyclerView>(R.id.optionsRV)
+        val selectedViewHolder = optionsRV.findViewHolderForItemId(selectedOptPos.toLong()) as OptionViewHolder
+        selectedViewHolder.highlightOption()
+
+        optionsEnabled = false
     }
 
-    private fun highlightOption(listView: ListView, pos: Int) {
-        listView.getViewByPosition(pos)?.findViewById<LinearLayout>(R.id.linearLayout)?.setBackgroundColor(Color.LTGRAY)
-    }
-
-    private fun highlightAns(listView: ListView, pos: Int) {
+    private fun highlightAns(recyclerView: RecyclerView, pos: Int) {
         val question = questionsAdapter.currentList[pos]
 
         if (qid == question.qid) {
             Log.d(TAG, "selected option pos = $selectedOptPos")
             val correctPos = question.correctAnswer[0] - 'A'
-            highlightAnswer(listView, correctPos, true)
+
+            val correctViewHolder = recyclerView.findViewHolderForItemId(correctPos.toLong()) as OptionViewHolder
+            correctViewHolder.highlightAnswer(true)
 
             if (selectedOptPos == -1)
                 return
 
             if (selectedOptPos == correctPos)
                 score++
-            else
-                highlightAnswer(listView, selectedOptPos, false)
+            else {
+                val wrongViewHolder = recyclerView.findViewHolderForItemId(selectedOptPos.toLong()) as OptionViewHolder
+                wrongViewHolder.highlightAnswer(false)
+            }
 
-            selectedOptPos++
+            selectedOptPos = -1
         }
-    }
-
-    private fun highlightAnswer(listView: ListView, pos: Int, correct: Boolean) {
-        val bg = if (correct) Color.GREEN else Color.RED
-        listView.getViewByPosition(pos)?.findViewById<LinearLayout>(R.id.linearLayout)?.setBackgroundColor(bg)
     }
 }

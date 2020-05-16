@@ -53,9 +53,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.activity.MultiPlayerActivity" />
-        <activity android:name=".ProfileActivity" />
-        <activity android:name=".VerifyActivity" />
-        <activity android:name=".MainActivity" />
     </application>
 
 </manifest>

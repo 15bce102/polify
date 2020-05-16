@@ -29,10 +29,7 @@ class OptionViewHolder(private val binding: LayoutOptionBinding) : RecyclerView.
         binding.linearLayout.setBackgroundColor(bg)
     }
 
-    fun highlightOption(highlight: Boolean) {
-        if (highlight)
-            binding.linearLayout.setBackgroundColor(Color.LTGRAY)
-        else
-            binding.linearLayout.setBackgroundResource(R.drawable.layout)
+    fun highlightOption() {
+        binding.linearLayout.setBackgroundColor(Color.LTGRAY)
     }
 }
