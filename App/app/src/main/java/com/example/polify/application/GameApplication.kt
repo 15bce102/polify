@@ -9,7 +9,9 @@ import androidx.lifecycle.OnLifecycleEvent
 import androidx.lifecycle.ProcessLifecycleOwner
 import com.andruid.magic.game.api.GameRepository
 import com.example.polify.data.ACTION_START_STATUS_UPDATE
+import com.example.polify.repository.ContactFetcher
 import com.example.polify.service.StatusUpdateService
+import com.example.polify.util.toFullPhoneNumbers
 
 class GameApplication : Application(), LifecycleObserver {
     companion object {
@@ -20,6 +22,9 @@ class GameApplication : Application(), LifecycleObserver {
         super.onCreate()
         ProcessLifecycleOwner.get().lifecycle.addObserver(this)
         GameRepository.init(this)
+        ContactFetcher.init(this)
+
+
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)

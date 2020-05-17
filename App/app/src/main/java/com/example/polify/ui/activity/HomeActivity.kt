@@ -18,6 +18,7 @@ import com.example.polify.ui.adapter.SelectBattleAdapter
 import com.example.polify.ui.dialog.AvatarDialogFragment
 import com.example.polify.ui.viewmodel.BaseViewModelFactory
 import com.example.polify.ui.viewmodel.UserViewModel
+import com.example.polify.util.scheduleFriendsUpdate
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
@@ -47,6 +48,8 @@ class HomeActivity : FullScreenActivity() {
 
         initViewPager()
         initListeners()
+
+        scheduleFriendsUpdate()
     }
 
     private fun initViewPager() {

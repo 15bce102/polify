@@ -7,7 +7,7 @@ object RetrofitClient {
     //const val BASE_URL = "http://192.168.0.104:5000/"
     const val BASE_URL = "http://polify.herokuapp.com/"
 
-    const val DEFAULT_AVATAR_URL = "${BASE_URL}avatars/avatar1.png"
+    const val DEFAULT_AVATAR_URL = "${BASE_URL}avatars/avatar1.jpg"
 
     private var INSTANCE = Retrofit.Builder()
             .baseUrl(BASE_URL)

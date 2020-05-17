@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.polify">
 
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+
     <application
         android:name=".application.GameApplication"
         android:allowBackup="true"
@@ -12,16 +14,23 @@
         android:testOnly="false"
         android:theme="@style/AppTheme.FullScreen"
         android:usesCleartextTraffic="true">
-        <activity android:name=".ui.activity.PracticeActivity"></activity>
+        <receiver
+            android:name=".receiver.BootReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+        <activity android:name=".ui.activity.PracticeActivity" />
 
         <service
             android:name=".service.StatusUpdateService"
             android:enabled="true"
             android:exported="false" />
 
-        <activity android:name=".ui.activity.WaitingActivity" />
         <activity android:name=".ui.activity.OneVsOneActivity" />
-        <activity android:name=".ui.activity.QuestionsActivity" />
 
         <service
             android:name=".service.CloudMessagingService"
@@ -40,19 +49,5 @@
         </activity>
         <activity android:name=".ui.activity.LoginActivity" />
         <activity android:name=".ui.activity.HomeActivity" />
-        <activity android:name=".ui.activity.RoomActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="polify.com"
-                    android:scheme="https" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".ui.activity.MultiPlayerActivity" />
     </application>
-
 </manifest>

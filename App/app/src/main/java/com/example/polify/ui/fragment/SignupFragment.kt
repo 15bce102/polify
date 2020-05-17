@@ -55,7 +55,7 @@ class SignupFragment : Fragment() {
             countryCodePicker.registerCarrierNumberEditText(phoneET)
 
             phoneET.addTextChangedListener {
-                if (!isValidPhoneNumber(countryCodePicker.fullNumberWithPlus))
+                if (!requireContext().isValidPhoneNumber(it.toString(), countryCodePicker.selectedCountryCode))
                     phoneTextInput.error = getString(R.string.error_invalid_number)
                 else
                     phoneTextInput.error = null
@@ -65,7 +65,8 @@ class SignupFragment : Fragment() {
                 val number = countryCodePicker.fullNumberWithPlus
                 val userName = userNameET.text.toString().trim()
 
-                if (isValidPhoneNumber(number) && isValidUserName(userName))
+                if (requireContext().isValidPhoneNumber(number, countryCodePicker.selectedCountryCode)
+                        && isValidUserName(userName))
                     findNavController().navigate(
                             SignupFragmentDirections.actionSignupFragmentToOtpFragment(number, userName, avatarUrl))
                 else

@@ -29,15 +29,15 @@ class LoginFragment : Fragment() {
             countryCodePicker.registerCarrierNumberEditText(phoneET)
 
             phoneET.addTextChangedListener {
-                if (!isValidPhoneNumber(countryCodePicker.fullNumberWithPlus))
+                if (!requireContext().isValidPhoneNumber(it.toString(), countryCodePicker.selectedCountryCode))
                     phoneTextInput.error = getString(R.string.error_invalid_number)
                 else
                     phoneTextInput.error = null
             }
 
             sendOtpBtn.setOnClickListener {
-                val number = countryCodePicker.fullNumberWithPlus
-                if (isValidPhoneNumber(number))
+                val number = phoneET.text.toString().trim()
+                if (requireContext().isValidPhoneNumber(number, countryCodePicker.selectedCountryCode))
                     findNavController().navigate(
                             LoginFragmentDirections.actionLoginFragmentToOtpFragment(number, null, null))
                 else

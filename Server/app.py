@@ -185,7 +185,7 @@ def send_avatar_img(path):
 @app.route('/update-friends', methods=['POST'])
 def update_friends():
     uid = request.values['uid']
-    phone_numbers = request.values['phone_numbers']
+    phone_numbers = request.values['phoneNumbers']
 
     print("uid=${0}, contacts={1}".format(uid, phone_numbers))
 
