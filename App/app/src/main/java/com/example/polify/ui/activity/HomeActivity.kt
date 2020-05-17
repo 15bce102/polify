@@ -5,10 +5,12 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import coil.api.load
 import com.andruid.magic.game.api.GameRepository
+import com.andruid.magic.game.model.response.Result
 import com.example.polify.R
 import com.example.polify.databinding.ActivityHomeBinding
 import com.example.polify.eventbus.AvatarEvent
@@ -42,9 +44,13 @@ class HomeActivity : FullScreenActivity() {
         super.onCreate(savedInstanceState)
 
         binding = DataBindingUtil.setContentView<ActivityHomeBinding>(this, R.layout.activity_home).apply {
-            viewModel = userViewModel
             lifecycleOwner = this@HomeActivity
         }
+
+        userViewModel.user.observe(this, Observer { result ->
+            if (result.status == Result.Status.SUCCESS)
+                binding.user = result.data?.user
+        })
 
         initViewPager()
         initListeners()
@@ -113,7 +119,7 @@ class HomeActivity : FullScreenActivity() {
             mAuth.currentUser?.let { user ->
                 val userName = binding.txtProfileName.text.toString().trim()
                 val response = GameRepository.updateProfile(user.uid, userName, avatarUrl)
-                if (response?.success == true)
+                if (response.status == Result.Status.SUCCESS)
                     toast("Avatar updated")
             }
         }

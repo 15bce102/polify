@@ -6,8 +6,8 @@
     <data>
 
         <variable
-            name="viewModel"
-            type="com.example.polify.ui.viewmodel.UserViewModel" />
+            name="user"
+            type="com.andruid.magic.game.model.data.User" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -62,7 +62,7 @@
                         android:layout_marginTop="10dp"
                         android:background="@color/cardview_dark_background"
                         android:scaleType="centerCrop"
-                        app:imageUrl="@{viewModel.user.avatar}"
+                        app:imageUrl="@{user.avatar}"
                         tools:ignore="PrivateResource"
                         tools:src="@mipmap/ic_profile" />
 
@@ -75,7 +75,7 @@
                         android:layout_toEndOf="@id/img_profile"
                         android:fontFamily="sans-serif-condensed-medium"
                         android:gravity="start"
-                        android:text="@{viewModel.user.userName}"
+                        android:text="@{user.userName}"
                         android:textAlignment="textStart"
                         android:textColor="#ffffff"
                         android:textSize="28sp"
@@ -90,7 +90,7 @@
                         android:layout_marginTop="40dp"
                         android:layout_toEndOf="@+id/img_profile"
                         android:fontFamily="sans-serif-thin"
-                        android:text="@{viewModel.user.level}"
+                        android:text="@{user.level}"
                         android:textColor="#ffffff"
                         android:textSize="15sp"
                         tools:text="Newbie" />
@@ -121,7 +121,7 @@
                         android:layout_marginTop="40dp"
                         android:layout_toEndOf="@+id/txt_profile_name"
                         android:fontFamily="sans-serif-black"
-                        android:text="@{String.valueOf(viewModel.user.coins)}"
+                        android:text="@{String.valueOf(user.coins)}"
                         android:textColor="#ffffff"
                         android:textSize="15sp"
                         tools:text="1000" />

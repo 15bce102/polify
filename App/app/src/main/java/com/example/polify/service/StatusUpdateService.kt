@@ -6,6 +6,7 @@ import android.os.Handler
 import android.os.IBinder
 import android.util.Log
 import com.andruid.magic.game.api.GameRepository
+import com.andruid.magic.game.model.response.Result
 import com.example.polify.data.ACTION_START_STATUS_UPDATE
 import com.example.polify.data.STATUS_ONLINE
 import com.google.firebase.auth.FirebaseAuth
@@ -41,7 +42,7 @@ class StatusUpdateService : Service() {
         GlobalScope.launch {
             mAuth.currentUser?.let { user ->
                 val response = GameRepository.updateStatus(user.uid, STATUS_ONLINE)
-                if (response?.success == true)
+                if (response.status == Result.Status.SUCCESS)
                     Log.d(TAG, "status updated")
                 else
                     Log.d(TAG, "status update failed")

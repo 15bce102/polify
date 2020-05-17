@@ -1,6 +1,6 @@
 package com.andruid.magic.game.model.response
 
-import com.andruid.magic.game.model.Battle
+import com.andruid.magic.game.model.data.Battle
 
 data class BattleResponse(
         override val success: Boolean,

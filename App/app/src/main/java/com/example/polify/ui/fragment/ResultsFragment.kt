@@ -16,6 +16,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.andruid.magic.game.api.GameRepository
 import com.andruid.magic.game.model.data.PlayerResult
+import com.andruid.magic.game.model.response.Result
 import com.example.polify.R
 import com.example.polify.data.*
 import com.example.polify.databinding.FragmentResultsOneVsOneBinding
@@ -104,7 +105,7 @@ class ResultsFragment : Fragment() {
                 lifecycleScope.launch {
                     mAuth.currentUser?.let { user ->
                         val response = GameRepository.updateBattleScore(battleId, user.uid, score)
-                        if (response?.success == true)
+                        if (response.status == Result.Status.SUCCESS)
                             Log.d(TAG, "score updated")
                         else
                             Log.d(TAG, "score not updated")

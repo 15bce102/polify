@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.andruid.magic.game.api.GameRepository
+import com.andruid.magic.game.model.response.Result
 import com.example.polify.databinding.FragmentOtpBinding
 import com.example.polify.ui.activity.HomeActivity
 import com.google.android.gms.tasks.TaskExecutors
@@ -112,29 +113,27 @@ class OtpFragment : Fragment() {
                             toast("token = $token")
                             lifecycleScope.launch {
                                 val response = GameRepository.updateFcmToken(user.uid, token)
-                                if (response?.success == true)
+                                if (response.status == Result.Status.SUCCESS)
                                     Log.d(TAG, "token updated successfully")
                                 else
-                                    Log.e(TAG, "token update failed: ${response?.message ?: "null response"}")
+                                    Log.e(TAG, "token update failed: ${response.message ?: "null response"}")
                             }
                         }
 
                         lifecycleScope.launch {
                             if (userName != null && avatarUri != null) {
                                 val response = GameRepository.updateProfile(user.uid, userName!!, avatarUri!!)
-                                if (response == null)
-                                    toast("null response")
 
-                                if (response?.success == true)
+                                if (response.status == Result.Status.SUCCESS)
                                     startHomeActivity()
                                 else
-                                    toast(response?.message ?: "null message")
+                                    toast(response.message ?: "null message")
                             } else {
                                 val response = GameRepository.login(user.uid)
-                                if (response?.success == true)
+                                if (response.status == Result.Status.SUCCESS)
                                     startHomeActivity()
                                 else
-                                    toast(response?.message!!)
+                                    toast(response.message!!)
                             }
                         }
                     }

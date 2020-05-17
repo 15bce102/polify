@@ -8,6 +8,7 @@ import com.andruid.magic.game.model.data.Battle
 import com.andruid.magic.game.model.data.OneVsOneBattle
 import com.andruid.magic.game.model.data.Player
 import com.andruid.magic.game.model.data.PlayerResult
+import com.andruid.magic.game.model.response.Result
 import com.example.polify.data.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.messaging.FirebaseMessagingService
@@ -35,10 +36,10 @@ class CloudMessagingService : FirebaseMessagingService(), CoroutineScope {
         launch {
             FirebaseAuth.getInstance().currentUser?.let { user ->
                 val response = GameRepository.updateFcmToken(user.uid, token)
-                if (response?.success == true)
+                if (response.status == Result.Status.SUCCESS)
                     Log.d(TAG, "fcm token updated")
                 else
-                    Log.d(TAG, response?.message ?: "fcm token update failed")
+                    Log.d(TAG, response.message ?: "fcm token update failed")
             }
         }
     }

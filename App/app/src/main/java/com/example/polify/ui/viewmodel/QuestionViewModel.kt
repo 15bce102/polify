@@ -4,16 +4,19 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
 import com.andruid.magic.game.api.GameRepository
 import com.example.polify.data.BATTLE_TEST
+import com.andruid.magic.game.model.response.Result
+
 
 class QuestionViewModel(bid: String, battleType: String) : ViewModel() {
     val questions = liveData {
+        emit(Result.loading(null))
+
         if (battleType == BATTLE_TEST) {
             val questions = GameRepository.getPracticeQuestions()
-            emit(questions)
+            emit(Result.success(questions))
         } else {
             val response = GameRepository.getBattleQuestions(bid)
-            if (response?.success == true)
-                emit(response.questions)
+            emit(response)
         }
     }
 }

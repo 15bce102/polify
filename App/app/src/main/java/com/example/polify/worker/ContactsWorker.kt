@@ -8,6 +8,7 @@ import androidx.core.content.ContextCompat
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.andruid.magic.game.api.GameRepository
+import com.andruid.magic.game.model.response.Result.Status
 import com.example.polify.repository.ContactFetcher
 import com.example.polify.util.toFullPhoneNumbers
 import com.google.firebase.auth.FirebaseAuth
@@ -41,7 +42,7 @@ class ContactsWorker(appContext: Context, params: WorkerParameters) : CoroutineW
             Log.d(TAG, "contacts size = ${phoneNumbers.size}")
             phoneNumbers.chunked(MAX_CONTACTS_SIZE).forEach { numbers ->
                 val response = GameRepository.updateFriends(user.uid, numbers)
-                if (response?.success == true) {
+                if (response.status == Status.SUCCESS) {
                     Log.d(TAG, "friends update successful")
                 } else {
                     Log.d(TAG, "friends update failed")

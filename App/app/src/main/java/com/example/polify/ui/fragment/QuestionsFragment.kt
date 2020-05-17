@@ -14,6 +14,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.andruid.magic.game.model.data.Question
+import com.andruid.magic.game.model.response.Result
 import com.example.polify.R
 import com.example.polify.data.BATTLE_TEST
 import com.example.polify.data.QUE_TIME_LIMIT_MS
@@ -29,7 +30,6 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import splitties.toast.toast
-import java.lang.IllegalStateException
 
 class QuestionsFragment : Fragment() {
     companion object {
@@ -116,10 +116,14 @@ class QuestionsFragment : Fragment() {
             })
         }
 
-        questionsViewModel.questions.observe(viewLifecycleOwner, Observer {
-            questionsAdapter.submitList(it)
-            binding.barProgressBar.max = it.size
-            startMatch(it)
+        questionsViewModel.questions.observe(viewLifecycleOwner, Observer { result ->
+            if (result.status == Result.Status.SUCCESS) {
+                (result.data as List<*>?)?.map { q -> q as Question }?.let { questions ->
+                    questionsAdapter.submitList(questions)
+                    binding.barProgressBar.max = questions.size
+                    startMatch(questions)
+                }
+            }
         })
 
         return binding.root

@@ -8,6 +8,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DefaultItemAnimator
+import com.andruid.magic.game.model.response.Result
 import com.andruid.magic.game.server.RetrofitClient.BASE_URL
 import com.example.polify.databinding.DialogAvatarBinding
 import com.example.polify.eventbus.AvatarEvent
@@ -46,8 +47,9 @@ class AvatarDialogFragment : DialogFragment() {
             }))
         }
 
-        avatarViewModel.avatars.observe(this, Observer { avatars ->
-            avatarAdapter.submitList(avatars.map { avatar -> BASE_URL.plus(avatar) })
+        avatarViewModel.avatars.observe(this, Observer { response ->
+            if (response.status == Result.Status.SUCCESS)
+                avatarAdapter.submitList(response.data?.avatars?.map { avatar -> BASE_URL.plus(avatar) })
         })
 
         return binding.root

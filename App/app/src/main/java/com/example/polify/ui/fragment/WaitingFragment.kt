@@ -9,6 +9,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.andruid.magic.game.api.GameRepository
+import com.andruid.magic.game.model.response.Result
 import com.example.polify.databinding.FragmentWaitingBinding
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
@@ -35,7 +36,7 @@ class WaitingFragment : Fragment() {
                 lifecycleScope.launch {
                     mAuth.currentUser?.let { user ->
                         val response = GameRepository.leaveWaitingRoom(user.uid)
-                        if (response?.success == true)
+                        if (response.status == Result.Status.SUCCESS)
                             Log.d(TAG, "left waiting room")
                         else
                             Log.e(TAG, "left waiting room error")
@@ -60,9 +61,13 @@ class WaitingFragment : Fragment() {
         FirebaseAuth.getInstance().currentUser?.let { user ->
             lifecycleScope.launch {
                 val response = GameRepository.joinWaitingRoom(user.uid)
-                if (response?.success == true)
-                    Log.d(TAG, "waiting room joined")
-                else
+                if (response.status == Result.Status.SUCCESS) {
+                    val data = response.data
+                    if (data?.success == true)
+                        Log.d(TAG, "waiting room joined")
+                    else
+                        Log.e(TAG, "waiting room join failed: ${data?.message}")
+                } else
                     Log.e(TAG, "waiting room join failed")
             }
         }

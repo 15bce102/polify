@@ -47,8 +47,4 @@ interface RetrofitService {
 
     @GET("/join-battle")
     suspend fun joinBattle(@Query("uid") uid: String, @Query("bid") bid: String): Response<BattleResponse>
-
-    @GET("/my-rooms")
-    suspend fun getMyRooms(@Query("uid") uid: String, @Query("page_start") pageStart: Int,
-                           @Query("page_size") pageSize: Int): Response<RoomResponse>
 }
