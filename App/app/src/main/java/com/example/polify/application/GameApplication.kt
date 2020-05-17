@@ -23,8 +23,6 @@ class GameApplication : Application(), LifecycleObserver {
         ProcessLifecycleOwner.get().lifecycle.addObserver(this)
         GameRepository.init(this)
         ContactFetcher.init(this)
-
-
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)

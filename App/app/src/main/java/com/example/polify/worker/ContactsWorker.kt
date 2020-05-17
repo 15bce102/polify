@@ -17,29 +17,38 @@ import kotlinx.coroutines.withContext
 class ContactsWorker(appContext: Context, params: WorkerParameters) : CoroutineWorker(appContext, params) {
     companion object {
         private val TAG = "${ContactsWorker::class.java.simpleName}Log"
+        private const val MAX_CONTACTS_SIZE = 50
     }
 
     private val mAuth by lazy { FirebaseAuth.getInstance() }
 
     override suspend fun doWork(): Result {
+        Log.d(TAG, "started worker")
         return mAuth.currentUser?.let { user ->
             if (ContextCompat.checkSelfPermission(applicationContext, Manifest.permission.READ_CONTACTS)
                     != PackageManager.PERMISSION_GRANTED)
                 Result.success()
 
+            Log.d(TAG, "fetching contacts")
             val contacts = withContext(Dispatchers.IO) { ContactFetcher.fetchAll() }
+            Log.d(TAG, "getting numbers from contacts")
             val phoneNumbers = withContext(Dispatchers.IO) {
-                contacts.asSequence().map { contact -> contact.numbers }.flatten()
-                        .map { contactPhone -> contactPhone.number }.toSet().toList().toFullPhoneNumbers(applicationContext)
+                contacts.map { contact -> contact.numbers }.flatten()
+                        .map { contactPhone -> contactPhone.number }
+                        .toFullPhoneNumbers(applicationContext).toSet()
             }
-            val response = GameRepository.updateFriends(user.uid, phoneNumbers)
-            if (response?.success == true) {
-                Log.d(TAG, "friends update successful")
-                Result.success()
-            } else {
-                Log.d(TAG, "friends update failed")
-                Result.retry()
+
+            Log.d(TAG, "contacts size = ${phoneNumbers.size}")
+            phoneNumbers.chunked(MAX_CONTACTS_SIZE).forEach { numbers ->
+                val response = GameRepository.updateFriends(user.uid, numbers)
+                if (response?.success == true) {
+                    Log.d(TAG, "friends update successful")
+                } else {
+                    Log.d(TAG, "friends update failed")
+                    return@let Result.retry()
+                }
             }
+            Result.success()
         } ?: run { Result.failure() }
     }
 }

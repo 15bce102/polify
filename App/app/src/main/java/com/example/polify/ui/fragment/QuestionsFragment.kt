@@ -29,6 +29,7 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import splitties.toast.toast
+import java.lang.IllegalStateException
 
 class QuestionsFragment : Fragment() {
     companion object {
@@ -72,8 +73,12 @@ class QuestionsFragment : Fragment() {
 
     private fun finishGame() {
         toast("Your score = $score/10!")
-        findNavController().navigate(
-                QuestionsFragmentDirections.actionQuestionsFragmentToResultsFragment(battleId, battleType, score))
+        try {
+            findNavController().navigate(
+                    QuestionsFragmentDirections.actionQuestionsFragmentToResultsFragment(battleId, battleType, score))
+        } catch (e: IllegalStateException) {
+            e.printStackTrace()
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -164,8 +169,8 @@ class QuestionsFragment : Fragment() {
         selectedOptPos = opt.optId[0] - 'A'
 
         val optionsRV = binding.viewPager.findViewById<RecyclerView>(R.id.optionsRV)
-        val selectedViewHolder = optionsRV.findViewHolderForItemId(selectedOptPos.toLong()) as OptionViewHolder
-        selectedViewHolder.highlightOption()
+        val selectedViewHolder = optionsRV.findViewHolderForItemId(selectedOptPos.toLong()) as OptionViewHolder?
+        selectedViewHolder?.highlightOption()
 
         optionsEnabled = false
     }
@@ -177,8 +182,8 @@ class QuestionsFragment : Fragment() {
             Log.d(TAG, "selected option pos = $selectedOptPos")
             val correctPos = question.correctAnswer[0] - 'A'
 
-            val correctViewHolder = recyclerView.findViewHolderForItemId(correctPos.toLong()) as OptionViewHolder
-            correctViewHolder.highlightAnswer(true)
+            val correctViewHolder = recyclerView.findViewHolderForItemId(correctPos.toLong()) as OptionViewHolder?
+            correctViewHolder?.highlightAnswer(true)
 
             if (selectedOptPos == -1)
                 return
@@ -186,8 +191,8 @@ class QuestionsFragment : Fragment() {
             if (selectedOptPos == correctPos)
                 score++
             else {
-                val wrongViewHolder = recyclerView.findViewHolderForItemId(selectedOptPos.toLong()) as OptionViewHolder
-                wrongViewHolder.highlightAnswer(false)
+                val wrongViewHolder = recyclerView.findViewHolderForItemId(selectedOptPos.toLong()) as OptionViewHolder?
+                wrongViewHolder?.highlightAnswer(false)
             }
 
             selectedOptPos = -1

@@ -3,7 +3,7 @@ package com.example.polify.repository
 import android.app.Application
 import android.content.Context
 import android.provider.ContactsContract
-import androidx.loader.content.CursorLoader
+import androidx.core.content.ContentResolverCompat
 import com.example.polify.model.Contact
 
 object ContactFetcher {
@@ -19,16 +19,17 @@ object ContactFetcher {
                 ContactsContract.Contacts.DISPLAY_NAME
         )
         val listContacts: ArrayList<Contact> = ArrayList()
-        val cursorLoader = CursorLoader(
-                context,
+        val cursor = ContentResolverCompat.query(
+                context.contentResolver,
                 ContactsContract.Contacts.CONTENT_URI,
                 projectionFields,  // the columns to retrieve
                 null,  // the selection criteria (none)
                 null,  // the selection args (none)
-                null // the sort order (default)
+                null, // the sort order (default)
+                null
         )
 
-        cursorLoader.loadInBackground()?.use { c ->
+        cursor?.use { c ->
             val contactsMap: HashMap<String, Contact>? = HashMap(c.count)
 
             if (c.moveToFirst()) {
@@ -55,15 +56,16 @@ object ContactFetcher {
                 ContactsContract.CommonDataKinds.Phone.TYPE,
                 ContactsContract.CommonDataKinds.Phone.CONTACT_ID
         )
-        val loader = CursorLoader(
-                context,
+        val cursor = ContentResolverCompat.query(
+                context.contentResolver,
                 ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                 numberProjection,
                 null,
                 null,
+                null,
                 null
         )
-        loader.loadInBackground()?.use { phone ->
+        cursor?.use { phone ->
             if (phone.moveToFirst()) {
                 val contactNumberColumnIndex: Int = phone.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)
                 val contactTypeColumnIndex: Int = phone.getColumnIndex(ContactsContract.CommonDataKinds.Phone.TYPE)

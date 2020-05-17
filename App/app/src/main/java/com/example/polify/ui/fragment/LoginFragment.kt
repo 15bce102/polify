@@ -39,7 +39,8 @@ class LoginFragment : Fragment() {
                 val number = phoneET.text.toString().trim()
                 if (requireContext().isValidPhoneNumber(number, countryCodePicker.selectedCountryCode))
                     findNavController().navigate(
-                            LoginFragmentDirections.actionLoginFragmentToOtpFragment(number, null, null))
+                            LoginFragmentDirections.actionLoginFragmentToOtpFragment(
+                                    countryCodePicker.fullNumberWithPlus, null, null))
                 else
                     toast(R.string.error_invalid_number)
             }

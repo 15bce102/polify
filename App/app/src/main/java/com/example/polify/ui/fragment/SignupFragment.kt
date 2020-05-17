@@ -68,7 +68,8 @@ class SignupFragment : Fragment() {
                 if (requireContext().isValidPhoneNumber(number, countryCodePicker.selectedCountryCode)
                         && isValidUserName(userName))
                     findNavController().navigate(
-                            SignupFragmentDirections.actionSignupFragmentToOtpFragment(number, userName, avatarUrl))
+                            SignupFragmentDirections.actionSignupFragmentToOtpFragment(
+                                    countryCodePicker.fullNumberWithPlus, userName, avatarUrl))
                 else
                     toast(R.string.error_invalid_number)
             }
