@@ -76,6 +76,11 @@ class CloudMessagingService : FirebaseMessagingService(), CoroutineScope {
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        job.cancel()
+    }
+
     private fun String.toBattle(): Battle? {
         val gson = Gson()
         val map: Map<String, String> = gson.fromJson(this, object : TypeToken<Map<String, String>>() {}.type)

@@ -67,6 +67,7 @@ dependencies {
     implementation "androidx.work:work-runtime-ktx:2.3.4"
 
     implementation "com.google.android.material:material:1.1.0"
+    implementation 'com.google.android.exoplayer:exoplayer:2.11.1'
     implementation 'com.google.firebase:firebase-auth-ktx:19.3.1'
     implementation 'com.google.firebase:firebase-messaging:20.1.7'
     implementation 'com.google.firebase:firebase-common-ktx:19.3.0'

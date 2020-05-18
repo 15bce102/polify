@@ -21,9 +21,9 @@ import com.example.polify.ui.dialog.AvatarDialogFragment
 import com.example.polify.ui.viewmodel.BaseViewModelFactory
 import com.example.polify.ui.viewmodel.UserViewModel
 import com.example.polify.util.scheduleFriendsUpdate
+import com.example.polify.util.setOnSoundClickListener
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
-import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import splitties.resources.color
@@ -56,6 +56,49 @@ class HomeActivity : FullScreenActivity() {
         initListeners()
 
         scheduleFriendsUpdate()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        binding.unbind()
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onAvatarEvent(avatarEvent: AvatarEvent) {
+        val (avatarUrl) = avatarEvent
+
+        binding.imgProfile.load(avatarUrl)
+
+        lifecycleScope.launch {
+            mAuth.currentUser?.let { user ->
+                val userName = binding.txtProfileName.text.toString().trim()
+                val response = GameRepository.updateProfile(user.uid, userName, avatarUrl)
+                if (response.status == Result.Status.SUCCESS)
+                    toast("Avatar updated")
+            }
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onBattleSelectEvent(battleSelectEvent: BattleSelectEvent) {
+        when (battleSelectEvent.battle.title) {
+            R.string.title_1v1 -> {
+                startActivity(Intent(this, OneVsOneActivity::class.java))
+            }
+            R.string.title_multiplayer -> {
+
+            }
+            R.string.title_test -> {
+                startActivity(Intent(this, PracticeActivity::class.java))
+            }
+        }
+    }
+
+    private fun initListeners() {
+        binding.imgProfile.setOnSoundClickListener {
+            val dialog = AvatarDialogFragment.getInstance()
+            dialog.show(supportFragmentManager, "avatarDialog")
+        }
     }
 
     private fun initViewPager() {
@@ -91,59 +134,6 @@ class HomeActivity : FullScreenActivity() {
                         setBackgroundColor(colors[colors.size - 1])
                 }
             })
-        }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        binding.unbind()
-    }
-
-    override fun onStart() {
-        super.onStart()
-        EventBus.getDefault().register(this)
-    }
-
-    override fun onStop() {
-        super.onStop()
-        EventBus.getDefault().unregister(this)
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onAvatarEvent(avatarEvent: AvatarEvent) {
-        val (avatarUrl) = avatarEvent
-
-        binding.imgProfile.load(avatarUrl)
-
-        lifecycleScope.launch {
-            mAuth.currentUser?.let { user ->
-                val userName = binding.txtProfileName.text.toString().trim()
-                val response = GameRepository.updateProfile(user.uid, userName, avatarUrl)
-                if (response.status == Result.Status.SUCCESS)
-                    toast("Avatar updated")
-            }
-        }
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onBattleSelectEvent(battleSelectEvent: BattleSelectEvent) {
-        when (battleSelectEvent.battle.title) {
-            R.string.title_1v1 -> {
-                startActivity(Intent(this, OneVsOneActivity::class.java))
-            }
-            R.string.title_multiplayer -> {
-
-            }
-            R.string.title_test -> {
-                startActivity(Intent(this, PracticeActivity::class.java))
-            }
-        }
-    }
-
-    private fun initListeners() {
-        binding.imgProfile.setOnClickListener {
-            val dialog = AvatarDialogFragment.getInstance()
-            dialog.show(supportFragmentManager, "avatarDialog")
         }
     }
 }
