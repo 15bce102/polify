@@ -60,6 +60,19 @@ class OneVsOneActivity : FullScreenActivity() {
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
         LocalBroadcastManager.getInstance(this).registerReceiver(gameReceiver, IntentFilter(ACTION_MATCH_FOUND))
+
+        findNavController(R.id.nav_host_fragment).addOnDestinationChangedListener { _, destination, _ ->
+            when (destination.id) {
+                R.id.questionsFragment -> {
+                    Log.d("lifeLog", "destination changed questionsFragment")
+                    service?.playSong(R.raw.game)
+                }
+                else -> {
+                    Log.d("lifeLog", "destination changed other fragment")
+                    service?.playSong(R.raw.normal)
+                }
+            }
+        }
     }
 
     override fun onDestroy() {
