@@ -3,43 +3,42 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation_practice"
-    app:startDestination="@id/questionsFragment">
+    app:startDestination="@id/questionsTestFragment">
 
     <fragment
-        android:id="@+id/questionsFragment"
+        android:id="@+id/questionsTestFragment"
         android:name="com.example.polify.ui.fragment.QuestionsFragment"
         android:label="fragment_questions"
         tools:layout="@layout/fragment_questions">
         <argument
-            android:name="battle_id"
-            app:argType="string"
-            android:defaultValue="test" />
+            android:name="battle"
+            android:defaultValue="@null"
+            app:argType="com.andruid.magic.game.model.data.Battle"
+            app:nullable="true" />
         <argument
             android:name="start_time"
-            app:argType="long"
-            android:defaultValue="-1L" />
-        <argument android:name="battleType"
-            app:argType="string"
-            android:defaultValue="test" />
+            android:defaultValue="-1L"
+            app:argType="long" />
+        <argument
+            android:name="battleType"
+            android:defaultValue="test"
+            app:argType="string" />
         <action
-            android:id="@+id/action_questionsFragment_to_resultsFragment"
-            app:destination="@id/resultsFragment"
+            android:id="@+id/action_questionsFragment_to_resultsTestFragment"
+            app:destination="@id/resultsTestFragment"
             app:popUpTo="@id/questionsFragment"
             app:popUpToInclusive="true" />
     </fragment>
 
     <fragment
-        android:id="@+id/resultsFragment"
-        android:name="com.example.polify.ui.fragment.ResultsFragment"
-        android:label="fragment_results"
-        tools:layout="@layout/fragment_results_one_vs_one">
+        android:id="@+id/resultsTestFragment"
+        android:name="com.example.polify.ui.fragment.ResultsTestFragment"
+        android:label="fragment_results_test"
+        tools:layout="@layout/fragment_results_test">
         <argument
             android:name="battle_id"
-            app:argType="string"
-            android:defaultValue="test" />
-        <argument android:name="battleType"
-            app:argType="string"
-            android:defaultValue="test" />
+            android:defaultValue="test"
+            app:argType="string" />
         <argument
             android:name="score"
             android:defaultValue="0"

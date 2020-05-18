@@ -23,35 +23,34 @@
         android:label="fragment_questions"
         tools:layout="@layout/fragment_questions">
         <argument
-            android:name="battle_id"
-            app:argType="string"
-            android:defaultValue="test" />
+            android:name="battle"
+            android:defaultValue="@null"
+            app:argType="com.andruid.magic.game.model.data.Battle"
+            app:nullable="true" />
         <argument
             android:name="start_time"
-            app:argType="long"
-            android:defaultValue="-1L" />
-        <argument android:name="battleType"
-            app:argType="string"
-            android:defaultValue="test" />
+            android:defaultValue="-1L"
+            app:argType="long" />
+        <argument
+            android:name="battleType"
+            android:defaultValue="test"
+            app:argType="string" />
         <action
-            android:id="@+id/action_questionsFragment_to_resultsFragment"
-            app:destination="@id/resultsFragment"
+            android:id="@+id/action_questionsFragment_to_resultsOneVsOneFragment"
+            app:destination="@id/resultsOneVsOneFragment"
             app:popUpTo="@id/questionsFragment"
             app:popUpToInclusive="true" />
     </fragment>
 
     <fragment
-        android:id="@+id/resultsFragment"
-        android:name="com.example.polify.ui.fragment.ResultsFragment"
-        android:label="fragment_results"
+        android:id="@+id/resultsOneVsOneFragment"
+        android:name="com.example.polify.ui.fragment.ResultsOneVsOneFragment"
+        android:label="fragment_results_one_vs_one"
         tools:layout="@layout/fragment_results_one_vs_one">
         <argument
             android:name="battle_id"
-            app:argType="string"
-            android:defaultValue="test" />
-        <argument android:name="battleType"
-            app:argType="string"
-            android:defaultValue="test" />
+            android:defaultValue="test"
+            app:argType="string" />
         <argument
             android:name="score"
             android:defaultValue="0"

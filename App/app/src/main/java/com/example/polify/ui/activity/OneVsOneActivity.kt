@@ -12,6 +12,7 @@ import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.findNavController
+import com.andruid.magic.game.model.data.Battle
 import com.andruid.magic.game.model.data.OneVsOneBattle
 import com.example.polify.R
 import com.example.polify.data.ACTION_MATCH_FOUND
@@ -33,7 +34,7 @@ class OneVsOneActivity : FullScreenActivity() {
                         battle = it.getParcelable(EXTRA_BATTLE)!!
 
                         if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED))
-                            startBattle(battle.battleId)
+                            startBattle(battle)
                         else {
                             val startTime = System.currentTimeMillis()
 
@@ -41,7 +42,7 @@ class OneVsOneActivity : FullScreenActivity() {
 
                                 @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
                                 fun onForeground() {
-                                    startBattle(battle.battleId, startTime)
+                                    startBattle(battle, startTime)
                                 }
                             })
                         }
@@ -80,8 +81,8 @@ class OneVsOneActivity : FullScreenActivity() {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(gameReceiver)
     }
 
-    private fun startBattle(battleId: String, startTime: Long = -1L) {
+    private fun startBattle(battle: Battle, startTime: Long = -1L) {
         findNavController(R.id.nav_host_fragment).navigate(
-                WaitingFragmentDirections.actionWaitingFragmentToQuestionsFragment(battleId, startTime, BATTLE_ONE_VS_ONE))
+                WaitingFragmentDirections.actionWaitingFragmentToQuestionsFragment(battle, startTime, BATTLE_ONE_VS_ONE))
     }
 }

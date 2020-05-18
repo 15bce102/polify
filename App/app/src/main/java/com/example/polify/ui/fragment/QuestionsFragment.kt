@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -13,9 +14,11 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
+import com.andruid.magic.game.model.data.Battle
 import com.andruid.magic.game.model.data.Question
 import com.andruid.magic.game.model.response.Result
 import com.example.polify.R
+import com.example.polify.data.BATTLE_ONE_VS_ONE
 import com.example.polify.data.BATTLE_TEST
 import com.example.polify.data.QUE_TIME_LIMIT_MS
 import com.example.polify.databinding.FragmentQuestionsBinding
@@ -39,11 +42,11 @@ class QuestionsFragment : Fragment() {
     private val questionsAdapter = QuestionAdapter()
     private val questionsViewModel by viewModels<QuestionViewModel> {
         BaseViewModelFactory {
-            QuestionViewModel(battleId, battleType)
+            QuestionViewModel(battle, battleType)
         }
     }
 
-    private lateinit var battleId: String
+    private var battle: Battle? = null
     private lateinit var binding: FragmentQuestionsBinding
 
     private var battleType = BATTLE_TEST
@@ -74,8 +77,17 @@ class QuestionsFragment : Fragment() {
     private fun finishGame() {
         toast("Your score = $score/10!")
         try {
-            findNavController().navigate(
-                    QuestionsFragmentDirections.actionQuestionsFragmentToResultsFragment(battleId, battleType, score))
+            when (battleType) {
+                BATTLE_ONE_VS_ONE ->
+                    findNavController().navigate(R.id.resultsOneVsOneFragment, bundleOf(
+                            "battle_id" to (battle?.battleId ?: ""),
+                            "score" to score
+                    ))
+                BATTLE_TEST ->
+                    findNavController().navigate(R.id.resultsTestFragment, bundleOf(
+                            "score" to score
+                    ))
+            }
         } catch (e: IllegalStateException) {
             e.printStackTrace()
         }
@@ -88,7 +100,7 @@ class QuestionsFragment : Fragment() {
         arguments?.let {
             val safeArgs = QuestionsFragmentArgs.fromBundle(it)
 
-            battleId = safeArgs.battleId
+            battle = safeArgs.battle
             startTime = safeArgs.startTime
             battleType = safeArgs.battleType
         }
@@ -115,6 +127,8 @@ class QuestionsFragment : Fragment() {
                 }
             })
         }
+
+
 
         questionsViewModel.questions.observe(viewLifecycleOwner, Observer { result ->
             if (result.status == Result.Status.SUCCESS) {
