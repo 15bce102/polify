@@ -12,7 +12,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        tools:context=".ui.activity.HomeActivity">
 
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/viewPager"
@@ -62,19 +63,21 @@
                         android:layout_marginTop="10dp"
                         android:background="@color/cardview_dark_background"
                         android:scaleType="centerCrop"
+                        android:src="@drawable/logo"
                         app:imageUrl="@{user.avatar}"
-                        tools:ignore="PrivateResource"
-                        tools:src="@mipmap/ic_profile" />
+                        tools:ignore="PrivateResource" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/txt_profile_name"
-                        android:layout_width="wrap_content"
+                        android:layout_width="160dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
                         android:layout_marginTop="10dp"
                         android:layout_toEndOf="@id/img_profile"
+                        android:ellipsize="marquee"
                         android:fontFamily="sans-serif-condensed-medium"
                         android:gravity="start"
+                        android:maxLength="7"
                         android:text="@{user.userName}"
                         android:textAlignment="textStart"
                         android:textColor="#ffffff"
@@ -99,7 +102,7 @@
                         android:id="@+id/img_dollar"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
-                        android:layout_marginStart="30dp"
+                        android:layout_marginStart="20dp"
                         android:layout_marginTop="10dp"
                         android:layout_toEndOf="@+id/txt_profile_name"
                         android:src="@drawable/coinsrd" />
@@ -149,10 +152,10 @@
             android:src="@drawable/heart"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.45"
+            app:layout_constraintHorizontal_bias="0.465"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/viewPager"
-            app:layout_constraintVertical_bias="0.89" />
+            app:layout_constraintVertical_bias="0.884" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/appCompatTextView2"
@@ -164,7 +167,7 @@
             android:textColor="#000000"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.64"
+            app:layout_constraintHorizontal_bias="0.66"
             app:layout_constraintStart_toStartOf="parent" />
 
         <androidx.appcompat.widget.AppCompatImageView
@@ -174,9 +177,9 @@
             android:src="@drawable/flag"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.68"
+            app:layout_constraintHorizontal_bias="0.71"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/viewPager"
-            app:layout_constraintVertical_bias="0.89" />
+            app:layout_constraintVertical_bias="0.88" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

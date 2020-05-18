@@ -12,6 +12,7 @@ import com.andruid.magic.game.api.GameRepository
 import com.andruid.magic.game.model.response.Result
 import com.example.polify.databinding.FragmentOtpBinding
 import com.example.polify.ui.activity.HomeActivity
+import com.example.polify.util.setOnSoundClickListener
 import com.google.android.gms.tasks.TaskExecutors
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
@@ -21,7 +22,6 @@ import com.google.firebase.iid.FirebaseInstanceId
 import kotlinx.coroutines.launch
 import splitties.toast.toast
 import java.util.concurrent.TimeUnit
-
 
 class OtpFragment : Fragment() {
     companion object {
@@ -75,7 +75,7 @@ class OtpFragment : Fragment() {
 
         sendVerificationCode()
 
-        binding.verifyBtn.setOnClickListener {
+        binding.verifyBtn.setOnSoundClickListener {
             val code = binding.otpView.text.toString().trim()
             if (check && code.length == 6)
                 verifyCode(code)

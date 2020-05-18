@@ -25,7 +25,7 @@ open class FullScreenActivity : AppCompatActivity() {
     var service: GameService? = null
     private var isBound = false
 
-    private val sounds: IntArray = IntArray(3)
+    private val sounds = IntArray(3)
     private val soundPool by lazy {
         val attrs = AudioAttributes.Builder()
                 .setUsage(AudioAttributes.USAGE_GAME)
@@ -50,7 +50,7 @@ open class FullScreenActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        doBindService()
+        //doBindService()
         initSoundPool()
 
         volumeControlStream = AudioManager.STREAM_MUSIC
@@ -58,7 +58,7 @@ open class FullScreenActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        doUnbindService()
+        //doUnbindService()
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
@@ -69,12 +69,12 @@ open class FullScreenActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        service?.playSong(R.raw.normal)
+        //service?.playSong(R.raw.normal)
     }
 
     override fun onPause() {
         super.onPause()
-        service?.pauseSong()
+        //service?.pauseSong()
     }
 
     override fun onStart() {

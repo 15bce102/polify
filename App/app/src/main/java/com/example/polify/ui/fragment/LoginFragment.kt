@@ -10,6 +10,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.polify.R
 import com.example.polify.databinding.FragmentLoginBinding
 import com.example.polify.util.isValidPhoneNumber
+import com.example.polify.util.setOnSoundClickListener
 import splitties.toast.toast
 
 class LoginFragment : Fragment() {
@@ -35,7 +36,7 @@ class LoginFragment : Fragment() {
                     phoneTextInput.error = null
             }
 
-            sendOtpBtn.setOnClickListener {
+            sendOtpBtn.setOnSoundClickListener {
                 val number = phoneET.text.toString().trim()
                 if (requireContext().isValidPhoneNumber(number, countryCodePicker.selectedCountryCode))
                     findNavController().navigate(
@@ -45,7 +46,7 @@ class LoginFragment : Fragment() {
                     toast(R.string.error_invalid_number)
             }
 
-            textRegister.setOnClickListener {
+            textRegister.setOnSoundClickListener {
                 findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToSignupFragment())
             }
         }

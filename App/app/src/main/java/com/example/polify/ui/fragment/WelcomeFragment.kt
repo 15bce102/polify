@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.polify.databinding.FragmentWelcomeBinding
+import com.example.polify.util.setOnSoundClickListener
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionDeniedResponse
@@ -28,7 +29,7 @@ class WelcomeFragment : Fragment() {
     }
 
     private fun initListeners() {
-        binding.btnLogin.setOnClickListener {
+        binding.btnLogin.setOnSoundClickListener {
             Dexter.withContext(requireContext())
                     .withPermission(Manifest.permission.READ_CONTACTS)
                     .withListener(object : PermissionListener {
@@ -46,7 +47,7 @@ class WelcomeFragment : Fragment() {
                     }).check()
         }
 
-        binding.textRegister.setOnClickListener {
+        binding.textRegister.setOnSoundClickListener {
             Dexter.withContext(requireContext())
                     .withPermission(Manifest.permission.READ_CONTACTS)
                     .withListener(object : PermissionListener {

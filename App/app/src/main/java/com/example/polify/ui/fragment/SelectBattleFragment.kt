@@ -12,6 +12,7 @@ import com.example.polify.data.EXTRA_BATTLE_SELECT
 import com.example.polify.databinding.FragmentSelectBattleBinding
 import com.example.polify.eventbus.BattleSelectEvent
 import com.example.polify.model.BattleSelect
+import com.example.polify.util.setOnSoundClickListener
 import org.greenrobot.eventbus.EventBus
 
 class SelectBattleFragment : Fragment() {
@@ -32,7 +33,7 @@ class SelectBattleFragment : Fragment() {
             val b = requireArguments()[EXTRA_BATTLE_SELECT] as BattleSelect
             battle = b
 
-            button.setOnClickListener {
+            button.setOnSoundClickListener {
                 EventBus.getDefault().post(BattleSelectEvent(b))
             }
             executePendingBindings()

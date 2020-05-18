@@ -118,7 +118,7 @@ class QuestionsFragment : Fragment() {
 
         questionsViewModel.questions.observe(viewLifecycleOwner, Observer { result ->
             if (result.status == Result.Status.SUCCESS) {
-                (result.data as List<*>?)?.map { q -> q as Question }?.let { questions ->
+                (result.data?.questions)?.let { questions ->
                     questionsAdapter.submitList(questions)
                     binding.barProgressBar.max = questions.size
                     startMatch(questions)

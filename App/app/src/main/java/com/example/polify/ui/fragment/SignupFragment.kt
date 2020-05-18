@@ -15,6 +15,7 @@ import com.example.polify.eventbus.AvatarEvent
 import com.example.polify.ui.dialog.AvatarDialogFragment
 import com.example.polify.util.isValidPhoneNumber
 import com.example.polify.util.isValidUserName
+import com.example.polify.util.setOnSoundClickListener
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -47,7 +48,7 @@ class SignupFragment : Fragment() {
         binding.apply {
             imgAvatar.load(DEFAULT_AVATAR_URL)
 
-            imgAvatar.setOnClickListener {
+            imgAvatar.setOnSoundClickListener {
                 val dialog = AvatarDialogFragment.getInstance()
                 dialog.show(childFragmentManager, "avatarDialog")
             }
@@ -61,7 +62,7 @@ class SignupFragment : Fragment() {
                     phoneTextInput.error = null
             }
 
-            submitBtn.setOnClickListener {
+            submitBtn.setOnSoundClickListener {
                 val number = countryCodePicker.fullNumberWithPlus
                 val userName = userNameET.text.toString().trim()
 
@@ -74,7 +75,7 @@ class SignupFragment : Fragment() {
                     toast(R.string.error_invalid_number)
             }
 
-            textLogin.setOnClickListener {
+            textLogin.setOnSoundClickListener {
                 findNavController().navigate(SignupFragmentDirections.actionSignupFragmentToLoginFragment())
             }
         }

@@ -1,11 +1,10 @@
 package com.example.polify.ui.activity
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.WindowManager
 import com.example.polify.R
 
-class PracticeActivity : AppCompatActivity() {
+class PracticeActivity : FullScreenActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
