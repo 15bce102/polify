@@ -4,10 +4,7 @@ import android.content.Intent
 import android.util.Log
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.andruid.magic.game.api.GameRepository
-import com.andruid.magic.game.model.data.Battle
-import com.andruid.magic.game.model.data.OneVsOneBattle
-import com.andruid.magic.game.model.data.Player
-import com.andruid.magic.game.model.data.PlayerResult
+import com.andruid.magic.game.model.data.*
 import com.andruid.magic.game.model.response.Result
 import com.example.polify.data.*
 import com.google.firebase.auth.FirebaseAuth
@@ -73,6 +70,16 @@ class CloudMessagingService : FirebaseMessagingService(), CoroutineScope {
                     LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
                 }
             }
+
+            TYPE_ROOM_INVITE -> {
+                Log.d(TAG, "room invite: ${map[KEY_PAYLOAD]}")
+
+                map[KEY_PAYLOAD]?.toRoom().let { room ->
+                    val intent = Intent(ACTION_ROOM_INVITE)
+                            .putExtra(EXTRA_ROOM, room)
+                    LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
+                }
+            }
         }
     }
 
@@ -101,7 +108,9 @@ class CloudMessagingService : FirebaseMessagingService(), CoroutineScope {
         }
     }
 
-    private fun String.toPlayerResults(): ArrayList<PlayerResult> {
-        return Gson().fromJson(this, object : TypeToken<ArrayList<PlayerResult>>() {}.type)
-    }
+    private fun String.toPlayerResults(): ArrayList<PlayerResult> =
+            Gson().fromJson(this, object : TypeToken<ArrayList<PlayerResult>>() {}.type)
+
+    private fun String.toRoom(): Room =
+            Gson().fromJson(this, Room::class.java)
 }

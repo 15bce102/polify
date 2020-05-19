@@ -48,8 +48,18 @@ interface RetrofitService {
     @GET("/create-room")
     suspend fun createMultiPlayerRoom(@Query("uid") uid: String): Response<RoomResponse>
 
+    @GET("/leave-room")
+    suspend fun leaveMultiPlayerRoom(@Query("uid") uid: String,
+                                     @Query("room_id") roomId: String): Response<RoomResponse>
+
     @GET("/my-friends")
     suspend fun getMyFriends(@Query("uid") uid: String): Response<FriendsResponse>
+
+    @GET("/send-invite")
+    suspend fun sendMultiPlayerInvite(@Query("uid") uid: String, @Query("f_uid") friendUid: String,
+                                      @Query("room_id") roomId: String): Response<RoomResponse>
+
+
 
     @GET("/create-battle")
     suspend fun createBattle(@Query("uid") uid: String, @Query("coins") coins: Int): Response<BattleResponse>

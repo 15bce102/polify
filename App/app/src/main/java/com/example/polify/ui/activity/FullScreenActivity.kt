@@ -39,7 +39,7 @@ open class FullScreenActivity : AppCompatActivity() {
     private val serviceConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, binder: IBinder) {
             service = (binder as GameService.ServiceBinder).getService()
-            service?.playSong(R.raw.normal)
+            //service?.playSong(R.raw.normal)
         }
 
         override fun onServiceDisconnected(name: ComponentName?) {
@@ -50,7 +50,7 @@ open class FullScreenActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        //doBindService()
+        doBindService()
         initSoundPool()
 
         volumeControlStream = AudioManager.STREAM_MUSIC
@@ -58,7 +58,7 @@ open class FullScreenActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        //doUnbindService()
+        doUnbindService()
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {

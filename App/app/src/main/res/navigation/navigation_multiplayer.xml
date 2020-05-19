@@ -3,11 +3,28 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation_multiplayer"
-    app:startDestination="@id/roomFragment">
+    app:startDestination="@id/roomWaitingFragment">
+
+    <action
+        android:id="@+id/action_roomWaitingFragment_to_roomFragment"
+        app:destination="@id/roomFragment"
+        app:popUpTo="@id/roomWaitingFragment"
+        app:popUpToInclusive="true" />
+
+    <fragment
+        android:id="@+id/roomWaitingFragment"
+        android:name="com.example.polify.ui.fragment.RoomWaitingFragment"
+        android:label="fragment_room_waiting"
+        tools:layout="@layout/fragment_room_waiting" />
 
     <fragment
         android:id="@+id/roomFragment"
         android:name="com.example.polify.ui.fragment.RoomFragment"
         android:label="fragment_room"
-        tools:layout="@layout/fragment_room" />
+        tools:layout="@layout/fragment_room">
+
+        <argument
+            android:name="room"
+            app:argType="com.andruid.magic.game.model.data.Room" />
+    </fragment>
 </navigation>

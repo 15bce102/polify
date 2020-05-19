@@ -65,8 +65,17 @@ object GameRepository {
         return sendNetworkRequest { service.updateFriends(map) }
     }
 
+    suspend fun createMultiPlayerRoom(uid: String) =
+            sendNetworkRequest { service.createMultiPlayerRoom(uid) }
+
+    suspend fun leaveMultiPlayerRoom(uid: String, roomId: String) =
+            sendNetworkRequest { service.leaveMultiPlayerRoom(uid, roomId) }
+
     suspend fun getMyFriends(uid: String) =
             sendNetworkRequest { service.getMyFriends(uid) }
+
+    suspend fun sendMultiPlayerRoomInvite(uid: String, friendUid: String, roomId: String) =
+            sendNetworkRequest { service.sendMultiPlayerInvite(uid, friendUid, roomId) }
 
     suspend fun getPracticeQuestions(): List<Question> {
         return withContext(Dispatchers.IO) {
