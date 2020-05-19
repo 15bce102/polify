@@ -20,5 +20,6 @@ class AvatarViewHolder(private val binding: LayoutAvatarBinding) : RecyclerView.
 
     fun bind(avatarUrl: String) {
         binding.avatarUrl = avatarUrl
+        binding.executePendingBindings()
     }
 }

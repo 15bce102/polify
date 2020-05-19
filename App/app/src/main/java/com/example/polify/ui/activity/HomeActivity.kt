@@ -86,7 +86,7 @@ class HomeActivity : FullScreenActivity() {
                 startActivity(Intent(this, OneVsOneActivity::class.java))
             }
             R.string.title_multiplayer -> {
-
+                startActivity(Intent(this, MultiPlayerActivity::class.java))
             }
             R.string.title_test -> {
                 startActivity(Intent(this, PracticeActivity::class.java))

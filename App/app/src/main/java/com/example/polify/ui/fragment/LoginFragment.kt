@@ -6,11 +6,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.andruid.magic.game.api.GameRepository
+import com.andruid.magic.game.model.response.Result
 import com.example.polify.R
 import com.example.polify.databinding.FragmentLoginBinding
 import com.example.polify.util.isValidPhoneNumber
 import com.example.polify.util.setOnSoundClickListener
+import kotlinx.coroutines.launch
 import splitties.toast.toast
 
 class LoginFragment : Fragment() {
@@ -38,10 +42,20 @@ class LoginFragment : Fragment() {
 
             sendOtpBtn.setOnSoundClickListener {
                 val number = phoneET.text.toString().trim()
-                if (requireContext().isValidPhoneNumber(number, countryCodePicker.selectedCountryCode))
-                    findNavController().navigate(
-                            LoginFragmentDirections.actionLoginFragmentToOtpFragment(
-                                    countryCodePicker.fullNumberWithPlus, null, null))
+                if (requireContext().isValidPhoneNumber(number, countryCodePicker.selectedCountryCode)) {
+                    lifecycleScope.launch {
+                        val result = GameRepository.checkIfUserExists(countryCodePicker.fullNumberWithPlus)
+                        if (result.status == Result.Status.SUCCESS) {
+                            if (result.data?.success == true)
+                                findNavController().navigate(
+                                        LoginFragmentDirections.actionLoginFragmentToOtpFragment(
+                                                countryCodePicker.fullNumberWithPlus, null, null))
+                            else
+                                toast(result.data?.message ?: "")
+
+                        }
+                    }
+                }
                 else
                     toast(R.string.error_invalid_number)
             }

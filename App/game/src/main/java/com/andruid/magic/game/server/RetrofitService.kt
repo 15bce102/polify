@@ -5,6 +5,9 @@ import retrofit2.Response
 import retrofit2.http.*
 
 interface RetrofitService {
+    @GET("/check-user-exists")
+    suspend fun checkIfUserExists(@Query("phoneNumber") phoneNumber: String): Response<UserResponse>
+
     @GET("/login")
     suspend fun login(@Query("uid") uid: String): Response<UserResponse>
 
@@ -41,6 +44,12 @@ interface RetrofitService {
     @Headers("Content-Type: application/json")
     @POST("/update-friends")
     suspend fun updateFriends(@Body map: Map<String, @JvmSuppressWildcards Any>): Response<UserResponse>
+
+    @GET("/create-room")
+    suspend fun createMultiPlayerRoom(@Query("uid") uid: String): Response<RoomResponse>
+
+    @GET("/my-friends")
+    suspend fun getMyFriends(@Query("uid") uid: String): Response<FriendsResponse>
 
     @GET("/create-battle")
     suspend fun createBattle(@Query("uid") uid: String, @Query("coins") coins: Int): Response<BattleResponse>

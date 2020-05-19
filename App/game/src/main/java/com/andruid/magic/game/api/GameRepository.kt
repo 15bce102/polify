@@ -24,6 +24,9 @@ object GameRepository {
         service = RetrofitClient.getRetrofitInstance().create(RetrofitService::class.java)
     }
 
+    suspend fun checkIfUserExists(phoneNumber: String) =
+            sendNetworkRequest { service.checkIfUserExists(phoneNumber) }
+
     suspend fun login(uid: String): Result<UserResponse> =
             sendNetworkRequest { service.login(uid) }
 
@@ -61,6 +64,9 @@ object GameRepository {
         )
         return sendNetworkRequest { service.updateFriends(map) }
     }
+
+    suspend fun getMyFriends(uid: String) =
+            sendNetworkRequest { service.getMyFriends(uid) }
 
     suspend fun getPracticeQuestions(): List<Question> {
         return withContext(Dispatchers.IO) {

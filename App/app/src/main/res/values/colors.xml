@@ -14,4 +14,13 @@
     <color name="page1">#2AA7DF</color>
     <color name="page2">#D3334B</color>
     <color name="page3">#385A64</color>
+
+    <color name="online">#43CF0B</color>
+    <color name="offline">#F41811</color>
+    <color name="player1">#F7B0B7</color>
+    <color name="player2">#87ceeb</color>
+    <color name="player3">#D6444F</color>
+    <color name="player4">#F29E24</color>
+    <color name="busy">#D6D0B0</color>
+    <color name="start">#F7737F</color>
 </resources>

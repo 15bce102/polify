@@ -7,14 +7,16 @@
     <application
         android:name=".application.GameApplication"
         android:allowBackup="true"
+        android:debuggable="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:debuggable="true"
         android:testOnly="false"
         android:theme="@style/AppTheme.FullScreen"
         android:usesCleartextTraffic="true">
+        <activity android:name=".ui.activity.MultiPlayerActivity"></activity>
+
         <receiver
             android:name=".receiver.BootReceiver"
             android:enabled="true"
@@ -51,4 +53,5 @@
         <activity android:name=".ui.activity.LoginActivity" />
         <activity android:name=".ui.activity.HomeActivity" />
     </application>
+
 </manifest>

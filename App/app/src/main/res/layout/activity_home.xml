@@ -100,34 +100,39 @@
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/img_dollar"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_marginStart="20dp"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginRight="50dp"
+                        android:layout_marginEnd="50dp"
                         android:layout_marginTop="10dp"
-                        android:layout_toEndOf="@+id/txt_profile_name"
-                        android:src="@drawable/coinsrd" />
-
+                        android:src="@drawable/coins" />
                     <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginRight="20dp"
+                        android:layout_marginEnd="20dp"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:src="@drawable/plus"
                         android:id="@+id/img_plus"
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginTop="10dp"
-                        android:layout_toEndOf="@+id/img_dollar"
-                        android:src="@drawable/plus" />
-
+                        />
                     <androidx.appcompat.widget.AppCompatTextView
+                        android:text="1000"
+                        android:fontFamily="sans-serif-black"
+                        android:textSize="15sp"
+                        android:textColor="#ffffff"
                         android:id="@+id/txt_coins"
+                        android:layout_marginTop="50dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="83dp"
-                        android:layout_marginTop="40dp"
-                        android:layout_toEndOf="@+id/txt_profile_name"
-                        android:fontFamily="sans-serif-black"
-                        android:text="@{String.valueOf(user.coins)}"
-                        android:textColor="#ffffff"
-                        android:textSize="15sp"
-                        tools:text="1000" />
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginRight="50dp"
+                        android:layout_marginEnd="50dp"
+                        />
                 </RelativeLayout>
             </com.google.android.material.card.MaterialCardView>
         </androidx.appcompat.widget.LinearLayoutCompat>

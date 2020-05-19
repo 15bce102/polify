@@ -132,8 +132,10 @@ class OtpFragment : Fragment() {
                                 val response = GameRepository.login(user.uid)
                                 if (response.status == Result.Status.SUCCESS)
                                     startHomeActivity()
-                                else
+                                else {
                                     toast(response.message!!)
+                                    mAuth.signOut()
+                                }
                             }
                         }
                     }
