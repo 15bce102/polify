@@ -36,7 +36,7 @@
     <string name="message_tie">Scores level</string>
 
     <string name="score">Score %1$s</string>
-    <string name="challenge">Challenge Friends</string>
+    <string name="challenge"><u>Challenge Friends</u></string>
     <string name="title_multiplayer_invite">Multiplayer Invite</string>
     <string name="desc_multiplayer_invite">%1$s is inviting you to join multiplayer game</string>
     <string name="accept">Accept</string>

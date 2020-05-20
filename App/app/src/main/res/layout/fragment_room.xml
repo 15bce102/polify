@@ -27,7 +27,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/multi_background">
+        android:background="@drawable/multi">
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/linearLayoutCompat"
@@ -52,7 +52,7 @@
                 android:layout_marginRight="8dp"
                 app:cardBackgroundColor="#ffffff"
                 app:strokeColor="#000000"
-                app:strokeWidth="4dp">
+                app:strokeWidth="2dp">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -62,8 +62,9 @@
                         android:id="@+id/tag"
                         android:layout_width="match_parent"
                         android:layout_height="20dp"
-                        android:fontFamily="sans-serif"
+                        android:fontFamily="sans-serif-thin"
                         android:gravity="center"
+
                         android:text="@string/challenge"
                         android:textAlignment="center"
                         android:textColor="#000000"
@@ -103,7 +104,7 @@
                 android:visibility="@{player1 == null ? View.GONE : View.VISIBLE}"
                 app:cardBackgroundColor="@color/player1"
                 app:strokeColor="#000000"
-                app:strokeWidth="4dp">
+                app:strokeWidth="2dp">
 
                 <RelativeLayout
                     android:layout_width="wrap_content"
@@ -153,7 +154,7 @@
                 android:visibility="@{member2 == null ? View.GONE : View.VISIBLE}"
                 app:cardBackgroundColor="@color/player2"
                 app:strokeColor="#000000"
-                app:strokeWidth="4dp">
+                app:strokeWidth="2dp">
 
                 <RelativeLayout
                     android:layout_width="wrap_content"
@@ -198,7 +199,7 @@
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <androidx.appcompat.widget.LinearLayoutCompat
-            android:layout_width="170dp"
+            android:layout_width="180dp"
             android:layout_height="match_parent"
             android:layout_marginTop="150dp"
             android:layout_marginBottom="100dp"
@@ -218,7 +219,7 @@
                 android:visibility="@{member3 == null ? View.GONE : View.VISIBLE}"
                 app:cardBackgroundColor="@color/player3"
                 app:strokeColor="#000000"
-                app:strokeWidth="4dp">
+                app:strokeWidth="2dp">
 
                 <RelativeLayout
                     android:layout_width="wrap_content"
@@ -268,7 +269,7 @@
                 android:visibility="@{member4 == null ? View.GONE : View.VISIBLE}"
                 app:cardBackgroundColor="@color/player4"
                 app:strokeColor="#000000"
-                app:strokeWidth="4dp">
+                app:strokeWidth="2dp">
 
                 <RelativeLayout
                     android:layout_width="wrap_content"
