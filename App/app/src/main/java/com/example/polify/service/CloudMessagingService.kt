@@ -80,6 +80,37 @@ class CloudMessagingService : FirebaseMessagingService(), CoroutineScope {
                     LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
                 }
             }
+
+            TYPE_MULTIPLAYER_JOIN -> {
+                Log.d(TAG, "player joined: ${map[KEY_PAYLOAD]}")
+
+                val payload: Map<String, String> =
+                        Gson().fromJson(map[KEY_PAYLOAD], object: TypeToken<Map<String, String>>() {}.type)
+
+                val roomMessage = payload["message"]
+
+                payload["room"]?.toRoom().let { room ->
+                    val intent = Intent(ACTION_ROOM_UPDATE)
+                            .putExtra(EXTRA_MESSAGE, roomMessage)
+                            .putExtra(EXTRA_ROOM, room)
+                    LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
+                }
+            }
+
+            TYPE_LEAVE_ROOM -> {
+                Log.d(TAG, "player left: ${map[KEY_PAYLOAD]}")
+
+                val payload: Map<String, String> =
+                        Gson().fromJson(map[KEY_PAYLOAD], object: TypeToken<Map<String, String>>() {}.type)
+
+                val roomMessage = payload["message"]
+                val room = payload["room"]?.toRoom()
+
+                val intent = Intent(ACTION_ROOM_UPDATE)
+                        .putExtra(EXTRA_MESSAGE, roomMessage)
+                        .putExtra(EXTRA_ROOM, room)
+                LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
+            }
         }
     }
 

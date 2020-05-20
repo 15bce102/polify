@@ -98,48 +98,38 @@ class OtpFragment : Fragment() {
     }
 
     private fun signInWithCredential(credential: PhoneAuthCredential) {
-        mAuth.signInWithCredential(credential)
-                .addOnCompleteListener { task ->
-                    if (!task.isSuccessful) {
-                        toast(task.exception!!.message.toString())
-                        return@addOnCompleteListener
-                    }
+        FirebaseInstanceId.getInstance().instanceId.addOnSuccessListener { result ->
+            val token = result.token
+            Log.d(TAG, "token = $token")
 
-                    Log.d(TAG, "login successful")
-                    mAuth.currentUser?.let { user ->
-                        FirebaseInstanceId.getInstance().instanceId.addOnSuccessListener { result ->
-                            val token = result.token
-                            Log.d(TAG, "token = $token")
-                            toast("token = $token")
-                            lifecycleScope.launch {
-                                val response = GameRepository.updateFcmToken(user.uid, token)
-                                if (response.status == Result.Status.SUCCESS)
-                                    Log.d(TAG, "token updated successfully")
-                                else
-                                    Log.e(TAG, "token update failed: ${response.message ?: "null response"}")
-                            }
+            mAuth.signInWithCredential(credential)
+                    .addOnCompleteListener { task ->
+                        if (!task.isSuccessful) {
+                            toast(task.exception!!.message.toString())
+                            return@addOnCompleteListener
                         }
+
+                        Log.d(TAG, "login successful")
+
+                        val user = task.result?.user ?: return@addOnCompleteListener
 
                         lifecycleScope.launch {
                             if (userName != null && avatarUri != null) {
-                                val response = GameRepository.updateProfile(user.uid, userName!!, avatarUri!!)
-
+                                val response = GameRepository.signupUser(user.uid, avatarUri!!, userName!!, token)
                                 if (response.status == Result.Status.SUCCESS)
                                     startHomeActivity()
                                 else
                                     toast(response.message ?: "null message")
                             } else {
-                                val response = GameRepository.login(user.uid)
+                                val response = GameRepository.login(user.uid, token)
                                 if (response.status == Result.Status.SUCCESS)
                                     startHomeActivity()
-                                else {
+                                else
                                     toast(response.message!!)
-                                    mAuth.signOut()
-                                }
                             }
                         }
                     }
-                }
+        }
     }
 
     private fun startHomeActivity() {

@@ -5,21 +5,66 @@ import retrofit2.Response
 import retrofit2.http.*
 
 interface RetrofitService {
-    @GET("/check-user-exists")
-    suspend fun checkIfUserExists(@Query("phoneNumber") phoneNumber: String): Response<UserResponse>
 
-    @GET("/login")
-    suspend fun login(@Query("uid") uid: String): Response<UserResponse>
+    /** User related requests **/
 
-    @GET("/fetch-profile")
-    suspend fun getProfile(@Query("uid") uid: String): Response<UserResponse>
+    @Headers("Content-Type: application/json")
+    @POST("/check-user-exists")
+    suspend fun checkIfUserExists(@Body map: Map<String, @JvmSuppressWildcards Any>): Response<ApiResponse>
 
-    @GET("/update-profile")
-    suspend fun updateProfile(@Query("uid") uid: String, @Query("user_name") userName: String,
-                              @Query("avatar") avatar: String): Response<UserResponse>
+    @Headers("Content-Type: application/json")
+    @POST("/signup")
+    suspend fun signup(@Body map: Map<String, @JvmSuppressWildcards Any>): Response<ApiResponse>
 
-    @GET("/update-token")
-    suspend fun updateToken(@Query("uid") uid: String, @Query("token") token: String): Response<UserResponse>
+    @Headers("Content-Type: application/json")
+    @POST("/login")
+    suspend fun login(@Body map: Map<String, @JvmSuppressWildcards Any>): Response<ApiResponse>
+
+    @Headers("Content-Type: application/json")
+    @POST("/update-token")
+    suspend fun updateToken(@Body map: Map<String, @JvmSuppressWildcards Any>): Response<ApiResponse>
+
+    @Headers("Content-Type: application/json")
+    @POST("/update-status")
+    suspend fun updateStatus(@Query("status") status: Int,
+                             @Body map: Map<String, @JvmSuppressWildcards Any>): Response<ApiResponse>
+
+    @Headers("Content-Type: application/json")
+    @POST("/update-profile")
+    suspend fun updateProfile(@Body map: Map<String, @JvmSuppressWildcards Any>): Response<ApiResponse>
+
+    @Headers("Content-Type: application/json")
+    @POST("/fetch-profile")
+    suspend fun getProfile(@Body map: Map<String, @JvmSuppressWildcards Any>): Response<UserResponse>
+
+    @Headers("Content-Type: application/json")
+    @POST("/update-friends")
+    suspend fun updateFriends(@Body map: Map<String, @JvmSuppressWildcards Any>): Response<UserResponse>
+
+    @GET("/get-avatars")
+    suspend fun getAvatars(): Response<AvatarResponse>
+
+    @Headers("Content-Type: application/json")
+    @POST("/my-friends")
+    suspend fun getMyFriends(@Body map: Map<String, @JvmSuppressWildcards Any>): Response<FriendsResponse>
+
+    /** Battle related requests **/
+    @Headers("Content-Type: application/json")
+    @POST("/create-room")
+    suspend fun createMultiPlayerRoom(@Body map: Map<String, @JvmSuppressWildcards Any>): Response<RoomResponse>
+
+    @Headers("Content-Type: application/json")
+    @POST("/leave-room")
+    suspend fun leaveMultiPlayerRoom(@Body map: Map<String, @JvmSuppressWildcards Any>): Response<ApiResponse>
+
+    @Headers("Content-Type: application/json")
+    @POST("/send-invite")
+    suspend fun sendMultiPlayerInvite(@Body map: Map<String, @JvmSuppressWildcards Any>): Response<ApiResponse>
+
+    @Headers("Content-Type: application/json")
+    @POST("/join-room")
+    suspend fun joinRoom(@Body map: Map<String, @JvmSuppressWildcards Any>): Response<RoomResponse>
+
 
     @GET("/join-waiting-room")
     suspend fun joinWaitingRoom(@Query("uid") uid: String): Response<BattleResponse>
@@ -33,37 +78,4 @@ interface RetrofitService {
     @GET("/update-score")
     suspend fun updateScore(@Query("bid") bid: String, @Query("uid") uid: String,
                             @Query("score") score: Int): Response<BattleResponse>
-
-    @GET("/get-avatars")
-    suspend fun getAvatars(): Response<AvatarResponse>
-
-    @GET("/update-status")
-    suspend fun updateStatus(@Query("uid") uid: String,
-                             @Query("status") status: Int): Response<UserResponse>
-
-    @Headers("Content-Type: application/json")
-    @POST("/update-friends")
-    suspend fun updateFriends(@Body map: Map<String, @JvmSuppressWildcards Any>): Response<UserResponse>
-
-    @GET("/create-room")
-    suspend fun createMultiPlayerRoom(@Query("uid") uid: String): Response<RoomResponse>
-
-    @GET("/leave-room")
-    suspend fun leaveMultiPlayerRoom(@Query("uid") uid: String,
-                                     @Query("room_id") roomId: String): Response<RoomResponse>
-
-    @GET("/my-friends")
-    suspend fun getMyFriends(@Query("uid") uid: String): Response<FriendsResponse>
-
-    @GET("/send-invite")
-    suspend fun sendMultiPlayerInvite(@Query("uid") uid: String, @Query("f_uid") friendUid: String,
-                                      @Query("room_id") roomId: String): Response<RoomResponse>
-
-
-
-    @GET("/create-battle")
-    suspend fun createBattle(@Query("uid") uid: String, @Query("coins") coins: Int): Response<BattleResponse>
-
-    @GET("/join-battle")
-    suspend fun joinBattle(@Query("uid") uid: String, @Query("bid") bid: String): Response<BattleResponse>
 }

@@ -3,8 +3,7 @@ package com.andruid.magic.game.api
 import android.app.Application
 import android.content.Context
 import com.andruid.magic.game.model.data.Question
-import com.andruid.magic.game.model.response.Result
-import com.andruid.magic.game.model.response.UserResponse
+import com.andruid.magic.game.model.response.*
 import com.andruid.magic.game.server.RetrofitClient
 import com.andruid.magic.game.server.RetrofitService
 import com.andruid.magic.game.util.sendNetworkRequest
@@ -24,20 +23,50 @@ object GameRepository {
         service = RetrofitClient.getRetrofitInstance().create(RetrofitService::class.java)
     }
 
-    suspend fun checkIfUserExists(phoneNumber: String) =
-            sendNetworkRequest { service.checkIfUserExists(phoneNumber) }
+    suspend fun checkIfUserExists(phoneNumber: String): Result<ApiResponse> {
+        val map = mapOf("phoneNumber" to phoneNumber)
+        return sendNetworkRequest { service.checkIfUserExists(map) }
+    }
 
-    suspend fun login(uid: String): Result<UserResponse> =
-            sendNetworkRequest { service.login(uid) }
+    suspend fun signupUser(uid: String, avatar: String, userName: String, token: String): Result<ApiResponse> {
+        val map = mapOf(
+                "uid" to uid,
+                "avatar" to avatar,
+                "user_name" to userName,
+                "token" to token
+        )
+        return sendNetworkRequest { service.signup(map) }
+    }
 
-    suspend fun userProfile(uid: String) =
-            sendNetworkRequest { service.getProfile(uid) }
+    suspend fun login(uid: String, token: String): Result<ApiResponse> {
+        val map = mapOf(
+                "uid" to uid,
+                "token" to token
+        )
+        return sendNetworkRequest { service.login(map) }
+    }
 
-    suspend fun updateProfile(uid: String, userName: String, avatarUri: String) =
-            sendNetworkRequest { service.updateProfile(uid, userName, avatarUri) }
+    suspend fun updateFcmToken(uid: String, token: String): Result<ApiResponse> {
+        val map = mapOf(
+                "uid" to uid,
+                "token" to token
+        )
+        return sendNetworkRequest { service.updateToken(map) }
+    }
 
-    suspend fun updateFcmToken(uid: String, token: String) =
-            sendNetworkRequest { service.updateToken(uid, token) }
+    suspend fun updateProfile(uid: String, userName: String, avatar: String): Result<ApiResponse> {
+        val map = mapOf(
+                "uid" to uid,
+                "user_name" to userName,
+                "avatar" to avatar
+        )
+        return sendNetworkRequest { service.updateProfile(map) }
+    }
+
+    suspend fun userProfile(uid: String): Result<UserResponse> {
+        val map = mapOf("uid" to uid)
+        return sendNetworkRequest { service.getProfile(map) }
+    }
 
     suspend fun joinWaitingRoom(uid: String) =
             sendNetworkRequest { service.joinWaitingRoom(uid) }
@@ -54,8 +83,12 @@ object GameRepository {
     suspend fun getAvatars() =
             sendNetworkRequest { service.getAvatars() }
 
-    suspend fun updateStatus(uid: String, status: Int) =
-            sendNetworkRequest { service.updateStatus(uid, status) }
+    suspend fun updateStatus(uid: String, status: Int): Result<ApiResponse> {
+        val map = mapOf(
+                "uid" to uid
+        )
+        return sendNetworkRequest { service.updateStatus(status, map) }
+    }
 
     suspend fun updateFriends(uid: String, phoneNumbers: List<String>): Result<UserResponse> {
         val map = mapOf(
@@ -65,17 +98,40 @@ object GameRepository {
         return sendNetworkRequest { service.updateFriends(map) }
     }
 
-    suspend fun createMultiPlayerRoom(uid: String) =
-            sendNetworkRequest { service.createMultiPlayerRoom(uid) }
+    suspend fun createMultiPlayerRoom(uid: String): Result<RoomResponse> {
+        val map = mapOf("uid" to uid)
+        return sendNetworkRequest { service.createMultiPlayerRoom(map) }
+    }
 
-    suspend fun leaveMultiPlayerRoom(uid: String, roomId: String) =
-            sendNetworkRequest { service.leaveMultiPlayerRoom(uid, roomId) }
+    suspend fun leaveMultiPlayerRoom(uid: String, roomId: String): Result<ApiResponse> {
+        val map = mapOf(
+                "uid" to uid,
+                "room_id" to roomId
+        )
+        return sendNetworkRequest { service.leaveMultiPlayerRoom(map) }
+    }
 
-    suspend fun getMyFriends(uid: String) =
-            sendNetworkRequest { service.getMyFriends(uid) }
+    suspend fun getMyFriends(uid: String): Result<FriendsResponse> {
+        val map = mapOf("uid" to uid)
+        return sendNetworkRequest { service.getMyFriends(map) }
+    }
 
-    suspend fun sendMultiPlayerRoomInvite(uid: String, friendUid: String, roomId: String) =
-            sendNetworkRequest { service.sendMultiPlayerInvite(uid, friendUid, roomId) }
+    suspend fun sendMultiPlayerRoomInvite(uid: String, friendUid: String, roomId: String): Result<ApiResponse> {
+        val map = mapOf(
+                "uid" to uid,
+                "f_uid" to friendUid,
+                "room_id" to roomId
+        )
+        return sendNetworkRequest { service.sendMultiPlayerInvite(map) }
+    }
+
+    suspend fun joinMultiPlayerRoom(uid: String, roomId: String): Result<RoomResponse> {
+        val map = mapOf(
+                "uid" to uid,
+                "room_id" to roomId
+        )
+        return sendNetworkRequest { service.joinRoom(map) }
+    }
 
     suspend fun getPracticeQuestions(): List<Question> {
         return withContext(Dispatchers.IO) {
@@ -85,10 +141,4 @@ object GameRepository {
             Gson().fromJson<List<Question>>(json, object : TypeToken<List<Question>>() {}.type)
         }
     }
-
-    suspend fun createBattle(uid: String, coins: Int) =
-            sendNetworkRequest { service.createBattle(uid, coins) }
-
-    suspend fun joinBattle(uid: String, bid: String) =
-            sendNetworkRequest { service.joinBattle(uid, bid) }
 }

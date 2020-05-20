@@ -1,6 +1,6 @@
 package com.andruid.magic.game.model.response
 
-abstract class ApiResponse {
-    abstract val success: Boolean
-    abstract val message: String?
-}
+data class ApiResponse(
+    val success: Boolean,
+    val message: String?
+)

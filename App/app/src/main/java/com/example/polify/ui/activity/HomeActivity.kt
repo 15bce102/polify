@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
@@ -170,13 +171,28 @@ class HomeActivity : FullScreenActivity() {
     }
 
     private fun showRoomInviteDialog(room: Room) {
+        val user = mAuth.currentUser ?: return
+
         lifecycleScope.launch {
             val accepted = showMultiPlayerInviteDialog(room)
             if (accepted) {
-                val intent = Intent(this@HomeActivity, MultiPlayerActivity::class.java)
-                        .putExtra(EXTRA_ROOM, room)
-                startActivity(intent)
-                finish()
+                Log.d("inviteLog", "before request")
+                val result = GameRepository.joinMultiPlayerRoom(user.uid, room.roomId)
+                Log.d("inviteLog", "after request status = ${result.status}")
+                if (result.status == Result.Status.SUCCESS) {
+                    result.data?.let { data ->
+                        Log.d("inviteLog", "data not null: success = ${data.success}, room = ${data.room}")
+                        if (data.success) {
+                            val intent = Intent(this@HomeActivity, MultiPlayerActivity::class.java)
+                                    .putExtra(EXTRA_ROOM, data.room)
+                            startActivity(intent)
+                        } else
+                            toast(data.message ?: "")
+                    } ?: run {
+                        Log.d("inviteLog", "result.data is null")
+                    }
+                } else
+                    toast(result.message ?: "")
             } else
                 toast("Invite declined")
         }

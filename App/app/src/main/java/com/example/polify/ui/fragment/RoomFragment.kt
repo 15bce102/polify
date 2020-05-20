@@ -1,5 +1,9 @@
 package com.example.polify.ui.fragment
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,11 +13,15 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.andruid.magic.game.api.GameRepository
 import com.andruid.magic.game.model.data.Room
 import com.andruid.magic.game.model.response.Result
+import com.example.polify.data.ACTION_ROOM_UPDATE
+import com.example.polify.data.EXTRA_MESSAGE
+import com.example.polify.data.EXTRA_ROOM
 import com.example.polify.databinding.FragmentRoomBinding
 import com.example.polify.eventbus.FriendInviteEvent
 import com.example.polify.ui.adapter.FriendAdapter
@@ -24,6 +32,7 @@ import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import splitties.toast.longToast
 import splitties.toast.toast
 
 class RoomFragment : Fragment() {
@@ -35,25 +44,44 @@ class RoomFragment : Fragment() {
     private val friendViewModel by viewModels<FriendViewModel> {
         BaseViewModelFactory { FriendViewModel(mAuth.currentUser?.uid ?: "") }
     }
-    private val callback = object: OnBackPressedCallback(true) {
+    private val callback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             if (!::room.isInitialized) {
                 requireActivity().finish()
                 return
             }
 
-            mAuth.currentUser?.let { user ->
-                lifecycleScope.launch {
-                    val result = GameRepository.leaveMultiPlayerRoom(user.uid, room.roomId)
-                    if (result.status == Result.Status.SUCCESS) {
-                        result.data?.let { data ->
-                            if (data.success) {
-                                toast("Room left successfully")
-                                requireActivity().finish()
-                            }
-                            else
-                                toast("Could not leave room")
+            val user = mAuth.currentUser ?: return
+
+            lifecycleScope.launch {
+                val result = GameRepository.leaveMultiPlayerRoom(user.uid, room.roomId)
+                if (result.status == Result.Status.SUCCESS) {
+                    result.data?.let { data ->
+                        if (data.success) {
+                            toast("Room left successfully")
+                            requireActivity().finish()
+                        } else {
+                            toast("Could not leave room")
+                            requireActivity().finish()
                         }
+                    }
+                }
+            }
+        }
+    }
+    private val roomReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            if (intent.action == ACTION_ROOM_UPDATE) {
+                intent.extras?.let { extras ->
+                    val message = extras[EXTRA_MESSAGE] as String
+
+                    toast(message)
+
+                    (extras[EXTRA_ROOM] as Room?)?.let {
+                        this@RoomFragment.room = it
+                        updatePlayerCards()
+                    } ?: run {
+                        requireActivity().finish()
                     }
                 }
             }
@@ -65,16 +93,21 @@ class RoomFragment : Fragment() {
         arguments?.let {
             val safeArgs = RoomFragmentArgs.fromBundle(it)
             room = safeArgs.room
+
+            longToast("room members are ${room.members.joinToString(", ", "[", "]")}")
         }
 
         requireActivity().onBackPressedDispatcher.addCallback(this, callback)
 
         EventBus.getDefault().register(this)
+        LocalBroadcastManager.getInstance(requireContext())
+                .registerReceiver(roomReceiver, IntentFilter(ACTION_ROOM_UPDATE))
     }
 
     override fun onDestroy() {
         super.onDestroy()
         EventBus.getDefault().unregister(this)
+        LocalBroadcastManager.getInstance(requireContext()).unregisterReceiver(roomReceiver)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -115,16 +148,14 @@ class RoomFragment : Fragment() {
         val owner = players.find { player -> player.uid == room.owner }
         val remaining = players.minus(owner)
 
-        binding.member1 = owner
-        remaining.forEachIndexed { index, player ->
-            when (index) {
-                0 -> binding.member2 = player
-                1 -> binding.member3 = player
-                2 -> binding.member4 = player
-            }
-        }
+        binding.apply {
+            member1 = owner
+            member2 = remaining.getOrNull(0)
+            member3 = remaining.getOrNull(1)
+            member4 = remaining.getOrNull(2)
 
-        binding.executePendingBindings()
+            executePendingBindings()
+        }
     }
 
     private fun initRecyclerView() {
