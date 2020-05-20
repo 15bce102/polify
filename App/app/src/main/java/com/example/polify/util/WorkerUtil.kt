@@ -7,9 +7,9 @@ import java.util.concurrent.TimeUnit
 
 private const val CONTACTS_UPDATE_INTERVAL_HRS = 6L
 
-fun Context.scheduleFriendsUpdate() {
+fun Context.scheduleFriendsUpdate(refresh: Boolean = true) {
     val constraints = Constraints.Builder()
-            .setRequiresBatteryNotLow(true)
+            //.setRequiresBatteryNotLow(true)
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
 
@@ -18,5 +18,7 @@ fun Context.scheduleFriendsUpdate() {
             .build()
 
     WorkManager.getInstance(this)
-            .enqueueUniquePeriodicWork("qna-contacts-worker", ExistingPeriodicWorkPolicy.REPLACE, request)
+            .enqueueUniquePeriodicWork("qna-contacts-worker",
+                    if (refresh) ExistingPeriodicWorkPolicy.REPLACE else ExistingPeriodicWorkPolicy.KEEP,
+                    request)
 }

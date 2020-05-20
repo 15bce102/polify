@@ -75,6 +75,11 @@ class HomeActivity : FullScreenActivity() {
 
         scheduleFriendsUpdate()
 
+        binding.imgPlus.setOnSoundClickListener {
+            toast("refreshing friends now")
+            scheduleFriendsUpdate(refresh = true)
+        }
+
         LocalBroadcastManager.getInstance(this)
                 .registerReceiver(multiPlayerReceiver, IntentFilter(ACTION_ROOM_INVITE))
     }
