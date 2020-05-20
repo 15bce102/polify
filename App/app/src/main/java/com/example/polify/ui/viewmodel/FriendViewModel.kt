@@ -16,7 +16,7 @@ class FriendViewModel(uid: String) : ViewModel() {
             while (isActive) {
                 val response = GameRepository.getMyFriends(uid)
                 _friends.postValue(response)
-                delay(10000)
+                delay(2*60*1000)
             }
         }
     }

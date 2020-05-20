@@ -1,295 +1,329 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/multi_background">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.appcompat.widget.LinearLayoutCompat
-        android:id="@+id/linearLayoutCompat"
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="member1"
+            type="com.andruid.magic.game.model.data.Player" />
+
+        <variable
+            name="member2"
+            type="com.andruid.magic.game.model.data.Player" />
+
+        <variable
+            name="member3"
+            type="com.andruid.magic.game.model.data.Player" />
+
+        <variable
+            name="member4"
+            type="com.andruid.magic.game.model.data.Player" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:gravity="center_vertical"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.02">
+        android:layout_height="match_parent"
+        android:background="@drawable/multi_background">
 
-        <com.google.android.material.card.MaterialCardView
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/linearLayoutCompat"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
-            app:strokeColor="#000000"
-            app:strokeWidth="4dp"
-            app:cardBackgroundColor="#ffffff">
+            android:gravity="center_vertical"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.02">
 
-            <RelativeLayout
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
-                android:layout_height="110dp">
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                app:cardBackgroundColor="#ffffff"
+                app:strokeColor="#000000"
+                app:strokeWidth="4dp">
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="20dp"
-                    android:fontFamily="sans-serif-thin"
-                    android:gravity="center"
-                    android:id="@+id/tag"
-                    android:textSize="15sp"
-                    android:text="Challenge Friends"
-                    android:textAlignment="center"
-                    android:textColor="#000000" />
+                    android:layout_height="120dp">
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recyclerView"
-                    android:layout_below="@+id/tag"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    tools:listitem="@layout/layout_friend"
-                    android:layout_centerHorizontal="true"
-                    android:layout_centerVertical="true"
-                    android:scrollbars="horizontal" />
-            </RelativeLayout>
-        </com.google.android.material.card.MaterialCardView>
-    </androidx.appcompat.widget.LinearLayoutCompat>
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tag"
+                        android:layout_width="match_parent"
+                        android:layout_height="20dp"
+                        android:fontFamily="sans-serif"
+                        android:gravity="center"
+                        android:text="@string/challenge"
+                        android:textAlignment="center"
+                        android:textColor="#000000"
+                        android:textSize="15sp" />
 
-    <androidx.appcompat.widget.LinearLayoutCompat
-        android:layout_width="180dp"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="100dp"
-        android:layout_marginTop="150dp"
-        android:gravity="center_vertical"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.08"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0">
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_below="@+id/tag"
+                        android:layout_centerHorizontal="true"
+                        android:layout_centerVertical="true"
+                        android:scrollbars="horizontal"
+                        tools:listitem="@layout/layout_friend" />
+                </RelativeLayout>
+            </com.google.android.material.card.MaterialCardView>
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/player1"
-            app:strokeColor="#000000"
-            app:strokeWidth="4dp"
-            android:layout_width="180dp"
-            android:layout_height="wrap_content"
-            app:cardBackgroundColor="@color/player1">
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="170dp"
+            android:layout_height="match_parent"
+            android:layout_marginTop="150dp"
+            android:layout_marginBottom="100dp"
+            android:gravity="center_vertical"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.08"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0">
 
-            <RelativeLayout
-                android:layout_width="180dp"
-                android:layout_height="wrap_content">
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:layout_width="100dp"
-                    android:background="@drawable/demo2"
-                    android:layout_marginTop="25dp"
-                    android:id="@+id/img_player1"
-                    android:layout_centerHorizontal="true"
-                    android:layout_height="100dp"/>
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textAlignment="center"
-                    android:gravity="center"
-                    android:textSize="24sp"
-                    android:textStyle="bold"
-                    android:textColor="#ffffff"
-                    android:text="Ramandeep"
-                    android:id="@+id/name_player1"
-                    android:layout_below="@+id/img_player1"/>
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textAlignment="center"
-                    android:gravity="center"
-                    android:textColor="#ffffff"
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/player1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="@{player1 == null ? View.GONE : View.VISIBLE}"
+                app:cardBackgroundColor="@color/player1"
+                app:strokeColor="#000000"
+                app:strokeWidth="4dp">
 
-                    android:textSize="16sp"
-                    android:text="Newbie"
-                    android:id="@+id/level_player1"
-                    android:layout_below="@+id/name_player1"/>
-            </RelativeLayout>
-        </com.google.android.material.card.MaterialCardView>
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
 
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/player2"
-            android:layout_width="180dp"
-            app:strokeColor="#000000"
-            app:strokeWidth="4dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            app:cardBackgroundColor="@color/player2">
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/img_player1"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="25dp"
+                        app:imageUrl="@{member1.avatar}"
+                        tools:src="@drawable/demo2" />
 
-            <RelativeLayout
-                android:layout_width="180dp"
-                android:layout_height="wrap_content">
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:layout_width="100dp"
-                    android:layout_marginTop="25dp"
-                    android:id="@+id/img_player2"
-                    android:background="@drawable/demo2"
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/name_player1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/img_player1"
+                        android:gravity="center"
+                        android:text="@{member1.userName}"
+                        android:textAlignment="center"
+                        android:textColor="#ffffff"
+                        android:textSize="24sp"
+                        android:textStyle="bold"
+                        tools:text="Ramandeep" />
 
-                    android:layout_centerHorizontal="true"
-                    android:layout_height="100dp"/>
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textAlignment="center"
-                    android:gravity="center"
-                    android:textSize="24sp"
-                    android:textStyle="bold"
-                    android:textColor="#ffffff"
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/level_player1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/name_player1"
+                        android:gravity="center"
+                        android:text="@{member1.level}"
+                        android:textAlignment="center"
+                        android:textColor="#ffffff"
+                        android:textSize="16sp"
+                        tools:text="Newbie" />
+                </RelativeLayout>
+            </com.google.android.material.card.MaterialCardView>
 
-                    android:text="Ramandeep"
-                    android:id="@+id/name_player2"
-                    android:layout_below="@+id/img_player2"/>
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textAlignment="center"
-                    android:gravity="center"
-                    android:textSize="16sp"
-                    android:text="Newbie"
-                    android:textColor="#ffffff"
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/player2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:visibility="@{member2 == null ? View.GONE : View.VISIBLE}"
+                app:cardBackgroundColor="@color/player2"
+                app:strokeColor="#000000"
+                app:strokeWidth="4dp">
 
-                    android:id="@+id/level_player2"
-                    android:layout_below="@+id/name_player2"/>
-            </RelativeLayout>
-        </com.google.android.material.card.MaterialCardView>
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
 
-    </androidx.appcompat.widget.LinearLayoutCompat>
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/img_player2"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="25dp"
+                        app:imageUrl="@{member2.avatar}"
+                        tools:src="@drawable/demo2" />
 
-    <androidx.appcompat.widget.LinearLayoutCompat
-        android:layout_width="180dp"
-        android:layout_height="match_parent"
-        android:layout_marginTop="150dp"
-        android:layout_marginBottom="100dp"
-        android:gravity="center_vertical"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.93"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0">
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/name_player2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/img_player2"
+                        android:gravity="center"
+                        android:text="@{member2.userName}"
+                        android:textAlignment="center"
+                        android:textColor="#ffffff"
+                        android:textSize="24sp"
+                        android:textStyle="bold"
+                        tools:text="Ramandeep" />
 
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/player3"
-            android:layout_width="180dp"
-            app:strokeColor="#000000"
-            app:strokeWidth="4dp"
-            android:layout_height="wrap_content"
-            app:cardBackgroundColor="@color/player3">
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/level_player2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/name_player2"
+                        android:gravity="center"
+                        android:text="@{member2.level}"
+                        android:textAlignment="center"
+                        android:textColor="#ffffff"
+                        android:textSize="16sp"
+                        tools:text="Newbie" />
+                </RelativeLayout>
+            </com.google.android.material.card.MaterialCardView>
 
-            <RelativeLayout
-                android:layout_width="180dp"
-                android:layout_height="wrap_content">
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/img_player3"
-                    android:layout_width="100dp"
-                    android:background="@drawable/demo2"
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="170dp"
+            android:layout_height="match_parent"
+            android:layout_marginTop="150dp"
+            android:layout_marginBottom="100dp"
+            android:gravity="center_vertical"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.93"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0">
 
-                    android:layout_height="100dp"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="25dp" />
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/player3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="@{member3 == null ? View.GONE : View.VISIBLE}"
+                app:cardBackgroundColor="@color/player3"
+                app:strokeColor="#000000"
+                app:strokeWidth="4dp">
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/name_player3"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/img_player3"
-                    android:gravity="center"
-                    android:textColor="#ffffff"
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
 
-                    android:text="Ramandeep"
-                    android:textAlignment="center"
-                    android:textSize="24sp"
-                    android:textStyle="bold" />
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/img_player3"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="25dp"
+                        app:imageUrl="@{member3.avatar}"
+                        tools:src="@drawable/demo2" />
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/level_player3"
-                    android:textColor="#ffffff"
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/name_player3"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/img_player3"
+                        android:gravity="center"
+                        android:text="@{member3.userName}"
+                        android:textAlignment="center"
+                        android:textColor="#ffffff"
+                        android:textSize="24sp"
+                        android:textStyle="bold"
+                        tools:text="Ramandeep" />
 
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/name_player3"
-                    android:gravity="center"
-                    android:text="Newbie"
-                    android:textAlignment="center"
-                    android:textSize="16sp" />
-            </RelativeLayout>
-        </com.google.android.material.card.MaterialCardView>
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/level_player3"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/name_player3"
+                        android:gravity="center"
+                        android:text="@{member3.level}"
+                        android:textAlignment="center"
+                        android:textColor="#ffffff"
+                        android:textSize="16sp"
+                        tools:text="Newbie" />
+                </RelativeLayout>
+            </com.google.android.material.card.MaterialCardView>
 
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/player4"
-            android:layout_width="180dp"
-            app:strokeColor="#000000"
-            app:strokeWidth="4dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            app:cardBackgroundColor="@color/player4">
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/player4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:visibility="@{member4 == null ? View.GONE : View.VISIBLE}"
+                app:cardBackgroundColor="@color/player4"
+                app:strokeColor="#000000"
+                app:strokeWidth="4dp">
 
-            <RelativeLayout
-                android:layout_width="180dp"
-                android:layout_height="wrap_content">
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
 
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/img_player4"
-                    android:layout_width="100dp"
-                    android:background="@drawable/demo2"
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/img_player4"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="25dp"
+                        app:imageUrl="@{member4.avatar}"
+                        tools:src="@drawable/demo2" />
 
-                    android:layout_height="100dp"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="25dp" />
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/name_player4"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/img_player4"
+                        android:gravity="center"
+                        android:text="@{member4.userName}"
+                        android:textAlignment="center"
+                        android:textColor="#ffffff"
+                        android:textSize="24sp"
+                        android:textStyle="bold"
+                        tools:text="Ramandeep" />
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/name_player4"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/img_player4"
-                    android:gravity="center"
-                    android:text="Ramandeep"
-                    android:textColor="#ffffff"
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/level_player4"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/name_player4"
+                        android:gravity="center"
+                        android:text="@{member4.level}"
+                        android:textAlignment="center"
+                        android:textColor="#ffffff"
+                        android:textSize="16sp"
+                        tools:text="Newbie" />
+                </RelativeLayout>
+            </com.google.android.material.card.MaterialCardView>
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
-                    android:textAlignment="center"
-                    android:textSize="24sp"
-                    android:textStyle="bold" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/level_player4"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/name_player4"
-                    android:gravity="center"
-                    android:text="Newbie"
-                    android:textColor="#ffffff"
-
-                    android:textAlignment="center"
-                    android:textSize="16sp" />
-            </RelativeLayout>
-        </com.google.android.material.card.MaterialCardView>
-
-    </androidx.appcompat.widget.LinearLayoutCompat>
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:layout_margin="16dp"
-        android:textColor="#ffffff"
-        android:text="Start"
-        android:background="@color/start"
-        android:textSize="24sp"
-        android:id="@+id/start"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayoutCompat"
-        app:layout_constraintVertical_bias="1.01" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/start"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:layout_margin="16dp"
+            android:background="@color/start"
+            android:text="Start"
+            android:textColor="#ffffff"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayoutCompat"
+            app:layout_constraintVertical_bias="1.01" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

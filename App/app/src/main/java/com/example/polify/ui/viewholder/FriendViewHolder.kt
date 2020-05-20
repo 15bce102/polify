@@ -7,6 +7,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.andruid.magic.game.model.data.Friend
 import com.example.polify.R
 import com.example.polify.databinding.LayoutFriendBinding
+import com.example.polify.eventbus.FriendInviteEvent
+import com.example.polify.util.setOnSoundClickListener
+import org.greenrobot.eventbus.EventBus
 
 class FriendViewHolder(private val binding: LayoutFriendBinding) : RecyclerView.ViewHolder(binding.root) {
     companion object {
@@ -21,6 +24,11 @@ class FriendViewHolder(private val binding: LayoutFriendBinding) : RecyclerView.
 
     fun bind(friend: Friend) {
         binding.friend = friend
+
+        binding.sendRequest.setOnSoundClickListener {
+            EventBus.getDefault().post(FriendInviteEvent(friend))
+        }
+
         binding.executePendingBindings()
     }
 }

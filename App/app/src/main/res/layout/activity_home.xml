@@ -93,7 +93,7 @@
                         android:layout_marginStart="10dp"
                         android:layout_marginTop="10dp"
                         android:layout_toEndOf="@id/img_profile"
-                        android:ellipsize="marquee"
+                        android:ellipsize="end"
                         android:fontFamily="sans-serif-condensed-medium"
                         android:gravity="start"
                         android:maxLength="7"
@@ -126,7 +126,7 @@
                         android:layout_marginRight="50dp"
                         android:layout_marginEnd="50dp"
                         android:layout_marginTop="10dp"
-                        android:src="@drawable/coins" />
+                        android:src="@drawable/coinsrd" />
                     <androidx.appcompat.widget.AppCompatImageView
                         android:layout_alignParentEnd="true"
                         android:layout_alignParentRight="true"
