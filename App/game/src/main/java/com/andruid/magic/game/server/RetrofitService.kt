@@ -65,6 +65,9 @@ interface RetrofitService {
     @POST("/join-room")
     suspend fun joinRoom(@Body map: Map<String, @JvmSuppressWildcards Any>): Response<RoomResponse>
 
+    @Headers("Content-Type: application/json")
+    @POST("/start-battle")
+    suspend fun startMultiPlayerBattle(@Body map: Map<String, @JvmSuppressWildcards Any>): Response<ApiResponse>
 
     @GET("/join-waiting-room")
     suspend fun joinWaitingRoom(@Query("uid") uid: String): Response<BattleResponse>

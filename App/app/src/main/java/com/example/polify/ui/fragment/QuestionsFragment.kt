@@ -19,6 +19,7 @@ import com.andruid.magic.game.model.data.Battle
 import com.andruid.magic.game.model.data.Question
 import com.andruid.magic.game.model.response.Result
 import com.example.polify.R
+import com.example.polify.data.BATTLE_MULTIPLAYER
 import com.example.polify.data.BATTLE_ONE_VS_ONE
 import com.example.polify.data.BATTLE_TEST
 import com.example.polify.data.QUE_TIME_LIMIT_MS
@@ -88,6 +89,13 @@ class QuestionsFragment : Fragment() {
                             .build())
                 BATTLE_TEST ->
                     findNavController().navigate(R.id.resultsTestFragment, bundleOf(
+                            "score" to score
+                    ), NavOptions.Builder()
+                            .setPopUpTo(R.id.questionsFragment, true)
+                            .build())
+                BATTLE_MULTIPLAYER ->
+                    findNavController().navigate(R.id.resultsMultiPlayerFragment, bundleOf(
+                            "battle_id" to (battle?.battleId ?: ""),
                             "score" to score
                     ), NavOptions.Builder()
                             .setPopUpTo(R.id.questionsFragment, true)

@@ -23,6 +23,7 @@ const val TYPE_SCORE_UPDATE = "score-update"
 const val TYPE_ROOM_INVITE = "invite"
 const val TYPE_MULTIPLAYER_JOIN = "multiplayer-join"
 const val TYPE_LEAVE_ROOM = "leave-room"
+const val TYPE_START_MATCH = "start-match"
 
 const val STATUS_OFFLINE = 0
 const val STATUS_ONLINE = 1

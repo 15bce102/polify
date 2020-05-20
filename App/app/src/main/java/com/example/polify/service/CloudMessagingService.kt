@@ -111,6 +111,18 @@ class CloudMessagingService : FirebaseMessagingService(), CoroutineScope {
                         .putExtra(EXTRA_ROOM, room)
                 LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
             }
+            
+            TYPE_START_MATCH -> {
+                Log.d("mpLog", "match start: ${map[KEY_PAYLOAD]}")
+
+                map[KEY_PAYLOAD]?.toBattle()?.let { battle ->
+                    Log.d("mpLog", "battle = $battle")
+
+                    val intent = Intent(ACTION_MATCH_FOUND)
+                            .putExtra(EXTRA_BATTLE, battle)
+                    LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
+                }
+            }
         }
     }
 
@@ -133,6 +145,15 @@ class CloudMessagingService : FirebaseMessagingService(), CoroutineScope {
                         startTime = map.getOrDefault("start_time", System.currentTimeMillis().toString()).toLong(),
                         coinsPool = map.getOrDefault("coins_pool", 10.toString()).toInt(),
                         players = players
+                )
+            }
+            BATTLE_MULTIPLAYER -> {
+                MultiPlayerBattle(
+                        battleId = map.getOrDefault("_id", "defaultId"),
+                        startTime = map.getOrDefault("start_time", System.currentTimeMillis().toString()).toLong(),
+                        coinsPool = map.getOrDefault("coins_pool", 10.toString()).toInt(),
+                        players = players,
+                        owner = map.getOrDefault("owner", "")
                 )
             }
             else -> null

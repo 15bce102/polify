@@ -1,6 +1,8 @@
 package com.example.polify.ui.activity
 
 import android.os.Bundle
+import android.util.Log
+import android.view.WindowManager
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import com.andruid.magic.game.api.GameRepository
@@ -20,6 +22,8 @@ class MultiPlayerActivity : FullScreenActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_multiplayer)
 
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+
         intent.extras?.let { extras ->
             (extras[EXTRA_ROOM] as Room?)?.let { room ->
                 findNavController(R.id.nav_host_fragment)
@@ -30,23 +34,23 @@ class MultiPlayerActivity : FullScreenActivity() {
 
     private fun createRoom() {
         lifecycleScope.launch {
-            mAuth.currentUser?.let { user ->
-                val result = GameRepository.createMultiPlayerRoom(user.uid)
-                if (result.status == Result.Status.SUCCESS) {
-                    result.data?.let { data ->
-                        if (data.success) {
-                            val room = data.room
-                            findNavController(R.id.nav_host_fragment).navigate(
-                                    RoomWaitingFragmentDirections.actionRoomWaitingFragmentToRoomFragment(room))
-                        } else {
-                            toast(data.message ?: "error")
-                            finish()
-                        }
+            val user = mAuth.currentUser ?: return@launch
+
+            val result = GameRepository.createMultiPlayerRoom(user.uid)
+            if (result.status == Result.Status.SUCCESS) {
+                result.data?.let { data ->
+                    if (data.success) {
+                        val room = data.room
+                        findNavController(R.id.nav_host_fragment).navigate(
+                                RoomWaitingFragmentDirections.actionRoomWaitingFragmentToRoomFragment(room))
+                    } else {
+                        toast(data.message ?: "error")
+                        finish()
                     }
-                } else {
-                    toast(result.message ?: "network error")
-                    finish()
                 }
+            } else {
+                toast(result.message ?: "network error")
+                finish()
             }
         }
     }

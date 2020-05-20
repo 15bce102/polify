@@ -35,17 +35,29 @@ fun List<String>.toFullPhoneNumbers(context: Context): List<String> {
     val countryCode = util.getCountryCodeForRegion(simIso).toString()
     val dummy = util.format(util.getExampleNumber(simIso), PhoneNumberUtil.PhoneNumberFormat.E164)
 
-    return this.filter { n -> util.isPossibleNumber(n, "") }.map { number ->
+    Log.d("contactLog", "dummy = $dummy")
+    Log.d("contactLog", "country code = $countryCode")
+
+    return this.map { number ->
+        Log.d("contactLog", "number = $number")
         try {
-            util.format(util.parse(number, simIso), PhoneNumberUtil.PhoneNumberFormat.E164)
+            val num = util.format(util.parse(number, simIso), PhoneNumberUtil.PhoneNumberFormat.E164)
+            Log.d("contactLog", "parsed success = $num")
+            num
         } catch (e: NumberParseException) {
             if (number[0] != '+') {
-                if (number.length == dummy.length-1)
+                if (number.length == dummy.length-1) {
+                    Log.d("contactLog", "only plus missing: $number")
                     "+$number"
-                else
+                }
+                else {
+                    Log.d("contactLog", "country code missing: $number")
                     "+$countryCode$number"
-            } else
+                }
+            } else {
+                Log.d("contactLog", "number starts with +: $number")
                 number
+            }
         }
     }
 }

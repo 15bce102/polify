@@ -5,28 +5,29 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
-import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.*
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.andruid.magic.game.api.GameRepository
+import com.andruid.magic.game.model.data.Battle
 import com.andruid.magic.game.model.data.Room
 import com.andruid.magic.game.model.response.Result
-import com.example.polify.data.ACTION_ROOM_UPDATE
-import com.example.polify.data.EXTRA_MESSAGE
-import com.example.polify.data.EXTRA_ROOM
+import com.example.polify.data.*
 import com.example.polify.databinding.FragmentRoomBinding
 import com.example.polify.eventbus.FriendInviteEvent
 import com.example.polify.ui.adapter.FriendAdapter
 import com.example.polify.ui.viewmodel.BaseViewModelFactory
 import com.example.polify.ui.viewmodel.FriendViewModel
+import com.example.polify.util.setOnSoundClickListener
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
@@ -74,7 +75,6 @@ class RoomFragment : Fragment() {
             if (intent.action == ACTION_ROOM_UPDATE) {
                 intent.extras?.let { extras ->
                     val message = extras[EXTRA_MESSAGE] as String
-
                     toast(message)
 
                     (extras[EXTRA_ROOM] as Room?)?.let {
@@ -82,6 +82,24 @@ class RoomFragment : Fragment() {
                         updatePlayerCards()
                     } ?: run {
                         requireActivity().finish()
+                    }
+                }
+            } else if (intent.action == ACTION_MATCH_FOUND) {
+                intent.extras?.let {
+                    val battle = it.getParcelable<Battle>(EXTRA_BATTLE)!!
+
+                    if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED))
+                        startBattle(battle)
+                    else {
+                        val startTime = System.currentTimeMillis()
+
+                        lifecycle.addObserver(object : LifecycleObserver {
+
+                            @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+                            fun onForeground() {
+                                startBattle(battle, startTime)
+                            }
+                        })
                     }
                 }
             }
@@ -100,8 +118,13 @@ class RoomFragment : Fragment() {
         requireActivity().onBackPressedDispatcher.addCallback(this, callback)
 
         EventBus.getDefault().register(this)
+
+        val intentFilter = IntentFilter().apply {
+            addAction(ACTION_ROOM_UPDATE)
+            addAction(ACTION_MATCH_FOUND)
+        }
         LocalBroadcastManager.getInstance(requireContext())
-                .registerReceiver(roomReceiver, IntentFilter(ACTION_ROOM_UPDATE))
+                .registerReceiver(roomReceiver, intentFilter)
     }
 
     override fun onDestroy() {
@@ -115,6 +138,7 @@ class RoomFragment : Fragment() {
         binding = FragmentRoomBinding.inflate(inflater, container, false)
 
         initRecyclerView()
+        initListeners()
         updatePlayerCards()
 
         friendViewModel.friends.observe(viewLifecycleOwner, Observer { result ->
@@ -123,6 +147,27 @@ class RoomFragment : Fragment() {
         })
 
         return binding.root
+    }
+
+    private fun initListeners() {
+        binding.start.setOnSoundClickListener {
+            val user = mAuth.currentUser ?: return@setOnSoundClickListener
+
+            lifecycleScope.launch {
+                Log.d("mpLog", "before start")
+                val result = GameRepository.startMultiPlayerBattle(user.uid, room.roomId)
+                Log.d("mpLog", "after start status = ${result.status}")
+
+                if (result.status == Result.Status.SUCCESS) {
+                    result.data?.let { data ->
+                        if (data.success)
+                            toast("match will start shortly")
+                        else
+                            toast(data.message ?: "null")
+                    }
+                }
+            }
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -148,6 +193,9 @@ class RoomFragment : Fragment() {
         val owner = players.find { player -> player.uid == room.owner }
         val remaining = players.minus(owner)
 
+        val members = listOf(owner, remaining.getOrNull(0), remaining.getOrNull(1), remaining.getOrNull(2))
+        Log.d("memberLog", "list = ${members.joinToString(", ", "[", "]")}")
+
         binding.apply {
             member1 = owner
             member2 = remaining.getOrNull(0)
@@ -164,5 +212,10 @@ class RoomFragment : Fragment() {
             adapter = friendAdapter
             itemAnimator = DefaultItemAnimator()
         }
+    }
+
+    private fun startBattle(battle: Battle, startTime: Long = -1L) {
+        findNavController().navigate(
+                RoomFragmentDirections.actionRoomFragmentToQuestionsFragment(battle, startTime, BATTLE_MULTIPLAYER))
     }
 }
