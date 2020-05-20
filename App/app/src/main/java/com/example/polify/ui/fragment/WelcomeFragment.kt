@@ -34,7 +34,7 @@ class WelcomeFragment : Fragment() {
                     .withPermission(Manifest.permission.READ_CONTACTS)
                     .withListener(object : PermissionListener {
                         override fun onPermissionGranted(response: PermissionGrantedResponse) {
-                            findNavController().navigate(WelcomeFragmentDirections.actionWelcomeFragmentToLoginFragment())
+                            findNavController().navigate(WelcomeFragmentDirections.actionWelcomeFragmentToSignupFragment())
                         }
 
                         override fun onPermissionRationaleShouldBeShown(request: PermissionRequest, token: PermissionToken) {
@@ -52,7 +52,7 @@ class WelcomeFragment : Fragment() {
                     .withPermission(Manifest.permission.READ_CONTACTS)
                     .withListener(object : PermissionListener {
                         override fun onPermissionGranted(response: PermissionGrantedResponse) {
-                            findNavController().navigate(WelcomeFragmentDirections.actionWelcomeFragmentToSignupFragment())
+                            findNavController().navigate(WelcomeFragmentDirections.actionWelcomeFragmentToLoginFragment())
                         }
 
                         override fun onPermissionRationaleShouldBeShown(request: PermissionRequest, token: PermissionToken) {

@@ -3,11 +3,14 @@ package com.example.polify.repository
 import android.app.Application
 import android.content.Context
 import android.provider.ContactsContract
+import android.util.Log
 import androidx.core.content.ContentResolverCompat
 import com.example.polify.model.Contact
+import com.google.firebase.auth.FirebaseAuth
 
 object ContactFetcher {
     private lateinit var context: Context
+    private val mAuth by lazy { FirebaseAuth.getInstance() }
 
     fun init(application: Application) {
         context = application.applicationContext
@@ -83,8 +86,13 @@ object ContactFetcher {
                                     type,
                                     customLabel
                             )
+                    var num = number.replace("\\s".toRegex(),"")
+                    var authNumber = mAuth.currentUser!!.phoneNumber!!.substring(3,mAuth.currentUser!!.phoneNumber!!.length)
 
-                    contact.addNumber(number, phoneType.toString())
+                    if(num != authNumber){
+                        contact.addNumber(number, phoneType.toString())
+                    }
+
                     phone.moveToNext()
                 }
             }

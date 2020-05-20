@@ -99,6 +99,11 @@ class HomeActivity : FullScreenActivity() {
             val dialog = AvatarDialogFragment.getInstance()
             dialog.show(supportFragmentManager, "avatarDialog")
         }
+
+        binding.signOut.setOnSoundClickListener {
+            mAuth.signOut()
+            finish()
+        }
     }
 
     private fun initViewPager() {

@@ -101,7 +101,7 @@
             app:layout_constraintHorizontal_bias="0.00"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.50" />
+            app:layout_constraintVertical_bias="0.55" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/phoneTextInput"
@@ -116,11 +116,11 @@
             app:layout_constraintHorizontal_bias="0.99"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.55">
+            app:layout_constraintVertical_bias="0.60">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/phoneET"
-                android:layout_width="200dp"
+                android:layout_width="160dp"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/bold"
                 android:inputType="phone"
