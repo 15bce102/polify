@@ -23,4 +23,7 @@
     <color name="player4">#F29E24</color>
     <color name="busy">#D6D0B0</color>
     <color name="start">#F7737F</color>
+
+    <color name="lightBlu">#c3edea</color>
+    <color name="darkBlu">#162447</color>
 </resources>

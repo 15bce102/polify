@@ -1,6 +1,5 @@
 package com.example.polify.ui.viewholder
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +11,6 @@ import com.example.polify.databinding.LayoutQuestionBinding
 import com.example.polify.eventbus.OptionEvent
 import com.example.polify.ui.adapter.OptionsAdapter
 import com.example.polify.util.RecyclerTouchListener
-import com.example.polify.util.setOnSoundClickListener
 import org.greenrobot.eventbus.EventBus
 
 class QuestionViewHolder(private val binding: LayoutQuestionBinding) : RecyclerView.ViewHolder(binding.root) {
@@ -32,10 +30,6 @@ class QuestionViewHolder(private val binding: LayoutQuestionBinding) : RecyclerV
 
         binding.question = question
         binding.position = pos
-
-        binding.textMainQuestion.setOnSoundClickListener {
-            Log.d("optionLog", "question text click")
-        }
 
         binding.optionsRV.apply {
             itemTouchListener = RecyclerTouchListener(context, this, object : RecyclerTouchListener.ClickListener {

@@ -15,10 +15,12 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.viewpager2.widget.ViewPager2
 import coil.api.load
 import com.andruid.magic.game.api.GameRepository
+import com.andruid.magic.game.model.data.Player
 import com.andruid.magic.game.model.data.Room
 import com.andruid.magic.game.model.response.Result
 import com.example.polify.R
 import com.example.polify.data.ACTION_ROOM_INVITE
+import com.example.polify.data.EXTRA_PLAYERS
 import com.example.polify.data.EXTRA_ROOM
 import com.example.polify.databinding.ActivityHomeBinding
 import com.example.polify.eventbus.AvatarEvent
@@ -117,7 +119,17 @@ class HomeActivity : FullScreenActivity() {
                 startActivity(Intent(this, MultiPlayerActivity::class.java))
             }
             R.string.title_test -> {
-                startActivity(Intent(this, PracticeActivity::class.java))
+                val user = binding.user!!
+                val player = Player(
+                        uid = user.uid,
+                        userName = user.userName,
+                        avatar = user.avatar,
+                        level = user.level,
+                        score = 0
+                )
+                val intent = Intent(this, PracticeActivity::class.java)
+                        .putExtra(EXTRA_PLAYERS, arrayListOf(player))
+                startActivity(intent)
             }
         }
     }

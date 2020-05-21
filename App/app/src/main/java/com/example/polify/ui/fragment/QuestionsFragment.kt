@@ -29,6 +29,7 @@ import com.example.polify.ui.adapter.QuestionAdapter
 import com.example.polify.ui.viewholder.OptionViewHolder
 import com.example.polify.ui.viewmodel.BaseViewModelFactory
 import com.example.polify.ui.viewmodel.QuestionViewModel
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
@@ -42,6 +43,7 @@ class QuestionsFragment : Fragment() {
     }
 
     private val questionsAdapter = QuestionAdapter()
+    private val mAuth by lazy { FirebaseAuth.getInstance() }
     private val questionsViewModel by viewModels<QuestionViewModel> {
         BaseViewModelFactory {
             QuestionViewModel(battle, battleType)
@@ -122,13 +124,47 @@ class QuestionsFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentQuestionsBinding.inflate(inflater, container, false)
 
+        initViewPager()
+        initPlayers()
+
+        questionsViewModel.questions.observe(viewLifecycleOwner, Observer { result ->
+            if (result.status == Result.Status.SUCCESS) {
+                (result.data?.questions)?.let { questions ->
+                    questionsAdapter.submitList(questions)
+                    binding.progressQues.max = questions.size
+                    startMatch(questions)
+                }
+            }
+        })
+
+        return binding.root
+    }
+
+    private fun initPlayers() {
+        val currentUid = mAuth.currentUser?.uid ?: return
+
+        val players = battle?.players ?: emptyList()
+
+        val player = players.find { player -> player.uid == currentUid }
+        val remaining = players.minus(player)
+
+        binding.apply {
+            player1 = player
+            player2 = remaining.getOrNull(0)
+            player3 = remaining.getOrNull(1)
+            player4 = remaining.getOrNull(2)
+            executePendingBindings()
+        }
+    }
+
+    private fun initViewPager() {
         binding.viewPager.apply {
             adapter = questionsAdapter
             isUserInputEnabled = false
             registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
                 override fun onPageSelected(position: Int) {
                     super.onPageSelected(position)
-                    binding.barProgressBar.progress = position + 1
+                    binding.progressQues.progress = position + 1
 
                     qid = questionsAdapter.currentList[position].qid
 
@@ -140,20 +176,6 @@ class QuestionsFragment : Fragment() {
                 }
             })
         }
-
-
-
-        questionsViewModel.questions.observe(viewLifecycleOwner, Observer { result ->
-            if (result.status == Result.Status.SUCCESS) {
-                (result.data?.questions)?.let { questions ->
-                    questionsAdapter.submitList(questions)
-                    binding.barProgressBar.max = questions.size
-                    startMatch(questions)
-                }
-            }
-        })
-
-        return binding.root
     }
 
     private fun startMatch(questions: List<Question>) {

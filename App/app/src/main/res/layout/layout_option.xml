@@ -10,42 +10,24 @@
             type="com.andruid.magic.game.model.data.Option" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/optionCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:descendantFocusability="blocksDescendants"
-        android:background="@color/black">
+        android:layout_margin="16dp"
+        app:cardBackgroundColor="@color/darkBlu"
+        app:cardCornerRadius="16dp">
 
-        <LinearLayout
-            android:id="@+id/linearLayout"
+        <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="10dp"
-            android:background="@drawable/layout"
-            android:orientation="horizontal"
-            app:layout_constraintBottom_toBottomOf="parent"
-
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <CheckBox
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:background="@mipmap/ic_check"
-                android:gravity="end|center_vertical" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:fontFamily="@font/bold"
-                android:text="@{option.opt}"
-                android:textColor="@color/white"
-                android:textSize="20sp"
-                tools:text="The Science" />
-        </LinearLayout>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            android:layout_margin="8dp"
+            android:fontFamily="serif-monospace"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:text="@{option.opt}"
+            android:textColor="@color/lightBlu"
+            android:textSize="18sp"
+            tools:text="Data Modelling" />
+    </com.google.android.material.card.MaterialCardView>
 </layout>

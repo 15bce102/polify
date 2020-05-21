@@ -26,10 +26,10 @@ class OptionViewHolder(private val binding: LayoutOptionBinding) : RecyclerView.
 
     fun highlightAnswer(correct: Boolean) {
         val bg = if (correct) Color.GREEN else Color.RED
-        binding.linearLayout.setBackgroundColor(bg)
+        binding.optionCard.setCardBackgroundColor(bg)
     }
 
     fun highlightOption() {
-        binding.linearLayout.setBackgroundColor(Color.LTGRAY)
+        binding.optionCard.setCardBackgroundColor(Color.LTGRAY)
     }
 }
