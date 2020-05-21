@@ -24,22 +24,22 @@
             android:overScrollMode="never" />
 
         <com.google.android.material.button.MaterialButton
-            style="@style/Widget.Shrine.Button"
             android:id="@+id/sign_out"
+            style="@style/Widget.Shrine.Button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/button"
             android:fontFamily="@font/regular"
+            android:gravity="center"
             android:text="Sign Out"
             android:textColor="@color/white"
             android:textSize="15dp"
-            android:gravity="center"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintVertical_bias="0.15"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.05"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.15" />
 
 
         <androidx.appcompat.widget.LinearLayoutCompat
@@ -123,35 +123,35 @@
                         android:layout_height="40dp"
                         android:layout_alignParentEnd="true"
                         android:layout_alignParentRight="true"
-                        android:layout_marginRight="50dp"
-                        android:layout_marginEnd="50dp"
                         android:layout_marginTop="10dp"
+                        android:layout_marginEnd="50dp"
+                        android:layout_marginRight="50dp"
                         android:src="@drawable/coinsrd" />
+
                     <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/img_plus"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
                         android:layout_alignParentEnd="true"
                         android:layout_alignParentRight="true"
                         android:layout_marginTop="20dp"
-                        android:layout_marginRight="20dp"
                         android:layout_marginEnd="20dp"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:src="@drawable/plus"
-                        android:id="@+id/img_plus"
-                        />
+                        android:layout_marginRight="20dp"
+                        android:src="@drawable/plus" />
+
                     <androidx.appcompat.widget.AppCompatTextView
-                        android:text="1000"
-                        android:fontFamily="sans-serif-black"
-                        android:textSize="15sp"
-                        android:textColor="#ffffff"
                         android:id="@+id/txt_coins"
-                        android:layout_marginTop="50dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
                         android:layout_alignParentRight="true"
-                        android:layout_marginRight="50dp"
+                        android:layout_marginTop="50dp"
                         android:layout_marginEnd="50dp"
-                        />
+                        android:layout_marginRight="50dp"
+                        android:fontFamily="sans-serif-black"
+                        android:text="1000"
+                        android:textColor="#ffffff"
+                        android:textSize="15sp" />
                 </RelativeLayout>
             </com.google.android.material.card.MaterialCardView>
         </androidx.appcompat.widget.LinearLayoutCompat>
@@ -205,5 +205,57 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/viewPager"
             app:layout_constraintVertical_bias="0.88" />
+
+        <com.getbase.floatingactionbutton.FloatingActionsMenu
+            android:id="@+id/floating_action_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            app:fab_addButtonColorNormal="#000000"
+            app:fab_addButtonPlusIconColor="#ffffff"
+            app:fab_addButtonSize="normal"
+            app:fab_expandDirection="up"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:fontFamily="monospace"
+                android:text="Sync"
+                android:textStyle="bold" />
+
+            <com.getbase.floatingactionbutton.FloatingActionButton
+                android:id="@+id/refresh"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:fabSize="mini"
+                app:fab_colorNormal="#555555"
+                app:fab_icon="@drawable/refresh"
+                app:fab_title="Refresh friends List" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:fontFamily="monospace"
+                android:text="Logout"
+                android:textStyle="bold" />
+
+            <com.getbase.floatingactionbutton.FloatingActionButton
+                android:id="@+id/logout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:fabSize="mini"
+                app:fab_colorNormal="#555555"
+                app:fab_icon="@drawable/logout"
+                app:fab_stroke_visible="true"
+                app:fab_title="Logout" />
+        </com.getbase.floatingactionbutton.FloatingActionsMenu>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

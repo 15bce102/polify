@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.polify">
 
     <uses-permission android:name="android.permission.READ_CONTACTS" />
@@ -15,7 +16,6 @@
         android:testOnly="false"
         android:theme="@style/AppTheme.FullScreen"
         android:usesCleartextTraffic="true">
-        <activity android:name=".ui.activity.MultiPlayerActivity"></activity>
 
         <receiver
             android:name=".receiver.BootReceiver"
@@ -26,14 +26,10 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".ui.activity.PracticeActivity" />
-
         <service
             android:name=".service.GameService"
             android:enabled="true"
             android:exported="false" />
-
-        <activity android:name=".ui.activity.OneVsOneActivity" />
 
         <service
             android:name=".service.CloudMessagingService"
@@ -43,15 +39,40 @@
             </intent-filter>
         </service>
 
-        <activity android:name=".ui.activity.SplashActivity">
+        <activity
+            android:name=".ui.activity.SplashActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.activity.LoginActivity" />
-        <activity android:name=".ui.activity.HomeActivity" />
-    </application>
 
+        <activity
+            android:name=".ui.activity.LoginActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+
+        <activity
+            android:name=".ui.activity.HomeActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+
+        <activity
+            android:name=".ui.activity.MultiPlayerActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+
+        <activity
+            android:name=".ui.activity.OneVsOneActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+
+        <activity
+            android:name=".ui.activity.PracticeActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+    </application>
 </manifest>

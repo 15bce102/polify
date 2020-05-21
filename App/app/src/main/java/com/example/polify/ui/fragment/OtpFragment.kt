@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.navArgs
 import com.andruid.magic.game.api.GameRepository
 import com.andruid.magic.game.model.response.Result
 import com.example.polify.databinding.FragmentOtpBinding
@@ -29,12 +30,14 @@ class OtpFragment : Fragment() {
     }
 
     private var check = false
-    private var userName: String? = null
-    private var avatarUri: String? = null
 
     private lateinit var verificationId: String
     private lateinit var binding: FragmentOtpBinding
-    private lateinit var phoneNumber: String
+
+    private val args by navArgs<OtpFragmentArgs>()
+    private val userName = args.userName
+    private val avatarUri = args.avatarUri
+    private val phoneNumber = args.phoneNumber
 
     private val mAuth = FirebaseAuth.getInstance()
     private val mCallBack = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
@@ -55,17 +58,6 @@ class OtpFragment : Fragment() {
 
         override fun onVerificationFailed(e: FirebaseException) {
             Log.w(TAG, "onVerificationFailed", e)
-        }
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            val safeArgs = OtpFragmentArgs.fromBundle(it)
-
-            phoneNumber = safeArgs.phoneNumber
-            userName = safeArgs.userName
-            avatarUri = safeArgs.avatarUri
         }
     }
 
@@ -115,7 +107,7 @@ class OtpFragment : Fragment() {
 
                         lifecycleScope.launch {
                             if (userName != null && avatarUri != null) {
-                                val response = GameRepository.signupUser(user.uid, avatarUri!!, userName!!, token)
+                                val response = GameRepository.signupUser(user.uid, avatarUri, userName, token)
                                 if (response.status == Result.Status.SUCCESS)
                                     startHomeActivity()
                                 else

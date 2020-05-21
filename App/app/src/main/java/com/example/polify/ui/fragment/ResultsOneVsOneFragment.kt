@@ -13,6 +13,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.navigation.fragment.navArgs
 import com.andruid.magic.game.api.GameRepository
 import com.andruid.magic.game.model.data.PlayerResult
 import com.andruid.magic.game.model.response.Result
@@ -30,9 +31,10 @@ class ResultsOneVsOneFragment : Fragment() {
     }
 
     private lateinit var binding: FragmentResultsOneVsOneBinding
-    private lateinit var battleId: String
 
-    private var score = 0
+    private val args by navArgs<ResultsOneVsOneFragmentArgs>()
+    private val battleId = args.battleId
+    private val score = args.score
 
     private val mAuth by lazy { FirebaseAuth.getInstance() }
     private val resultsReceiver = object : BroadcastReceiver() {
@@ -59,19 +61,13 @@ class ResultsOneVsOneFragment : Fragment() {
         LocalBroadcastManager.getInstance(requireContext())
                 .registerReceiver(resultsReceiver, IntentFilter(ACTION_MATCH_RESULTS))
 
-        arguments?.let {
-            val (battleId, score) = ResultsOneVsOneFragmentArgs.fromBundle(it)
-            this.battleId = battleId
-            this.score = score
-
-            lifecycleScope.launch {
-                mAuth.currentUser?.let { user ->
-                    val response = GameRepository.updateBattleScore(battleId, user.uid, score)
-                    if (response.status == Result.Status.SUCCESS)
-                        Log.d(TAG, "score updated")
-                    else
-                        Log.d(TAG, "score not updated")
-                }
+        lifecycleScope.launch {
+            mAuth.currentUser?.let { user ->
+                val response = GameRepository.updateBattleScore(battleId, user.uid, score)
+                if (response.status == Result.Status.SUCCESS)
+                    Log.d(TAG, "score updated")
+                else
+                    Log.d(TAG, "score not updated")
             }
         }
     }

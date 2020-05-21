@@ -15,12 +15,14 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.*
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.andruid.magic.game.api.GameRepository
 import com.andruid.magic.game.model.data.Battle
 import com.andruid.magic.game.model.data.Room
 import com.andruid.magic.game.model.response.Result
+import com.example.polify.R
 import com.example.polify.data.*
 import com.example.polify.databinding.FragmentRoomBinding
 import com.example.polify.eventbus.FriendInviteEvent
@@ -28,17 +30,19 @@ import com.example.polify.ui.adapter.FriendAdapter
 import com.example.polify.ui.viewmodel.BaseViewModelFactory
 import com.example.polify.ui.viewmodel.FriendViewModel
 import com.example.polify.util.setOnSoundClickListener
+import com.example.polify.util.showConfirmationDialog
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import splitties.toast.longToast
 import splitties.toast.toast
 
 class RoomFragment : Fragment() {
     private lateinit var binding: FragmentRoomBinding
-    private lateinit var room: Room
+
+    private val args by navArgs<RoomFragmentArgs>()
+    private var room = args.room
 
     private val friendAdapter = FriendAdapter()
     private val mAuth by lazy { FirebaseAuth.getInstance() }
@@ -47,14 +51,13 @@ class RoomFragment : Fragment() {
     }
     private val callback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
-            if (!::room.isInitialized) {
-                requireActivity().finish()
-                return
-            }
-
             val user = mAuth.currentUser ?: return
 
             lifecycleScope.launch {
+                val shouldLeave = requireContext().showConfirmationDialog(R.string.title_leave_room, R.string.desc_leave_room)
+                if (!shouldLeave)
+                    return@launch
+
                 val result = GameRepository.leaveMultiPlayerRoom(user.uid, room.roomId)
                 if (result.status == Result.Status.SUCCESS) {
                     result.data?.let { data ->
@@ -108,12 +111,6 @@ class RoomFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            val safeArgs = RoomFragmentArgs.fromBundle(it)
-            room = safeArgs.room
-
-            longToast("room members are ${room.members.joinToString(", ", "[", "]")}")
-        }
 
         requireActivity().onBackPressedDispatcher.addCallback(this, callback)
 

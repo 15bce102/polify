@@ -13,9 +13,9 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
-import com.andruid.magic.game.model.data.Battle
 import com.andruid.magic.game.model.data.Question
 import com.andruid.magic.game.model.response.Result
 import com.example.polify.R
@@ -50,14 +50,16 @@ class QuestionsFragment : Fragment() {
         }
     }
 
-    private var battle: Battle? = null
+    private val args by navArgs<QuestionsFragmentArgs>()
+    private val battle = args.battle
+    private val battleType = args.battleType
+    private val startTime = args.startTime
+
     private lateinit var binding: FragmentQuestionsBinding
 
-    private var battleType = BATTLE_TEST
     private var score = 0
     private var qid: String? = null
     private var selectedOptPos = -1
-    private var startTime = -1L
     private var optionsEnabled = true
 
     private val countDownTimer = object : CountDownTimer(QUE_TIME_LIMIT_MS, 1000) {
@@ -105,19 +107,6 @@ class QuestionsFragment : Fragment() {
             }
         } catch (e: IllegalStateException) {
             e.printStackTrace()
-        }
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        Log.d("cloudLog", "on create questions")
-        super.onCreate(savedInstanceState)
-
-        arguments?.let {
-            val safeArgs = QuestionsFragmentArgs.fromBundle(it)
-
-            battle = safeArgs.battle
-            startTime = safeArgs.startTime
-            battleType = safeArgs.battleType
         }
     }
 

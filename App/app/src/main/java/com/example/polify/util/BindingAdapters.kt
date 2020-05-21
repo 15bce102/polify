@@ -5,15 +5,16 @@ import android.widget.ImageView
 import androidx.annotation.DrawableRes
 import androidx.databinding.BindingAdapter
 import coil.api.load
+import coil.transform.RoundedCornersTransformation
 import com.example.polify.R
 import com.example.polify.data.STATUS_BUSY
-import com.example.polify.data.STATUS_OFFLINE
 import com.example.polify.data.STATUS_ONLINE
 
 @BindingAdapter("imageUrl")
 fun ImageView.setImageUrl(url: String?) {
     load(url) {
         placeholder(R.mipmap.ic_profile)
+        transformations(RoundedCornersTransformation(6F))
     }
 }
 
