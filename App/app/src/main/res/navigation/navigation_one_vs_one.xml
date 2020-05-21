@@ -36,17 +36,17 @@
             android:defaultValue="test"
             app:argType="string" />
         <action
-            android:id="@+id/action_questionsFragment_to_resultsOneVsOneFragment"
-            app:destination="@id/resultsOneVsOneFragment"
+            android:id="@+id/action_questionsFragment_to_resultsFragment"
+            app:destination="@id/resultsFragment"
             app:popUpTo="@id/questionsFragment"
             app:popUpToInclusive="true" />
     </fragment>
 
     <fragment
-        android:id="@+id/resultsOneVsOneFragment"
-        android:name="com.example.polify.ui.fragment.ResultsOneVsOneFragment"
+        android:id="@+id/resultsFragment"
+        android:name="com.example.polify.ui.fragment.ResultsFragment"
         android:label="fragment_results_one_vs_one"
-        tools:layout="@layout/fragment_results_one_vs_one">
+        tools:layout="@layout/fragment_results">
         <argument
             android:name="battle_id"
             android:defaultValue="test"

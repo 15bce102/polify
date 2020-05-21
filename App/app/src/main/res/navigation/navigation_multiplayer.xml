@@ -28,9 +28,9 @@
             app:argType="com.andruid.magic.game.model.data.Room" />
         <action
             android:id="@+id/action_roomFragment_to_questionsFragment"
+            app:destination="@id/questionsFragment"
             app:popUpTo="@id/roomFragment"
-            app:popUpToInclusive="true"
-            app:destination="@id/questionsFragment" />
+            app:popUpToInclusive="true" />
     </fragment>
 
     <fragment
@@ -52,17 +52,17 @@
             android:defaultValue="test"
             app:argType="string" />
         <action
-            android:id="@+id/action_questionsFragment_to_resultsMultiPlayerFragment"
-            app:destination="@id/resultsMultiPlayerFragment"
+            android:id="@+id/action_questionsFragment_to_resultsFragment"
+            app:destination="@id/resultsFragment"
             app:popUpTo="@id/questionsFragment"
             app:popUpToInclusive="true" />
     </fragment>
 
     <fragment
-        android:id="@+id/resultsMultiPlayerFragment"
-        android:name="com.example.polify.ui.fragment.ResultsMultiplayerFragment"
-        android:label="fragment_results_multiplayer"
-        tools:layout="@layout/fragment_results_multiplayer">
+        android:id="@+id/resultsFragment"
+        android:name="com.example.polify.ui.fragment.ResultsFragment"
+        android:label="fragment_results"
+        tools:layout="@layout/fragment_results">
         <argument
             android:name="battle_id"
             android:defaultValue="test"

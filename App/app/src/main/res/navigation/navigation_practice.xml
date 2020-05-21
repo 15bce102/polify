@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation_practice"
-    app:startDestination="@id/questionsFragment">
+    app:startDestination="@id/questionsFragment"
+    tools:ignore="UnusedNavigation">
 
     <fragment
         android:id="@+id/questionsFragment"
@@ -24,17 +25,17 @@
             android:defaultValue="test"
             app:argType="string" />
         <action
-            android:id="@+id/action_questionsFragment_to_resultsTestFragment"
-            app:destination="@id/resultsTestFragment"
+            android:id="@+id/action_questionsFragment_to_resultsFragment"
+            app:destination="@id/resultsFragment"
             app:popUpTo="@id/questionsFragment"
             app:popUpToInclusive="true" />
     </fragment>
 
     <fragment
-        android:id="@+id/resultsTestFragment"
-        android:name="com.example.polify.ui.fragment.ResultsTestFragment"
-        android:label="fragment_results_test"
-        tools:layout="@layout/fragment_results_test">
+        android:id="@+id/resultsFragment"
+        android:name="com.example.polify.ui.fragment.ResultsFragment"
+        android:label="fragment_results"
+        tools:layout="@layout/fragment_results">
         <argument
             android:name="battle_id"
             android:defaultValue="test"

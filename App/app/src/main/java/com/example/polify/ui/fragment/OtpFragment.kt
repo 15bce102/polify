@@ -35,9 +35,9 @@ class OtpFragment : Fragment() {
     private lateinit var binding: FragmentOtpBinding
 
     private val args by navArgs<OtpFragmentArgs>()
-    private val userName = args.userName
-    private val avatarUri = args.avatarUri
-    private val phoneNumber = args.phoneNumber
+    private val userName by lazy { args.userName }
+    private val avatarUri by lazy { args.avatarUri }
+    private val phoneNumber by lazy { args.phoneNumber }
 
     private val mAuth = FirebaseAuth.getInstance()
     private val mCallBack = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
@@ -107,7 +107,7 @@ class OtpFragment : Fragment() {
 
                         lifecycleScope.launch {
                             if (userName != null && avatarUri != null) {
-                                val response = GameRepository.signupUser(user.uid, avatarUri, userName, token)
+                                val response = GameRepository.signupUser(user.uid, avatarUri!!, userName!!, token)
                                 if (response.status == Result.Status.SUCCESS)
                                     startHomeActivity()
                                 else

@@ -69,6 +69,7 @@ class OneVsOneActivity : FullScreenActivity() {
     }
 
     private fun startBattle(battle: Battle, startTime: Long = -1L) {
+        Log.d("navLog", "battle=${battle}, startTime = ${startTime}")
         findNavController(R.id.nav_host_fragment).navigate(
                 WaitingFragmentDirections.actionWaitingFragmentToQuestionsFragment(battle, startTime, BATTLE_ONE_VS_ONE))
     }

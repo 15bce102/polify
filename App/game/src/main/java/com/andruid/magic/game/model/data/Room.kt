@@ -12,5 +12,5 @@ data class Room(
         @SerializedName("coins_pool")
         val coinsPool: Int,
         val createdAt: Long,
-        val members: List<Player>
+        var members: List<Player>
 ) : Parcelable

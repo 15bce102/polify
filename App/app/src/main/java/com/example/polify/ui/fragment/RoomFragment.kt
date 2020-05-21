@@ -42,7 +42,7 @@ class RoomFragment : Fragment() {
     private lateinit var binding: FragmentRoomBinding
 
     private val args by navArgs<RoomFragmentArgs>()
-    private var room = args.room
+    private val room by lazy { args.room }
 
     private val friendAdapter = FriendAdapter()
     private val mAuth by lazy { FirebaseAuth.getInstance() }
@@ -81,7 +81,7 @@ class RoomFragment : Fragment() {
                     toast(message)
 
                     (extras[EXTRA_ROOM] as Room?)?.let {
-                        this@RoomFragment.room = it
+                        this@RoomFragment.room.members = it.members
                         updatePlayerCards()
                     } ?: run {
                         requireActivity().finish()

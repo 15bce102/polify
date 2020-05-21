@@ -9,78 +9,76 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.DefaultItemAnimator
 import com.andruid.magic.game.api.GameRepository
 import com.andruid.magic.game.model.data.PlayerResult
 import com.andruid.magic.game.model.response.Result
-import com.example.polify.R
 import com.example.polify.data.ACTION_MATCH_RESULTS
 import com.example.polify.data.EXTRA_BATTLE_ID
 import com.example.polify.data.EXTRA_PLAYERS
-import com.example.polify.databinding.FragmentResultsOneVsOneBinding
+import com.example.polify.databinding.FragmentResultsBinding
+import com.example.polify.ui.adapter.ResultsAdapter
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 
-class ResultsOneVsOneFragment : Fragment() {
+class ResultsFragment : Fragment() {
     companion object {
         private val TAG = "${this::class.java.simpleName}Log"
     }
 
-    private lateinit var binding: FragmentResultsOneVsOneBinding
+    private val args by navArgs<ResultsFragmentArgs>()
+    private val battleId by lazy { args.battleId }
+    private val score by lazy { args.score }
 
-    private val args by navArgs<ResultsOneVsOneFragmentArgs>()
-    private val battleId = args.battleId
-    private val score = args.score
-
+    private val resultsAdapter = ResultsAdapter()
     private val mAuth by lazy { FirebaseAuth.getInstance() }
     private val resultsReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             if (intent.action == ACTION_MATCH_RESULTS) {
                 intent.extras?.let { extras ->
                     val battleId = extras.getString(EXTRA_BATTLE_ID)
-                    if (battleId != this@ResultsOneVsOneFragment.battleId)
+                    if (battleId != this@ResultsFragment.battleId)
                         return
 
                     val results: ArrayList<PlayerResult> =
                             extras.getParcelableArrayList(EXTRA_PLAYERS) ?: arrayListOf()
 
                     Log.d(TAG, "battle score received: size = ${results.size}")
-
-                    showOneVsOneResults(results)
+                    showResults(results)
                 }
             }
         }
     }
 
+    private lateinit var binding: FragmentResultsBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         LocalBroadcastManager.getInstance(requireContext())
                 .registerReceiver(resultsReceiver, IntentFilter(ACTION_MATCH_RESULTS))
 
+        val user = mAuth.currentUser ?: return
+
         lifecycleScope.launch {
-            mAuth.currentUser?.let { user ->
-                val response = GameRepository.updateBattleScore(battleId, user.uid, score)
-                if (response.status == Result.Status.SUCCESS)
-                    Log.d(TAG, "score updated")
-                else
-                    Log.d(TAG, "score not updated")
-            }
+            val response = GameRepository.updateBattleScore(battleId, user.uid, score)
+            if (response.status == Result.Status.SUCCESS)
+                Log.d(TAG, "score updated")
+            else
+                Log.d(TAG, "score not updated")
         }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_results_one_vs_one, container, false)
+        binding = FragmentResultsBinding.inflate(inflater, container, false)
+
+        initRecyclerView()
 
         return binding.root
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        binding.unbind()
     }
 
     override fun onDestroy() {
@@ -88,35 +86,14 @@ class ResultsOneVsOneFragment : Fragment() {
         LocalBroadcastManager.getInstance(requireContext()).unregisterReceiver(resultsReceiver)
     }
 
-    private fun showOneVsOneResults(results: List<PlayerResult>) {
-        Log.d(TAG, "battle showing results  = ${results.size}")
-        if (results.size != 2)
-            return
-
-        binding.apply {
-            mAuth.currentUser?.let {
-                val user: PlayerResult
-                val opponent: PlayerResult
-
-                if (results[0].player.uid == it.uid) {
-                    user = results[0]
-                    opponent = results[1]
-                } else {
-                    user = results[1]
-                    opponent = results[0]
-                }
-
-                val resultMsg = when {
-                    user.player.score > opponent.player.score -> R.string.message_win
-                    user.player.score < opponent.player.score -> R.string.message_lose
-                    else -> R.string.message_tie
-                }
-
-                message = getString(resultMsg)
-                this.user = user
-                this.opponent = opponent
-                executePendingBindings()
-            }
+    private fun initRecyclerView() {
+        binding.resultsRV.apply {
+            adapter = resultsAdapter
+            itemAnimator = DefaultItemAnimator()
         }
+    }
+
+    private fun showResults(results: List<PlayerResult>) {
+        resultsAdapter.submitList(results)
     }
 }

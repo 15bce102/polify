@@ -6,12 +6,10 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
@@ -51,9 +49,9 @@ class QuestionsFragment : Fragment() {
     }
 
     private val args by navArgs<QuestionsFragmentArgs>()
-    private val battle = args.battle
-    private val battleType = args.battleType
-    private val startTime = args.startTime
+    private val battle by lazy { args.battle }
+    private val battleType by lazy { args.battleType }
+    private val startTime by lazy { args.startTime }
 
     private lateinit var binding: FragmentQuestionsBinding
 
@@ -85,25 +83,16 @@ class QuestionsFragment : Fragment() {
         try {
             when (battleType) {
                 BATTLE_ONE_VS_ONE ->
-                    findNavController().navigate(R.id.resultsOneVsOneFragment, bundleOf(
-                            "battle_id" to (battle?.battleId ?: ""),
-                            "score" to score
-                    ), NavOptions.Builder()
-                            .setPopUpTo(R.id.questionsFragment, true)
-                            .build())
+                    findNavController().navigate(QuestionsFragmentDirections
+                            .actionQuestionsFragmentToResultsFragment(battle?.battleId
+                                    ?: "test", score))
                 BATTLE_TEST ->
-                    findNavController().navigate(R.id.resultsTestFragment, bundleOf(
-                            "score" to score
-                    ), NavOptions.Builder()
-                            .setPopUpTo(R.id.questionsFragment, true)
-                            .build())
+                    findNavController().navigate(QuestionsFragmentDirections
+                            .actionQuestionsFragmentToResultsFragment(score = score))
                 BATTLE_MULTIPLAYER ->
-                    findNavController().navigate(R.id.resultsMultiPlayerFragment, bundleOf(
-                            "battle_id" to (battle?.battleId ?: ""),
-                            "score" to score
-                    ), NavOptions.Builder()
-                            .setPopUpTo(R.id.questionsFragment, true)
-                            .build())
+                    findNavController().navigate(QuestionsFragmentDirections
+                            .actionQuestionsFragmentToResultsFragment(battle?.battleId
+                                    ?: "test", score))
             }
         } catch (e: IllegalStateException) {
             e.printStackTrace()
