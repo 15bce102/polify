@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -27,13 +28,13 @@ import com.example.polify.ui.adapter.QuestionAdapter
 import com.example.polify.ui.viewholder.OptionViewHolder
 import com.example.polify.ui.viewmodel.BaseViewModelFactory
 import com.example.polify.ui.viewmodel.QuestionViewModel
+import com.example.polify.util.showConfirmationDialog
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import splitties.toast.toast
 
 class QuestionsFragment : Fragment() {
     companion object {
@@ -60,6 +61,18 @@ class QuestionsFragment : Fragment() {
     private var selectedOptPos = -1
     private var optionsEnabled = true
 
+    private val callback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            lifecycleScope.launch {
+                val shouldQuit = requireContext().showConfirmationDialog(R.string.title_leave_battle,
+                        R.string.desc_leave_battle)
+                if (!shouldQuit)
+                    return@launch
+
+                requireActivity().finish()
+            }
+        }
+    }
     private val countDownTimer = object : CountDownTimer(QUE_TIME_LIMIT_MS, 1000) {
         override fun onFinish() {
             val pos = binding.viewPager.currentItem
@@ -79,7 +92,6 @@ class QuestionsFragment : Fragment() {
     }
 
     private fun finishGame() {
-        toast("Your score = $score/10!")
         try {
             when (battleType) {
                 BATTLE_ONE_VS_ONE ->
@@ -97,6 +109,11 @@ class QuestionsFragment : Fragment() {
         } catch (e: IllegalStateException) {
             e.printStackTrace()
         }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        requireActivity().onBackPressedDispatcher.addCallback(callback)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

@@ -87,6 +87,11 @@ class HomeActivity : FullScreenActivity() {
                 .registerReceiver(multiPlayerReceiver, IntentFilter(ACTION_ROOM_INVITE))
     }
 
+    override fun onResume() {
+        super.onResume()
+        userViewModel.refresh()
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         binding.unbind()

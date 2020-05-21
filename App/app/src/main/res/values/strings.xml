@@ -46,5 +46,5 @@
     <string name="title_leave_room">Leave room</string>
     <string name="desc_leave_room">Are you sure you want to leave this room?</string>
     <string name="title_leave_battle">Leave battle</string>
-    <string name="desc_leavebattle">Are you sure you want to leave battle? All your points will be lost.</string>
+    <string name="desc_leave_battle">Are you sure you want to leave battle? All your points will be lost.</string>
 </resources>

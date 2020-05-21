@@ -24,6 +24,7 @@ import com.example.polify.databinding.FragmentResultsBinding
 import com.example.polify.ui.adapter.ResultsAdapter
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
+import splitties.toast.longToast
 
 class ResultsFragment : Fragment() {
     companion object {
@@ -58,6 +59,11 @@ class ResultsFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        if (battleId == "test") {
+            longToast("Your score = $score")
+            return
+        }
 
         LocalBroadcastManager.getInstance(requireContext())
                 .registerReceiver(resultsReceiver, IntentFilter(ACTION_MATCH_RESULTS))

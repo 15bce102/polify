@@ -14,7 +14,7 @@ import com.example.polify.data.STATUS_ONLINE
 fun ImageView.setImageUrl(url: String?) {
     load(url) {
         placeholder(R.mipmap.ic_profile)
-        transformations(RoundedCornersTransformation(6F))
+        transformations(RoundedCornersTransformation(context.resources.getDimension(R.dimen.image_corner_radius)))
     }
 }
 
