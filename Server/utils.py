@@ -30,13 +30,11 @@ def get_user_from_phone_number(phone_number):
     try:
         user = auth.get_user_by_phone_number(phone_number)
         return user
-    except UserNotFoundError as e:
-        print(e)
+    except UserNotFoundError:
         return None
 
 
 def send_multi_message(data, tokens):
-    print('sending multi message: ', data)
     message = MulticastMessage(data=data, tokens=tokens)
     response = send_multicast(message)
     print('Messages sent: failed = {0}, success = {1}, other fields = {2}'
@@ -44,7 +42,7 @@ def send_multi_message(data, tokens):
 
 
 def send_single_message(data, token):
-    message = Message(data, token)
+    message = Message(data=data, token=token)
     response = send(message)
     print('Successfully sent message:', response)
 

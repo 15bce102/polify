@@ -206,57 +206,5 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/viewPager"
             app:layout_constraintVertical_bias="0.88" />
-
-        <com.getbase.floatingactionbutton.FloatingActionsMenu
-            android:id="@+id/floating_action_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            app:fab_addButtonColorNormal="#000000"
-            app:fab_addButtonPlusIconColor="#ffffff"
-            app:fab_addButtonSize="normal"
-            app:fab_expandDirection="up"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="1.0">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:fontFamily="monospace"
-                android:text="Sync"
-                android:textStyle="bold" />
-
-            <com.getbase.floatingactionbutton.FloatingActionButton
-                android:id="@+id/refresh"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:fabSize="mini"
-                app:fab_colorNormal="#555555"
-                app:fab_icon="@drawable/refresh"
-                app:fab_title="Refresh friends List" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:fontFamily="monospace"
-                android:text="Logout"
-                android:textStyle="bold" />
-
-            <com.getbase.floatingactionbutton.FloatingActionButton
-                android:id="@+id/logout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:fabSize="mini"
-                app:fab_colorNormal="#555555"
-                app:fab_icon="@drawable/logout"
-                app:fab_stroke_visible="true"
-                app:fab_title="Logout" />
-        </com.getbase.floatingactionbutton.FloatingActionsMenu>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

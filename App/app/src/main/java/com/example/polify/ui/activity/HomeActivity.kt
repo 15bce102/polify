@@ -1,12 +1,16 @@
 package com.example.polify.ui.activity
 
 import android.animation.ArgbEvaluator
+import android.animation.ObjectAnimator
+import android.animation.PropertyValuesHolder
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.widget.ImageView
 import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
@@ -34,11 +38,16 @@ import com.example.polify.util.scheduleFriendsUpdate
 import com.example.polify.util.setOnSoundClickListener
 import com.example.polify.util.showMultiPlayerInviteDialog
 import com.google.firebase.auth.FirebaseAuth
+import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton
+import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu
+import com.oguzdev.circularfloatingactionmenu.library.SubActionButton
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import splitties.resources.color
+import splitties.resources.drawable
 import splitties.toast.toast
+
 
 class HomeActivity : FullScreenActivity() {
     private lateinit var binding: ActivityHomeBinding
@@ -75,6 +84,7 @@ class HomeActivity : FullScreenActivity() {
 
         initViewPager()
         initListeners()
+        initFloatingMenu()
 
         scheduleFriendsUpdate()
 
@@ -149,6 +159,60 @@ class HomeActivity : FullScreenActivity() {
             mAuth.signOut()
             finish()
         }
+    }
+
+    private fun initFloatingMenu() {
+        val fabIconNew = ImageView(this).apply {
+            setImageDrawable(drawable(R.drawable.more))
+        }
+        val rightLowerButton = FloatingActionButton.Builder(this)
+                .setContentView(fabIconNew)
+                .build()
+        val rLSubBuilder = SubActionButton.Builder(this)
+
+        val rlIcon1 = ImageView(this).apply {
+            setImageDrawable(drawable(R.drawable.refresh))
+            setOnSoundClickListener {
+                scheduleFriendsUpdate()
+            }
+        }
+        val rlIcon2 = ImageView(this).apply {
+            setImageDrawable(drawable(R.drawable.logout))
+            setOnSoundClickListener {
+                mAuth.signOut()
+                finish()
+            }
+        }
+        val rlIcon3 = ImageView(this).apply {
+            setImageDrawable(drawable(R.drawable.open_source))
+        }
+
+        // Build the menu with default options: light theme, 90 degrees, 72dp radius.
+        // Set 4 default SubActionButtons
+
+        // Build the menu with default options: light theme, 90 degrees, 72dp radius.
+        // Set 4 default SubActionButtons
+        FloatingActionMenu.Builder(this)
+                .addSubActionView(rLSubBuilder.setContentView(rlIcon1).build())
+                .addSubActionView(rLSubBuilder.setContentView(rlIcon2).build())
+                .addSubActionView(rLSubBuilder.setContentView(rlIcon3).build())
+                .attachTo(rightLowerButton)
+                .setStateChangeListener(object : FloatingActionMenu.MenuStateChangeListener {
+                    override fun onMenuOpened(menu: FloatingActionMenu) {
+                        fabIconNew.rotation = 0F
+                        val pvhR = PropertyValuesHolder.ofFloat(View.ROTATION, 45F)
+                        val animation = ObjectAnimator.ofPropertyValuesHolder(fabIconNew, pvhR)
+                        animation.start()
+                    }
+
+                    override fun onMenuClosed(menu: FloatingActionMenu) {
+                        fabIconNew.rotation = 45F
+                        val pvhR = PropertyValuesHolder.ofFloat(View.ROTATION, 0f)
+                        val animation = ObjectAnimator.ofPropertyValuesHolder(fabIconNew, pvhR)
+                        animation.start()
+                    }
+                })
+                .build()
     }
 
     private fun initViewPager() {

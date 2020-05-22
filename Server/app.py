@@ -13,6 +13,7 @@ from api_utils import battles, users, questions
 from utils import current_milli_time, is_valid_user
 
 from constants import STATUS_BUSY, STATUS_ONLINE
+from datetime import datetime
 
 app = Flask(__name__, static_url_path='')
 
@@ -31,10 +32,12 @@ def init():
                       replace_existing=True)
     scheduler.add_job(func=battles.watch_battles, id='score_update_job',
                       replace_existing=True)
+    scheduler.add_job(func=questions.populate_questions, trigger="date",
+                      run_date=datetime.strptime('May 21 2020  11:00AM', '%b %d %Y %I:%M%p'),
+                      id='questions_populate_job', replace_existing=True)
 
-    print('before scheduler start')
     scheduler.start()
-    print('after scheduler start')
+    print('scheduler start')
 
     # Shut down the scheduler when exiting the app
     atexit.register(lambda: shut_down())
@@ -52,21 +55,65 @@ def welcome():
     return resp
 
 
-@app.route('/login', methods=['GET'])
-def login_user():
-    uid = request.args['uid']
+"""User related requests"""
 
-    # valid, resp = is_valid_user(uid)
-    # if not valid:
-    #     return resp
 
-    resp = users.create_user(uid)
+@app.route('/check-user-exists', methods=['POST'])
+def check_number():
+    number = request.json['phoneNumber']
+    user = utils.get_user_from_phone_number(number)
+
+    resp = {}
+
+    if user is None:
+        resp['success'] = False
+        resp['message'] = 'User not found'
+    else:
+        resp['success'] = True
+
     return resp
 
 
-@app.route('/update-status', methods=['GET'])
+@app.route('/signup', methods=['POST'])
+def signup_user():
+    uid = request.json['uid']
+    avatar = request.json['avatar']
+    user_name = request.json['user_name']
+    token = request.json['token']
+
+    resp = users.create_user(uid, avatar, user_name, token)
+    return resp
+
+
+@app.route('/login', methods=['POST'])
+def login_user():
+    uid = request.json['uid']
+    token = request.json['token']
+
+    valid, resp = is_valid_user(uid)
+    if not valid:
+        return resp
+
+    resp = users.login(uid, token)
+    return resp
+
+
+@app.route('/update-token', methods=['POST'])
+def update_token():
+    uid = request.json['uid']
+    token = request.json['token']
+
+    valid, resp = is_valid_user(uid)
+    if not valid:
+        return resp
+
+    resp = users.update_fcm_token(uid, token)
+    return resp
+
+
+@app.route('/update-status', methods=['POST'])
 def update_status():
-    uid = request.args['uid']
+    uid = request.json['uid']
     status = int(request.args['status'])
 
     valid, resp = is_valid_user(uid)
@@ -84,25 +131,23 @@ def update_status():
     return resp
 
 
-@app.route('/update-profile', methods=['GET'])
+@app.route('/update-profile', methods=['POST'])
 def update_profile():
-    uid = request.args['uid']
-    user_name = request.args['user_name']
-    avatar = request.args['avatar']
+    uid = request.json['uid']
+    user_name = request.json['user_name']
+    avatar = request.json['avatar']
 
-    print('checking user validity')
     valid, resp = is_valid_user(uid)
     if not valid:
         return resp
 
-    print('now updating user profile')
     resp = users.update_user_profile(uid, user_name, avatar)
     return resp
 
 
-@app.route('/fetch-profile', methods=['GET'])
+@app.route('/fetch-profile', methods=['POST'])
 def fetch_profile():
-    uid = request.args['uid']
+    uid = request.json['uid']
 
     valid, resp = is_valid_user(uid)
     if not valid:
@@ -112,17 +157,45 @@ def fetch_profile():
     return resp
 
 
-@app.route('/update-token', methods=['GET'])
-def update_token():
-    uid = request.args['uid']
-    token = request.args['token']
+@app.route('/get-avatars', methods=['GET'])
+def get_avatar_url():
+    resp = utils.get_avatars()
+    return resp
+
+
+@app.route('/avatars/<path:path>')
+def send_avatar_img(path):
+    return send_from_directory('avatars', path)
+
+
+@app.route('/my-friends', methods=['POST'])
+def my_friends():
+    uid = request.json['uid']
 
     valid, resp = is_valid_user(uid)
     if not valid:
         return resp
 
-    resp = users.update_fcm_token(uid, token)
+    resp = users.get_my_friends(uid)
     return resp
+
+
+@app.route('/update-friends', methods=['POST'])
+def update_friends():
+    uid = request.json['uid']
+    phone_numbers = request.json['phoneNumbers']
+
+    valid, resp = is_valid_user(uid)
+    if not valid:
+        return resp
+
+    print("uid={0}, contacts={1}".format(uid, len(phone_numbers)))
+
+    resp = users.get_friends_from_phone_numbers(uid, phone_numbers)
+    return resp
+
+
+"""Battle related requests"""
 
 
 @app.route('/join-waiting-room', methods=['GET'])
@@ -171,37 +244,74 @@ def update_score():
     return resp
 
 
-@app.route('/get-avatars', methods=['GET'])
-def get_avatar_url():
-    resp = utils.get_avatars()
-    return resp
-
-
-@app.route('/avatars/<path:path>')
-def send_avatar_img(path):
-    return send_from_directory('avatars', path)
-
-
-@app.route('/update-friends', methods=['POST'])
-def update_friends():
-    uid = request.values['uid']
-    phone_numbers = request.values['phoneNumbers']
-
-    print("uid=${0}, contacts={1}".format(uid, phone_numbers))
-
-    resp = users.get_friends_from_phone_numbers(uid, phone_numbers)
-    return resp
-
-
-@app.route('/my-friends', methods=['GET'])
-def my_friends():
-    uid = request.args['uid']
+@app.route('/create-room', methods=['POST'])
+def create_room():
+    uid = request.json['uid']
 
     valid, resp = is_valid_user(uid)
     if not valid:
         return resp
 
-    resp = users.get_my_friends(uid)
+    resp = battles.create_room(uid)
+    return resp
+
+
+@app.route('/send-invite', methods=['POST'])
+def send_invite():
+    print('send_invite json = ', request.json)
+    uid = request.json['uid']
+    f_uid = request.json['f_uid']
+    room_id = request.json['room_id']
+
+    print('{0} inviting {1}'.format(uid, f_uid))
+
+    valid, resp = is_valid_user(uid)
+    if not valid:
+        return resp
+    valid, resp = is_valid_user(f_uid)
+    if not valid:
+        return resp
+
+    resp = battles.send_room_invite(f_uid, room_id)
+    return resp
+
+
+@app.route('/join-room', methods=['POST'])
+def join_room():
+    uid = request.json['uid']
+    room_id = request.json['room_id']
+
+    valid, resp = is_valid_user(uid)
+    if not valid:
+        return resp
+
+    resp = battles.join_private_room(uid, room_id)
+    return resp
+
+
+@app.route('/leave-room', methods=['POST'])
+def leave_room():
+    uid = request.json['uid']
+    room_id = request.json['room_id']
+
+    valid, resp = is_valid_user(uid)
+    if not valid:
+        return resp
+
+    resp = battles.leave_private_room(uid, room_id)
+    return resp
+
+
+@app.route('/start-battle', methods=['POST'])
+def start_battle():
+    uid = request.json['uid']
+    room_id = request.json['room_id']
+
+    valid, resp = is_valid_user(uid)
+    if not valid:
+        return resp
+
+    resp = battles.start_private_battle(uid, room_id)
     return resp
 
 
@@ -215,6 +325,4 @@ def shut_down():
 
 
 if __name__ == "__main__":
-    print('before app.run')
-    app.run(debug=False, use_reloader=False)
-    print('after app.run')
+    app.run(debug=False)

@@ -4,9 +4,11 @@ WAITING_ROOM = 'waiting_room'
 BATTLES = 'battles'
 USERS = 'users'
 QUESTIONS = 'questions'
+PRIVATE_ROOM = 'private_room'
 
 SCORE_WAIT_INTERVAL = 30
 
+COINS_INITIAL = 1000
 COINS_POOL_ONE_VS_ONE = 50
 COINS_POOL_MULTIPLAYER = 25
 

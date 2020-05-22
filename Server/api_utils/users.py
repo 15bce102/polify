@@ -1,8 +1,9 @@
 from pymongo import ReturnDocument, MongoClient
 from pymongo.database import Database
+from pymongo.errors import PyMongoError
 
 from constants import STATUS_ONLINE, STATUS_OFFLINE, DBNAME
-from constants import USERS
+from constants import USERS, COINS_INITIAL, COINS_POOL_MULTIPLAYER, COINS_POOL_ONE_VS_ONE, BATTLE_ONE_VS_ONE
 from utils import current_milli_time, get_user_from_phone_number, upgrade_tier
 
 db: Database
@@ -15,24 +16,45 @@ def init():
     db = client[DBNAME]
 
 
-def create_user(uid):
+def create_user(uid, avatar, user_name, token):
     resp = {}
 
-    user = db[USERS].find_one_and_update(
-        {"_id": uid},
-        {"$set": {"status": STATUS_ONLINE, "last_seen": current_milli_time()},
-         "$setOnInsert": {"coins": 1000, "level": upgrade_tier(0), "totalScore": 0}
-         },
-        upsert=True,
-        return_document=ReturnDocument.AFTER
-    )
+    user = {
+        "_id": uid,
+        "user_name": user_name,
+        "avatar": avatar,
+        "token": token,
+        "friends": [],
+        "status": STATUS_ONLINE,
+        "last_seen": current_milli_time(),
+        "coins": COINS_INITIAL,
+        "level": upgrade_tier(0),
+        "totalScore": 0
+    }
 
-    if user is None:
-        resp['success'] = False
-        resp['message'] = 'Database operation unsuccessful'
-    else:
+    try:
+        db[USERS].insert_one(user)
         resp['success'] = True
-        resp['user'] = user
+    except PyMongoError:
+        resp['success'] = False
+        resp['message'] = 'Profile already exists'
+
+    return resp
+
+
+def login(uid, token):
+    resp = {}
+
+    try:
+        db[USERS].update_one(
+            {"_id": uid},
+            {"$set": {"status": STATUS_ONLINE, "last_seen": current_milli_time(), "token": token}},
+            upsert=False
+        )
+        resp['success'] = True
+    except PyMongoError:
+        resp['success'] = False
+        resp['message'] = 'User does not exist'
 
     return resp
 
@@ -40,17 +62,15 @@ def create_user(uid):
 def update_user_status(uid, status):
     resp = {}
 
-    user = db[USERS].find_one_and_update(
-        {"_id": uid},
-        {"$set": {"status": status}},
-        return_document=ReturnDocument.AFTER
-    )
-
-    if user is None:
+    try:
+        db[USERS].update_one(
+            {"_id": uid},
+            {"$set": {"status": status}},
+        )
+        resp['success'] = True
+    except PyMongoError:
         resp['success'] = False
         resp['message'] = 'Cannot update user status'
-    else:
-        resp['success'] = True
 
     return resp
 
@@ -58,25 +78,21 @@ def update_user_status(uid, status):
 def update_user_profile(uid, user_name, avatar):
     resp = {}
 
-    user = db[USERS].update_one(
-        {"_id": uid},
-        {"$set": {"user_name": user_name, "avatar": avatar,
-                  "status": STATUS_ONLINE, "last_seen": current_milli_time()
-                  },
-         "$setOnInsert": {"coins": 1000, "level": "Newbie", "totalScore": 0}
-         },
-        upsert=True
-    )
-
-    print(user)
-
-    if user is not None:
+    try:
+        db[USERS].update_one(
+            {"_id": uid},
+            {"$set":
+                 {"user_name": user_name,
+                  "avatar": avatar,
+                  "status": STATUS_ONLINE,
+                  "last_seen": current_milli_time()}
+             }
+        )
         resp['success'] = True
-    else:
+    except PyMongoError:
         resp['success'] = False
         resp['message'] = 'Cannot update user profile'
 
-    print(resp)
     return resp
 
 
@@ -95,7 +111,6 @@ def fetch_user_profile(uid):
         resp['success'] = True
         resp['user'] = user
 
-    print('profile resp = ', resp)
     return resp
 
 
@@ -149,24 +164,25 @@ def accept_friend_request(uid, friend_uid):
 def get_my_friends(uid):
     resp = {}
 
-    friends_uid = db[USERS].find_one(
-        {"_id": uid},
-        {"_id": 0, "friends": 1}
-    )['friends']
+    try:
+        friends_uid = db[USERS].find_one(
+            {"_id": uid},
+            {"_id": 0, "friends": 1}
+        )['friends']
 
-    print(friends_uid)
+        friends = list(db[USERS].find(
+            {"_id": {"$in": friends_uid}},
+            {"status": 1, "user_name": 1, "avatar": 1, "level": 1}
+        ))
 
-    friends = list(db[USERS].find(
-        {"_id": {"$in": friends_uid}},
-        {"status": 1, "user_name": 1, "avatar": 1}
-    ))
-
-    if friends is None:
-        resp['success'] = False
-        resp['message'] = 'Database operation error'
-    else:
         resp['success'] = True
         resp['friends'] = friends
+    except KeyError:
+        resp['success'] = True
+        resp['friends'] = []
+    except PyMongoError:
+        resp['success'] = False
+        resp['message'] = 'Could not find friends'
 
     return resp
 
@@ -196,17 +212,19 @@ def update_all_users():
 
 def get_fcm_tokens(uids):
     tokens = list(db[USERS].find({"_id": {"$in": uids}}, {"_id": 0, "token": 1}))
-    print(tokens)
     return [str(token['token']) for token in tokens]
 
 
 def update_fcm_token(uid, token):
     resp = {}
-    count = db[USERS].update_one({"_id": uid}, {"$set": {"token": token}}, upsert=True).matched_count
 
-    if count == 1:
+    try:
+        db[USERS].update_one(
+            {"_id": uid},
+            {"$set": {"token": token}}
+        )
         resp['success'] = True
-    else:
+    except PyMongoError:
         resp['success'] = False
         resp['message'] = 'Could not update FCM token'
 
@@ -221,16 +239,34 @@ def get_my_coins(uid):
     return coins
 
 
-def update_stats_from_scores(coins, players):
+def update_stats_from_scores(players, battle_type):
+    if battle_type == BATTLE_ONE_VS_ONE:
+        coins = COINS_POOL_ONE_VS_ONE
+    else:
+        coins = COINS_POOL_MULTIPLAYER
+
     total_coins = coins * len(players)
 
     top_score = max(player['score'] for player in players)
     winners = [player['uid'] for player in players if player['score'] == top_score]
 
+    coins = []
+    for player in players:
+        if player['uid'] in winners:
+            coins.append({
+                "{0}".format(player['uid']): '+{0}'.format(total_coins // len(winners))
+            })
+        else:
+            coins.append({
+                "{0}".format(player['uid']): '-{0}'.format(coins)
+            })
+
     db[USERS].update_many(
         {"_id": {"$in": winners}},
         {"$inc": {"coins": total_coins // len(winners)}}
     )
+
+    return coins
 
 
 def charge_entry_fee(uids, entry_fee):
@@ -241,20 +277,22 @@ def charge_entry_fee(uids, entry_fee):
 
 
 def get_friends_from_phone_numbers(uid, phone_numbers):
-    friends = filter(lambda x: x is not None,
-                     [get_user_from_phone_number(number) for number in phone_numbers])
-    print('friends=', friends)
+    resp = {}
 
-    f_uids = [f['uid'] for f in friends]
+    friends = list(filter(lambda x: x is not None,
+                          [get_user_from_phone_number(number) for number in phone_numbers]))
+    f_uids = [f.uid for f in friends]
 
-    db[USERS].update_one(
-        {"_id": uid},
-        {"$addToSet": {"friends": f_uids}}
-    )
+    try:
+        db[USERS].update_one(
+            {"_id": uid},
+            {"$addToSet": {"friends": {"$each": f_uids}}}
+        )
+        resp['success'] = True
+    except PyMongoError:
+        resp['success'] = False
+        resp['message'] = 'Could not update friends'
 
-    resp = {
-        'success': True
-    }
     return resp
 
 
