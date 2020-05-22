@@ -23,7 +23,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="16dp"
             app:cardBackgroundColor="@color/darkBlu"
             app:cardCornerRadius="16dp"
             app:layout_constraintBottom_toTopOf="@id/optionsRV"
@@ -37,10 +37,11 @@
                 android:layout_margin="8dp"
                 android:fontFamily="serif-monospace"
                 android:gravity="center_horizontal"
+                android:textStyle="bold"
                 android:text="@{question.questionText}"
                 android:textAlignment="gravity"
                 android:textColor="@color/lightBlu"
-                android:textSize="24sp"
+                android:textSize="20sp"
                 tools:text="The process of reading a database schema" />
         </com.google.android.material.card.MaterialCardView>
 

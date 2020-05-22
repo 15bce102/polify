@@ -22,6 +22,8 @@
         app:layout_constraintTop_toTopOf="parent" />
 
 
+
+
     <com.hbb20.CountryCodePicker
         android:id="@+id/countryCodePicker"
         android:layout_width="wrap_content"
@@ -30,7 +32,7 @@
         app:ccp_countryPreference="in"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.05"
+        app:layout_constraintHorizontal_bias="0.1"
         app:layout_constraintVertical_bias="0.45"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -90,7 +92,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
         android:fontFamily="@font/light"
-        android:text="Your are not a mamber? "
+        android:text="New to QnA ? "
         android:textColor="@color/white"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -109,7 +111,7 @@
         android:textColor="@color/red"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.60"
+        app:layout_constraintHorizontal_bias="0.42"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"

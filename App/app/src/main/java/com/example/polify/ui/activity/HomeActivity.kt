@@ -7,11 +7,17 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.util.Size
+import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
@@ -38,6 +44,7 @@ import com.example.polify.util.scheduleFriendsUpdate
 import com.example.polify.util.setOnSoundClickListener
 import com.example.polify.util.showMultiPlayerInviteDialog
 import com.google.firebase.auth.FirebaseAuth
+import com.muddzdev.styleabletoast.StyleableToast
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu
 import com.oguzdev.circularfloatingactionmenu.library.SubActionButton
@@ -155,12 +162,10 @@ class HomeActivity : FullScreenActivity() {
             dialog.show(supportFragmentManager, "avatarDialog")
         }
 
-        binding.signOut.setOnSoundClickListener {
-            mAuth.signOut()
-            finish()
-        }
+
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun initFloatingMenu() {
         val fabIconNew = ImageView(this).apply {
             setImageDrawable(drawable(R.drawable.more))
@@ -172,16 +177,11 @@ class HomeActivity : FullScreenActivity() {
 
         val rlIcon1 = ImageView(this).apply {
             setImageDrawable(drawable(R.drawable.refresh))
-            setOnSoundClickListener {
-                scheduleFriendsUpdate()
-            }
+
         }
         val rlIcon2 = ImageView(this).apply {
             setImageDrawable(drawable(R.drawable.logout))
-            setOnSoundClickListener {
-                mAuth.signOut()
-                finish()
-            }
+
         }
         val rlIcon3 = ImageView(this).apply {
             setImageDrawable(drawable(R.drawable.open_source))
@@ -213,6 +213,48 @@ class HomeActivity : FullScreenActivity() {
                     }
                 })
                 .build()
+
+        rlIcon1.setOnSoundClickListener {
+            StyleableToast.Builder(this)
+                    .textBold()
+                    .backgroundColor(Color.rgb(22,36,71))
+                    .textColor(Color.WHITE)
+                    .textSize(14F)
+                    .text("Contacts Sync Started")
+                    .gravity(Gravity.BOTTOM).show()
+            scheduleFriendsUpdate()
+
+        }
+
+        rlIcon2.setOnSoundClickListener {
+
+            StyleableToast.Builder(this)
+                    .textBold()
+                    .backgroundColor(Color.rgb(22,36,71))
+                    .textColor(Color.WHITE)
+                    .textSize(14F)
+                    .text("Successfully Logged Out")
+                    .gravity(Gravity.BOTTOM).show()
+            mAuth.signOut()
+            finish()
+        }
+
+        rlIcon3.setOnSoundClickListener {
+
+
+       //     val st = StyleableToast.makeText(this, "Open Source Licences", Toast.LENGTH_LONG, R.style.mtToast)
+            StyleableToast.Builder(this)
+                    .textBold()
+                    .backgroundColor(Color.rgb(22,36,71))
+                    .textColor(Color.WHITE)
+                    .textSize(14F)
+                    .text("Open Source Licenses")
+                    .gravity(Gravity.BOTTOM).show()
+    //        st.show()
+        }
+
+
+
     }
 
     private fun initViewPager() {

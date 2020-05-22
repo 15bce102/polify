@@ -85,6 +85,8 @@ dependencies {
     implementation 'io.michaelrocks:libphonenumber-android:8.12.3'
     implementation 'com.karumi:dexter:6.1.2'
     implementation 'com.oguzdev:CircularFloatingActionMenu:1.0.2'
+    implementation 'com.muddzdev:styleabletoast:2.2.3'
 
     implementation project(path: ':game')
+    implementation 'com.google.firebase:firebase-auth:16.0.5'
 }

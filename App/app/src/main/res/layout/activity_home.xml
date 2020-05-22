@@ -23,23 +23,7 @@
             android:foregroundGravity="center"
             android:overScrollMode="never" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/sign_out"
-            style="@style/Widget.Shrine.Button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/button"
-            android:fontFamily="@font/regular"
-            android:gravity="center"
-            android:text="Sign Out"
-            android:textColor="@color/white"
-            android:textSize="15dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.05"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.15" />
+
 
 
         <androidx.appcompat.widget.LinearLayoutCompat
@@ -177,7 +161,7 @@
             android:src="@drawable/heart"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.465"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/viewPager"
             app:layout_constraintVertical_bias="0.884" />
@@ -192,7 +176,7 @@
             android:textColor="#000000"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.66"
+            app:layout_constraintHorizontal_bias="0.740"
             app:layout_constraintStart_toStartOf="parent" />
 
         <androidx.appcompat.widget.AppCompatImageView

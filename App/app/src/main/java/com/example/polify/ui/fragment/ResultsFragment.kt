@@ -9,6 +9,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -17,12 +18,14 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import com.andruid.magic.game.api.GameRepository
 import com.andruid.magic.game.model.data.PlayerResult
 import com.andruid.magic.game.model.response.Result
+import com.example.polify.R
 import com.example.polify.data.ACTION_MATCH_RESULTS
 import com.example.polify.data.EXTRA_BATTLE_ID
 import com.example.polify.data.EXTRA_PLAYERS
 import com.example.polify.databinding.FragmentResultsBinding
 import com.example.polify.ui.adapter.ResultsAdapter
 import com.google.firebase.auth.FirebaseAuth
+import com.muddzdev.styleabletoast.StyleableToast
 import kotlinx.coroutines.launch
 import splitties.toast.longToast
 
@@ -61,6 +64,7 @@ class ResultsFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         if (battleId == "test") {
+            context?.let { StyleableToast.makeText(it, "You Win!!!", Toast.LENGTH_LONG, R.style.mtToast).show() };
             longToast("Your score = $score")
             return
         }

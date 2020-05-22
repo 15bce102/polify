@@ -47,4 +47,21 @@
         <item name="android:background">?android:attr/listDivider</item>
     </style>
 
+    <style name="mtToast">
+
+        <item name="stTextBold">true</item>
+        <item name="stTextColor">#fff</item>
+
+        <item name="stTextSize">20sp</item>
+        <item name="stColorBackground">@color/darkBlu</item>
+        <item name="stSolidBackground">true</item>
+        <item name="stStrokeWidth">3dp</item>
+        <item name="stStrokeColor">#fff</item>
+        <item name="stIconStart">@drawable/heart</item>
+
+        <item name="stLength">LONG</item> LONG or SHORT
+        <item name="stGravity">center</item> top or center
+        <item name="stRadius">50dp</item>
+    </style>
+
 </resources>

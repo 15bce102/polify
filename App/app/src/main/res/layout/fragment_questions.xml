@@ -42,6 +42,7 @@
         <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/profiles"
             android:layout_width="match_parent"
+
             android:layout_height="100dp"
             android:layout_margin="16dp"
             app:layout_constraintBottom_toTopOf="@+id/timerAnimView"
@@ -161,7 +162,7 @@
             android:id="@+id/timerAnimView"
             android:layout_width="150dp"
             android:layout_height="20dp"
-            android:layout_marginTop="41dp"
+            android:layout_marginTop="20dp"
             android:foregroundGravity="center_horizontal"
             app:layout_constraintBottom_toTopOf="@id/viewPager"
             app:layout_constraintEnd_toEndOf="parent"

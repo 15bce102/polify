@@ -29,8 +29,8 @@
     <string name="desc_test">Test the interface by giving answers to some fixed questions</string>
     <string name="coins_test">FREE</string>
 
-    <string name="first">Made in</string>
-    <string name="second">with India</string>
+    <string name="first">Made with</string>
+    <string name="second">in India</string>
     <string name="message_win">YOU WIN !!!</string>
     <string name="message_lose">YOU LOSE!!!</string>
     <string name="message_tie">Scores level</string>
