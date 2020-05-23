@@ -14,7 +14,7 @@ import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.example.polify.R
-import com.example.polify.eventbus.ClickSoundEvent
+import com.example.polify.eventbus.SoundEvent
 import com.example.polify.service.GameService
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -25,14 +25,14 @@ open class FullScreenActivity : AppCompatActivity() {
     var service: GameService? = null
     private var isBound = false
 
-    private val sounds = IntArray(3)
+    private val sounds = IntArray(4)
     private val soundPool by lazy {
         val attrs = AudioAttributes.Builder()
                 .setUsage(AudioAttributes.USAGE_GAME)
                 .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
                 .build()
         SoundPool.Builder()
-                .setMaxStreams(3)
+                .setMaxStreams(4)
                 .setAudioAttributes(attrs)
                 .build()
     }
@@ -51,7 +51,8 @@ open class FullScreenActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         doBindService()
-        initSoundPool()
+        initButtonSounds()
+        //initTimerSound()
 
         volumeControlStream = AudioManager.STREAM_MUSIC
     }
@@ -59,6 +60,7 @@ open class FullScreenActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         doUnbindService()
+        soundPool.release()
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
@@ -88,9 +90,22 @@ open class FullScreenActivity : AppCompatActivity() {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onClickEvent(clickSoundEvent: ClickSoundEvent) {
-        Log.d("soundLog", "on click sound event")
-        soundPool.play(sounds[0], 1F, 1F, 1,0, 1.0F)
+    fun onSoundEvent(soundEvent: SoundEvent) {
+        Log.d("soundLog", "on sound event")
+        when (soundEvent.type) {
+            SoundEvent.Sound.TYPE_BUTTON_TAP ->
+                soundPool.play(sounds[0], 1F, 1F, 1,0, 1.0F)
+            /*SoundEvent.Sound.TYPE_TIMER_START -> {
+                if (isTicking)
+                    soundPool.resume(sounds[1])
+                else {
+                    isTicking = true
+                    soundPool.play(sounds[1], 1F, 1F, 1, -1, 1.0F)
+                }
+            }
+            SoundEvent.Sound.TYPE_TIMER_STOP ->
+                soundPool.pause(sounds[1])*/
+        }
     }
 
     private fun hideSystemUI() {
@@ -114,7 +129,11 @@ open class FullScreenActivity : AppCompatActivity() {
         }
     }
 
-    private fun initSoundPool() {
+    private fun initButtonSounds() {
         sounds[0] = soundPool.load(this, R.raw.tap, 1)
+    }
+
+    private fun initTimerSound() {
+        sounds[1] = soundPool.load(this, R.raw.clock, 1)
     }
 }

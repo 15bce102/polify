@@ -49,6 +49,7 @@ interface RetrofitService {
     suspend fun getMyFriends(@Body map: Map<String, @JvmSuppressWildcards Any>): Response<FriendsResponse>
 
     /** Battle related requests **/
+
     @Headers("Content-Type: application/json")
     @POST("/create-room")
     suspend fun createMultiPlayerRoom(@Body map: Map<String, @JvmSuppressWildcards Any>): Response<RoomResponse>
@@ -68,6 +69,10 @@ interface RetrofitService {
     @Headers("Content-Type: application/json")
     @POST("/start-battle")
     suspend fun startMultiPlayerBattle(@Body map: Map<String, @JvmSuppressWildcards Any>): Response<ApiResponse>
+
+    @Headers("Content-Type: application/json")
+    @POST("/leave-battle")
+    suspend fun leaveBattle(@Body map: Map<String, @JvmSuppressWildcards Any>): Response<ApiResponse>
 
     @GET("/join-waiting-room")
     suspend fun joinWaitingRoom(@Query("uid") uid: String): Response<BattleResponse>

@@ -1,5 +1,6 @@
 package com.example.polify.ui.fragment
 
+import android.media.AudioManager
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.util.Log
@@ -15,6 +16,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
+import com.andruid.magic.game.api.GameRepository
 import com.andruid.magic.game.model.data.Question
 import com.andruid.magic.game.model.response.Result
 import com.example.polify.R
@@ -29,6 +31,14 @@ import com.example.polify.ui.viewholder.OptionViewHolder
 import com.example.polify.ui.viewmodel.BaseViewModelFactory
 import com.example.polify.ui.viewmodel.QuestionViewModel
 import com.example.polify.util.showConfirmationDialog
+import com.google.android.exoplayer2.C
+import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.android.exoplayer2.audio.AudioAttributes
+import com.google.android.exoplayer2.source.LoopingMediaSource
+import com.google.android.exoplayer2.source.ProgressiveMediaSource
+import com.google.android.exoplayer2.upstream.DataSource
+import com.google.android.exoplayer2.upstream.DataSpec
+import com.google.android.exoplayer2.upstream.RawResourceDataSource
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -56,11 +66,16 @@ class QuestionsFragment : Fragment() {
 
     private lateinit var binding: FragmentQuestionsBinding
 
+    private var finished = false
     private var score = 0
     private var qid: String? = null
     private var selectedOptPos = -1
     private var optionsEnabled = true
 
+    private val exoPlayer by lazy {
+        SimpleExoPlayer.Builder(requireContext())
+                .build()
+    }
     private val callback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             lifecycleScope.launch {
@@ -79,6 +94,8 @@ class QuestionsFragment : Fragment() {
             val optionsRV = binding.viewPager.findViewById<RecyclerView>(R.id.optionsRV)
             highlightAns(optionsRV, pos)
 
+            exoPlayer.playWhenReady = false
+
             lifecycleScope.launch {
                 delay(1000)
                 if (pos == questionsAdapter.itemCount - 1) {
@@ -92,6 +109,7 @@ class QuestionsFragment : Fragment() {
     }
 
     private fun finishGame() {
+        finished = true
         try {
             when (battleType) {
                 BATTLE_ONE_VS_ONE ->
@@ -113,7 +131,11 @@ class QuestionsFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         requireActivity().onBackPressedDispatcher.addCallback(this, callback)
+        requireActivity().volumeControlStream = AudioManager.STREAM_MUSIC
+
+        initExoPlayer()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -167,6 +189,9 @@ class QuestionsFragment : Fragment() {
 
                     countDownTimer.cancel()
                     countDownTimer.start()
+
+                    exoPlayer.playWhenReady = true
+
                     binding.timerAnimView.playAnimation()
                 }
             })
@@ -193,16 +218,36 @@ class QuestionsFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         EventBus.getDefault().register(this)
+        if (binding.viewPager.currentItem != questionsAdapter.itemCount - 1)
+            exoPlayer.playWhenReady = true
     }
 
     override fun onPause() {
         super.onPause()
         EventBus.getDefault().unregister(this)
+        exoPlayer.playWhenReady = false
     }
 
     override fun onDestroy() {
         super.onDestroy()
         Log.d("cloudLog", "onDestroy questions fragment")
+
+        exoPlayer.release()
+
+        val user = mAuth.currentUser ?: return
+
+        if (!finished && battleType != BATTLE_TEST) {
+            lifecycleScope.launch {
+                val result = GameRepository.leaveBattle(user.uid, battle!!.battleId)
+                if (result.status == Result.Status.SUCCESS) {
+                    if (result.data?.success == true)
+                        Log.d(TAG, "onDestroy: battle left")
+                    else
+                        Log.d(TAG, "onDestroy: battle left fail")
+                } else
+                    Log.d(TAG, "onDestroy: battle left")
+            }
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -244,6 +289,27 @@ class QuestionsFragment : Fragment() {
             }
 
             selectedOptPos = -1
+        }
+    }
+
+    private fun initExoPlayer() {
+        exoPlayer.apply {
+            val audioAttributes = AudioAttributes.Builder()
+                    .setUsage(C.USAGE_GAME)
+                    .setContentType(C.CONTENT_TYPE_MUSIC)
+                    .build()
+            setAudioAttributes(audioAttributes, true)
+            setHandleAudioBecomingNoisy(true)
+            setHandleWakeLock(true)
+
+            val uri = RawResourceDataSource.buildRawResourceUri(R.raw.clock)
+            val dataSource = RawResourceDataSource(requireContext())
+            dataSource.open(DataSpec(uri))
+            val mediaSource = ProgressiveMediaSource.Factory(DataSource.Factory { dataSource })
+                    .createMediaSource(uri)
+            val loopingMediaSource = LoopingMediaSource(mediaSource)
+
+            prepare(loopingMediaSource, false, false)
         }
     }
 }

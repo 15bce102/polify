@@ -7,7 +7,7 @@ import android.view.MotionEvent
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.OnItemTouchListener
-import com.example.polify.eventbus.ClickSoundEvent
+import com.example.polify.eventbus.SoundEvent
 import org.greenrobot.eventbus.EventBus
 
 
@@ -30,7 +30,7 @@ open class RecyclerTouchListener(context: Context, recyclerView: RecyclerView,
 
     interface ClickListener {
         fun onClick(view: View?, position: Int) {
-            EventBus.getDefault().post(ClickSoundEvent())
+            EventBus.getDefault().post(SoundEvent(SoundEvent.Sound.TYPE_BUTTON_TAP))
         }
         fun onLongClick(view: View?, position: Int) {}
     }

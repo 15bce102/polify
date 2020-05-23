@@ -51,14 +51,25 @@ class RoomFragment : Fragment() {
     }
     private val callback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
-            val user = mAuth.currentUser ?: return
-
             lifecycleScope.launch {
                 val shouldLeave = requireContext().showConfirmationDialog(R.string.title_leave_room, R.string.desc_leave_room)
                 if (!shouldLeave)
                     return@launch
 
-                requireActivity().finish()
+                val user = mAuth.currentUser ?: return@launch
+
+                lifecycleScope.launch {
+                    val result = GameRepository.leaveMultiPlayerRoom(user.uid, room.roomId)
+                    if (result.status == Result.Status.SUCCESS) {
+                        result.data?.let { data ->
+                            if (data.success) {
+                                toast("Room left successfully")
+                            } else {
+                                toast("Could not leave room")
+                            }
+                        }
+                    }
+                }
             }
         }
     }
@@ -114,24 +125,10 @@ class RoomFragment : Fragment() {
     }
 
     override fun onDestroy() {
+        Log.d("roomLog", "onDestroy room fragment")
         super.onDestroy()
         EventBus.getDefault().unregister(this)
         LocalBroadcastManager.getInstance(requireContext()).unregisterReceiver(roomReceiver)
-
-        val user = mAuth.currentUser ?: return
-
-        lifecycleScope.launch {
-            val result = GameRepository.leaveMultiPlayerRoom(user.uid, room.roomId)
-            if (result.status == Result.Status.SUCCESS) {
-                result.data?.let { data ->
-                    if (data.success) {
-                        toast("Room left successfully")
-                    } else {
-                        toast("Could not leave room")
-                    }
-                }
-            }
-        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,

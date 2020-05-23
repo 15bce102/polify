@@ -141,6 +141,14 @@ object GameRepository {
         return sendNetworkRequest { service.startMultiPlayerBattle(map) }
     }
 
+    suspend fun leaveBattle(uid: String, bid: String): Result<ApiResponse> {
+        val map = mapOf(
+                "uid" to uid,
+                "bid" to bid
+        )
+        return sendNetworkRequest { service.leaveBattle(map) }
+    }
+
     suspend fun getPracticeQuestions(): List<Question> {
         return withContext(Dispatchers.IO) {
             val json = context.assets.open(ASSETS_PRACTICE_QUESTIONS).bufferedReader().use {
