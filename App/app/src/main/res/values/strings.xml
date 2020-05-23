@@ -31,8 +31,8 @@
 
     <string name="first">Made with</string>
     <string name="second">in India</string>
-    <string name="message_win">YOU WIN !!!</string>
-    <string name="message_lose">YOU LOSE!!!</string>
+    <string name="message_win">YOU WIN %1$s coins!!!</string>
+    <string name="message_lose">YOU LOSE %1$s coins!!!</string>
     <string name="message_tie">Scores level</string>
 
     <string name="score">Score %1$s</string>

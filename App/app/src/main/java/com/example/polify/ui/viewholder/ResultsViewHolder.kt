@@ -13,7 +13,7 @@ class ResultsViewHolder(private val binding: LayoutResultBinding) : RecyclerView
         fun from(parent: ViewGroup): ResultsViewHolder {
             val inflater = LayoutInflater.from(parent.context)
             val binding = DataBindingUtil.inflate<LayoutResultBinding>(
-                    inflater, R.layout.layout_question, parent, false
+                    inflater, R.layout.layout_result, parent, false
             )
             return ResultsViewHolder(binding)
         }

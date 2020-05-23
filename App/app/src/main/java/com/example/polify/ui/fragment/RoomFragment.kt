@@ -58,18 +58,7 @@ class RoomFragment : Fragment() {
                 if (!shouldLeave)
                     return@launch
 
-                val result = GameRepository.leaveMultiPlayerRoom(user.uid, room.roomId)
-                if (result.status == Result.Status.SUCCESS) {
-                    result.data?.let { data ->
-                        if (data.success) {
-                            toast("Room left successfully")
-                            requireActivity().finish()
-                        } else {
-                            toast("Could not leave room")
-                            requireActivity().finish()
-                        }
-                    }
-                }
+                requireActivity().finish()
             }
         }
     }
@@ -128,6 +117,21 @@ class RoomFragment : Fragment() {
         super.onDestroy()
         EventBus.getDefault().unregister(this)
         LocalBroadcastManager.getInstance(requireContext()).unregisterReceiver(roomReceiver)
+
+        val user = mAuth.currentUser ?: return
+
+        lifecycleScope.launch {
+            val result = GameRepository.leaveMultiPlayerRoom(user.uid, room.roomId)
+            if (result.status == Result.Status.SUCCESS) {
+                result.data?.let { data ->
+                    if (data.success) {
+                        toast("Room left successfully")
+                    } else {
+                        toast("Could not leave room")
+                    }
+                }
+            }
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,

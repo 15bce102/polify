@@ -64,7 +64,6 @@ class ResultsFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         if (battleId == "test") {
-            context?.let { StyleableToast.makeText(it, "You Win!!!", Toast.LENGTH_LONG, R.style.mtToast).show() };
             longToast("Your score = $score")
             return
         }
@@ -104,6 +103,17 @@ class ResultsFragment : Fragment() {
     }
 
     private fun showResults(results: List<PlayerResult>) {
-        resultsAdapter.submitList(results)
+        resultsAdapter.submitList(results) {
+            val user = mAuth.currentUser ?: return@submitList
+
+            val player = results.find { playerResult -> playerResult.player.uid == user.uid }!!
+
+            val msg = getString(if (player.coinsUpdate[0] == '+')
+                R.string.message_win
+            else
+                R.string.message_lose, player.coinsUpdate.substring(1))
+
+            StyleableToast.makeText(requireContext(), msg, Toast.LENGTH_LONG, R.style.mtToast).show()
+        }
     }
 }

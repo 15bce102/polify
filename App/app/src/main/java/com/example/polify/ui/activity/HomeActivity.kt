@@ -11,11 +11,9 @@ import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.util.Size
 import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.databinding.DataBindingUtil
@@ -43,6 +41,7 @@ import com.example.polify.ui.viewmodel.UserViewModel
 import com.example.polify.util.scheduleFriendsUpdate
 import com.example.polify.util.setOnSoundClickListener
 import com.example.polify.util.showMultiPlayerInviteDialog
+import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.auth.FirebaseAuth
 import com.muddzdev.styleabletoast.StyleableToast
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton
@@ -54,7 +53,6 @@ import org.greenrobot.eventbus.ThreadMode
 import splitties.resources.color
 import splitties.resources.drawable
 import splitties.toast.toast
-
 
 class HomeActivity : FullScreenActivity() {
     private lateinit var binding: ActivityHomeBinding
@@ -218,7 +216,7 @@ class HomeActivity : FullScreenActivity() {
         rlIcon1.setOnSoundClickListener {
             StyleableToast.Builder(this)
                     .textBold()
-                    .backgroundColor(Color.rgb(22,36,71))
+                    .backgroundColor(Color.rgb(22, 36, 71))
                     .textColor(Color.WHITE)
                     .textSize(14F)
                     .text("Contacts Sync Started")
@@ -231,7 +229,7 @@ class HomeActivity : FullScreenActivity() {
 
             StyleableToast.Builder(this)
                     .textBold()
-                    .backgroundColor(Color.rgb(22,36,71))
+                    .backgroundColor(Color.rgb(22, 36, 71))
                     .textColor(Color.WHITE)
                     .textSize(14F)
                     .text("Successfully Logged Out")
@@ -243,17 +241,16 @@ class HomeActivity : FullScreenActivity() {
         rlIcon3.setOnSoundClickListener {
 
 
-       //     val st = StyleableToast.makeText(this, "Open Source Licences", Toast.LENGTH_LONG, R.style.mtToast)
+            //     val st = StyleableToast.makeText(this, "Open Source Licences", Toast.LENGTH_LONG, R.style.mtToast)
             StyleableToast.Builder(this)
                     .textBold()
-                    .backgroundColor(Color.rgb(22,36,71))
+                    .backgroundColor(Color.rgb(22, 36, 71))
                     .textColor(Color.WHITE)
                     .textSize(14F)
                     .text("Open Source Licenses")
                     .gravity(Gravity.BOTTOM).show()
-    //        st.show()
+            //        st.show()
         }
-
 
 
     }
@@ -291,6 +288,12 @@ class HomeActivity : FullScreenActivity() {
                         setBackgroundColor(colors[colors.size - 1])
                 }
             })
+        }
+
+        binding.apply {
+            TabLayoutMediator(tabLayout, viewPager) { tab, position ->
+                //Some implementation
+            }.attach()
         }
     }
 
