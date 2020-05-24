@@ -20,7 +20,7 @@ import java.util.concurrent.Executors
 
 class CloudMessagingService : FirebaseMessagingService(), CoroutineScope {
     companion object {
-        private val TAG = "${CloudMessagingService::class.java.simpleName}Log"
+        private val TAG = "${this::class.java.simpleName}Log"
     }
 
     private val job: Job = Job()
@@ -56,13 +56,16 @@ class CloudMessagingService : FirebaseMessagingService(), CoroutineScope {
                     val intent = Intent(ACTION_MATCH_FOUND)
                             .putExtra(EXTRA_BATTLE, battle)
                     LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
-                    Log.d("cloudLog", "sent match found broadcast")
+
+                    Log.d(TAG, "sent match found broadcast")
                 }
             }
 
             TYPE_SCORE_UPDATE -> {
                 val battleId = map[KEY_BATTLE_ID]
+
                 Log.d(TAG, "battleId = $battleId")
+
                 map[KEY_PAYLOAD]?.toPlayerResults().let { results ->
                     val intent = Intent(ACTION_MATCH_RESULTS)
                             .putExtra(EXTRA_BATTLE_ID, battleId)

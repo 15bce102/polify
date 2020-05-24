@@ -30,8 +30,8 @@ interface RetrofitService {
                              @Body map: Map<String, @JvmSuppressWildcards Any>): Response<ApiResponse>
 
     @Headers("Content-Type: application/json")
-    @POST("/update-profile")
-    suspend fun updateProfile(@Body map: Map<String, @JvmSuppressWildcards Any>): Response<ApiResponse>
+    @POST("/update-avatar")
+    suspend fun updateAvatar(@Body map: Map<String, @JvmSuppressWildcards Any>): Response<ApiResponse>
 
     @Headers("Content-Type: application/json")
     @POST("/fetch-profile")

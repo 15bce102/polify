@@ -96,84 +96,18 @@ class QuestionsFragment : Fragment() {
             exoPlayer.playWhenReady = false
 
             if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
+                Log.d("queLog", "app in foreground")
                 showCorrectWrongAnim(pos) {
                     moveToNextQuestion(pos)
                 }
-            }
-            else
+            } else {
+                Log.d("queLog", "app in background")
                 moveToNextQuestion(pos)
+            }
         }
 
         override fun onTick(millisUntilFinished: Long) {
             binding.timerAnimView.progress = 1 - millisUntilFinished.toFloat() / QUE_TIME_LIMIT_MS
-        }
-    }
-
-    private fun moveToNextQuestion(pos: Int) {
-        if (pos == questionsAdapter.itemCount - 1) {
-            finishGame()
-        } else
-            binding.viewPager.setCurrentItem(pos + 1, true)
-    }
-
-    private fun showCorrectWrongAnim(questionPos: Int, next: () -> Unit) {
-        val question = questionsAdapter.currentList[questionPos]
-
-        if (qid == question.qid) {
-            Log.d(TAG, "selected option pos = $selectedOptPos")
-            val correctPos = question.correctAnswer[0] - 'A'
-
-            if (selectedOptPos != correctPos) {
-                val optionsRV = binding.viewPager.findViewById<RecyclerView>(R.id.optionsRV)
-                val correctViewHolder = optionsRV?.findViewHolderForItemId(correctPos.toLong()) as OptionViewHolder?
-                correctViewHolder?.highlightAnswer(true)
-            }
-
-            binding.answerAnimView.apply {
-                setAnimation(
-                        if (selectedOptPos == correctPos)
-                            R.raw.correct
-                        else
-                            R.raw.wrong
-                )
-                addAnimatorUpdateListener { valueAnimator ->
-                    val progress = (valueAnimator.animatedValue as Float * 100).toInt()
-                    Log.d("animLog", "tick anim progress percent = $progress")
-                }
-                addAnimatorListener(object : Animator.AnimatorListener {
-                    override fun onAnimationEnd(animation: Animator?) {
-                        visibility = View.GONE
-                        next()
-                    }
-
-                    override fun onAnimationRepeat(animation: Animator?) {}
-                    override fun onAnimationCancel(animation: Animator?) {}
-                    override fun onAnimationStart(animation: Animator?) {}
-                })
-                visibility = View.VISIBLE
-                playAnimation()
-            }
-        }
-    }
-
-    private fun finishGame() {
-        finished = true
-        try {
-            when (battleType) {
-                BATTLE_ONE_VS_ONE ->
-                    findNavController().navigate(QuestionsFragmentDirections
-                            .actionQuestionsFragmentToResultsFragment(battle?.battleId
-                                    ?: "test", score))
-                BATTLE_TEST ->
-                    findNavController().navigate(QuestionsFragmentDirections
-                            .actionQuestionsFragmentToResultsFragment(score = score))
-                BATTLE_MULTIPLAYER ->
-                    findNavController().navigate(QuestionsFragmentDirections
-                            .actionQuestionsFragmentToResultsFragment(battle?.battleId
-                                    ?: "test", score))
-            }
-        } catch (e: IllegalStateException) {
-            e.printStackTrace()
         }
     }
 
@@ -192,11 +126,6 @@ class QuestionsFragment : Fragment() {
         initViewPager()
         initPlayers()
 
-        binding.timerAnimView.addAnimatorUpdateListener { valueAnimator ->
-            val progress = (valueAnimator.animatedValue as Float * 100).toInt()
-            Log.d("animLog", "timer anim progress percent = $progress")
-        }
-
         questionsViewModel.questions.observe(viewLifecycleOwner, Observer { result ->
             if (result.status == Result.Status.SUCCESS) {
                 (result.data?.questions)?.let { questions ->
@@ -208,6 +137,81 @@ class QuestionsFragment : Fragment() {
         })
 
         return binding.root
+    }
+
+    override fun onResume() {
+        super.onResume()
+        EventBus.getDefault().register(this)
+        if (binding.viewPager.currentItem != questionsAdapter.itemCount - 1)
+            exoPlayer.playWhenReady = true
+    }
+
+    override fun onPause() {
+        super.onPause()
+        EventBus.getDefault().unregister(this)
+        exoPlayer.playWhenReady = false
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d(TAG, "onDestroy questions fragment")
+
+        exoPlayer.release()
+        binding.answerAnimView.removeAllAnimatorListeners()
+
+        val user = mAuth.currentUser ?: return
+
+        if (!finished && battleType != BATTLE_TEST) {
+            lifecycleScope.launch {
+                val result = GameRepository.leaveBattle(user.uid, battle!!.battleId)
+                if (result.status == Result.Status.SUCCESS) {
+                    if (result.data?.success == true)
+                        Log.d(TAG, "onDestroy: battle left")
+                    else
+                        Log.d(TAG, "onDestroy: battle left fail")
+                } else
+                    Log.d(TAG, "onDestroy: battle left")
+            }
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onOptionEvent(optionEvent: OptionEvent) {
+        if (!optionsEnabled)
+            return
+
+        val (qid, opt) = optionEvent
+
+        this.qid = qid
+        Log.d("optionLog", "selected opt = ${opt.optId}")
+        selectedOptPos = opt.optId[0] - 'A'
+
+        val optionsRV = binding.viewPager.findViewById<RecyclerView>(R.id.optionsRV)
+        val selectedViewHolder = optionsRV.findViewHolderForItemId(selectedOptPos.toLong()) as OptionViewHolder?
+        selectedViewHolder?.highlightOption()
+
+        optionsEnabled = false
+    }
+
+    private fun initExoPlayer() {
+        exoPlayer.apply {
+            val audioAttributes = AudioAttributes.Builder()
+                    .setUsage(C.USAGE_GAME)
+                    .setContentType(C.CONTENT_TYPE_MUSIC)
+                    .build()
+            setAudioAttributes(audioAttributes, true)
+            setHandleAudioBecomingNoisy(true)
+            setHandleWakeLock(true)
+
+            val uri = RawResourceDataSource.buildRawResourceUri(R.raw.clock)
+            val dataSource = RawResourceDataSource(requireContext())
+            dataSource.open(DataSpec(uri))
+            val mediaSource = ProgressiveMediaSource.Factory(DataSource.Factory { dataSource })
+                    .createMediaSource(uri)
+            val loopingMediaSource = LoopingMediaSource(mediaSource)
+
+            prepare(loopingMediaSource, false, false)
+        }
     }
 
     private fun initPlayers() {
@@ -259,7 +263,7 @@ class QuestionsFragment : Fragment() {
         val elapsedSeconds = (System.currentTimeMillis() - startTime) / 1000
         val questionPos = elapsedSeconds / questions.size
 
-        Log.d("cloudLog", "questionPos = $questionPos")
+        Log.d("queLog", "questionPos = $questionPos")
 
         if (questionPos < questions.size)
             binding.viewPager.currentItem = questionPos.toInt() - 1
@@ -269,102 +273,77 @@ class QuestionsFragment : Fragment() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        EventBus.getDefault().register(this)
-        if (binding.viewPager.currentItem != questionsAdapter.itemCount - 1)
-            exoPlayer.playWhenReady = true
-    }
-
-    override fun onPause() {
-        super.onPause()
-        EventBus.getDefault().unregister(this)
-        exoPlayer.playWhenReady = false
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        Log.d("cloudLog", "onDestroy questions fragment")
-
-        exoPlayer.release()
-        binding.answerAnimView.removeAllAnimatorListeners()
-
-        val user = mAuth.currentUser ?: return
-
-        if (!finished && battleType != BATTLE_TEST) {
-            lifecycleScope.launch {
-                val result = GameRepository.leaveBattle(user.uid, battle!!.battleId)
-                if (result.status == Result.Status.SUCCESS) {
-                    if (result.data?.success == true)
-                        Log.d(TAG, "onDestroy: battle left")
-                    else
-                        Log.d(TAG, "onDestroy: battle left fail")
-                } else
-                    Log.d(TAG, "onDestroy: battle left")
-            }
-        }
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onOptionEvent(optionEvent: OptionEvent) {
-        if (!optionsEnabled)
-            return
-
-        val (qid, opt) = optionEvent
-
-        this.qid = qid
-        Log.d("optionLog", "selected opt = ${opt.optId}")
-        selectedOptPos = opt.optId[0] - 'A'
-
-        val optionsRV = binding.viewPager.findViewById<RecyclerView>(R.id.optionsRV)
-        val selectedViewHolder = optionsRV.findViewHolderForItemId(selectedOptPos.toLong()) as OptionViewHolder?
-        selectedViewHolder?.highlightOption()
-
-        optionsEnabled = false
-    }
-
-    private fun highlightAns(recyclerView: RecyclerView, pos: Int) {
+    private fun moveToNextQuestion(pos: Int) {
         val question = questionsAdapter.currentList[pos]
+        val correctPos = question.correctAnswer[0] - 'A'
+
+        if (qid == question.qid && selectedOptPos == correctPos)
+            score++
+
+        selectedOptPos = -1
+
+        Log.d("queLog", "finished que $pos")
+
+        if (pos == questionsAdapter.itemCount - 1) {
+            finishGame()
+        } else
+            binding.viewPager.setCurrentItem(pos + 1, true)
+    }
+
+    private fun showCorrectWrongAnim(questionPos: Int, next: () -> Unit) {
+        val question = questionsAdapter.currentList[questionPos]
 
         if (qid == question.qid) {
-            Log.d(TAG, "selected option pos = $selectedOptPos")
+            Log.d("queLog", "selected option pos = $selectedOptPos")
             val correctPos = question.correctAnswer[0] - 'A'
 
-            val correctViewHolder = recyclerView.findViewHolderForItemId(correctPos.toLong()) as OptionViewHolder?
-            correctViewHolder?.highlightAnswer(true)
-
-            if (selectedOptPos == -1)
-                return
-
-            if (selectedOptPos == correctPos)
-                score++
-            else {
-                val wrongViewHolder = recyclerView.findViewHolderForItemId(selectedOptPos.toLong()) as OptionViewHolder?
-                wrongViewHolder?.highlightAnswer(false)
+            if (selectedOptPos != correctPos) {
+                val optionsRV = binding.viewPager.findViewById<RecyclerView>(R.id.optionsRV)
+                val correctViewHolder = optionsRV?.findViewHolderForItemId(correctPos.toLong()) as OptionViewHolder?
+                correctViewHolder?.highlightAnswer(true)
             }
 
-            selectedOptPos = -1
+            binding.answerAnimView.apply {
+                setAnimation(
+                        if (selectedOptPos == correctPos)
+                            R.raw.correct
+                        else
+                            R.raw.wrong
+                )
+                addAnimatorListener(object : Animator.AnimatorListener {
+                    override fun onAnimationEnd(animation: Animator?) {
+                        visibility = View.GONE
+                        next()
+                    }
+
+                    override fun onAnimationRepeat(animation: Animator?) {}
+                    override fun onAnimationCancel(animation: Animator?) {}
+                    override fun onAnimationStart(animation: Animator?) {}
+                })
+                visibility = View.VISIBLE
+                playAnimation()
+            }
         }
     }
 
-    private fun initExoPlayer() {
-        exoPlayer.apply {
-            val audioAttributes = AudioAttributes.Builder()
-                    .setUsage(C.USAGE_GAME)
-                    .setContentType(C.CONTENT_TYPE_MUSIC)
-                    .build()
-            setAudioAttributes(audioAttributes, true)
-            setHandleAudioBecomingNoisy(true)
-            setHandleWakeLock(true)
-
-            val uri = RawResourceDataSource.buildRawResourceUri(R.raw.clock)
-            val dataSource = RawResourceDataSource(requireContext())
-            dataSource.open(DataSpec(uri))
-            val mediaSource = ProgressiveMediaSource.Factory(DataSource.Factory { dataSource })
-                    .createMediaSource(uri)
-            val loopingMediaSource = LoopingMediaSource(mediaSource)
-
-            prepare(loopingMediaSource, false, false)
+    private fun finishGame() {
+        finished = true
+        try {
+            when (battleType) {
+                BATTLE_ONE_VS_ONE ->
+                    findNavController().navigate(QuestionsFragmentDirections
+                            .actionQuestionsFragmentToResultsFragment(battle?.battleId
+                                    ?: "test", score))
+                BATTLE_TEST ->
+                    findNavController().navigate(QuestionsFragmentDirections
+                            .actionQuestionsFragmentToResultsFragment(score = score))
+                BATTLE_MULTIPLAYER ->
+                    findNavController().navigate(QuestionsFragmentDirections
+                            .actionQuestionsFragmentToResultsFragment(battle?.battleId
+                                    ?: "test", score))
+            }
+        } catch (e: IllegalStateException) {
+            e.printStackTrace()
         }
     }
 }

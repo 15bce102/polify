@@ -48,4 +48,11 @@
     <string name="title_leave_battle">Leave battle</string>
     <string name="desc_leave_battle">Are you sure you want to leave battle? All your points will be lost.</string>
     <string name="open_source_licenses">Open Source Licenses</string>
+    <string name="avatar_updated">Avatar Updated</string>
+    <string name="contacts_sync_start">Contacts Sync Started</string>
+    <string name="logout_success">Successfully Logged Out</string>
+    <string name="decline_invite">Invite Declined</string>
+    <string name="enter_valid_code">Please enter the valid code</string>
+    <string name="room_leave_success">Room left successfully</string>
+    <string name="sent_invite">Invite sent</string>
 </resources>

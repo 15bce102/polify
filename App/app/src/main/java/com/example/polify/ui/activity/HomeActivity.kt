@@ -7,7 +7,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.graphics.Color
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
@@ -15,7 +14,6 @@ import android.net.NetworkRequest
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
 import androidx.activity.viewModels
@@ -43,12 +41,9 @@ import com.example.polify.ui.adapter.SelectBattleAdapter
 import com.example.polify.ui.dialog.AvatarDialogFragment
 import com.example.polify.ui.viewmodel.BaseViewModelFactory
 import com.example.polify.ui.viewmodel.UserViewModel
-import com.example.polify.util.scheduleFriendsUpdate
-import com.example.polify.util.setOnSoundClickListener
-import com.example.polify.util.showMultiPlayerInviteDialog
+import com.example.polify.util.*
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.auth.FirebaseAuth
-import com.muddzdev.styleabletoast.StyleableToast
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu
 import com.oguzdev.circularfloatingactionmenu.library.SubActionButton
@@ -57,11 +52,13 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import splitties.resources.color
 import splitties.resources.drawable
-import splitties.toast.toast
 
 class HomeActivity : FullScreenActivity() {
-    private lateinit var binding: ActivityHomeBinding
+    companion object {
+        private val TAG = "${this::class.java.simpleName}Log"
+    }
 
+    private var dialogShowing = false
     private var retry = false
 
     private val argbEvaluator by lazy { ArgbEvaluator() }
@@ -82,7 +79,8 @@ class HomeActivity : FullScreenActivity() {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
+    private lateinit var binding: ActivityHomeBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -95,6 +93,7 @@ class HomeActivity : FullScreenActivity() {
                 Result.Status.LOADING -> {
                     binding.loadingAnimView.setAnimation(R.raw.loading)
                     binding.loadingView.visibility = View.VISIBLE
+                    binding.loadingAnimView.playAnimation()
                 }
                 Result.Status.SUCCESS -> {
                     binding.user = result.data?.user
@@ -104,6 +103,7 @@ class HomeActivity : FullScreenActivity() {
                 Result.Status.ERROR -> {
                     binding.loadingAnimView.setAnimation(R.raw.error)
                     binding.loadingView.visibility = View.VISIBLE
+                    binding.loadingAnimView.playAnimation()
                     retry = true
                 }
             }
@@ -111,39 +111,19 @@ class HomeActivity : FullScreenActivity() {
 
         initViewPager()
         initListeners()
-        initFloatingMenu()
         initConnectivityCallback()
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+            initFloatingMenu()
 
         scheduleFriendsUpdate()
 
         binding.imgPlus.setOnSoundClickListener {
-            StyleableToast.Builder(binding.root.context)
-                    .textBold()
-                    .backgroundColor(Color.rgb(22, 36, 71))
-                    .textColor(Color.WHITE)
-                    .textSize(14F)
-                    .text("Refreshing Friends Now")
-                    .gravity(Gravity.BOTTOM).show()
-            scheduleFriendsUpdate(refresh = true)
+            //TODO: show ad for coins
         }
 
         LocalBroadcastManager.getInstance(this)
                 .registerReceiver(multiPlayerReceiver, IntentFilter(ACTION_ROOM_INVITE))
-    }
-
-    private fun initConnectivityCallback() {
-        val networkRequest = NetworkRequest.Builder()
-                .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
-                .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
-                .build()
-
-        getSystemService<ConnectivityManager>()?.registerNetworkCallback(networkRequest, object : ConnectivityManager.NetworkCallback() {
-            override fun onAvailable(network: Network) {
-                super.onAvailable(network)
-                if (retry)
-                    userViewModel.refresh()
-            }
-        })
     }
 
     override fun onDestroy() {
@@ -158,19 +138,17 @@ class HomeActivity : FullScreenActivity() {
 
         binding.imgProfile.load(avatarUrl)
 
+        val user = mAuth.currentUser ?: return
+
         lifecycleScope.launch {
-            mAuth.currentUser?.let { user ->
-                val userName = binding.txtProfileName.text.toString().trim()
-                val response = GameRepository.updateProfile(user.uid, userName, avatarUrl)
-                if (response.status == Result.Status.SUCCESS)
-                    StyleableToast.Builder(binding.root.context)
-                            .textBold()
-                            .backgroundColor(Color.rgb(22, 36, 71))
-                            .textColor(Color.WHITE)
-                            .textSize(14F)
-                            .text("Avatar Updated")
-                            .gravity(Gravity.BOTTOM).show()
-            }
+            val response = GameRepository.updateAvatar(user.uid, avatarUrl)
+            if (response.status == Result.Status.SUCCESS) {
+                if (response.data?.success == true)
+                    infoToast(getString(R.string.avatar_updated))
+                else
+                    errorToast(response.data?.message ?: "")
+            } else
+                errorToast(response.message ?: "")
         }
     }
 
@@ -204,8 +182,6 @@ class HomeActivity : FullScreenActivity() {
             val dialog = AvatarDialogFragment.getInstance()
             dialog.show(supportFragmentManager, "avatarDialog")
         }
-
-
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -220,11 +196,9 @@ class HomeActivity : FullScreenActivity() {
 
         val rlIcon1 = ImageView(this).apply {
             setImageDrawable(drawable(R.drawable.refresh))
-
         }
         val rlIcon2 = ImageView(this).apply {
             setImageDrawable(drawable(R.drawable.logout))
-
         }
         val rlIcon3 = ImageView(this).apply {
             setImageDrawable(drawable(R.drawable.open_source))
@@ -258,24 +232,13 @@ class HomeActivity : FullScreenActivity() {
                 .build()
 
         rlIcon1.setOnSoundClickListener {
-            StyleableToast.Builder(this)
-                    .textBold()
-                    .backgroundColor(Color.rgb(22, 36, 71))
-                    .textColor(Color.WHITE)
-                    .textSize(14F)
-                    .text("Contacts Sync Started")
-                    .gravity(Gravity.BOTTOM).show()
+            infoToast(getString(R.string.contacts_sync_start))
+
             scheduleFriendsUpdate()
         }
 
         rlIcon2.setOnSoundClickListener {
-            StyleableToast.Builder(this)
-                    .textBold()
-                    .backgroundColor(Color.rgb(22, 36, 71))
-                    .textColor(Color.WHITE)
-                    .textSize(14F)
-                    .text("Successfully Logged Out")
-                    .gravity(Gravity.BOTTOM).show()
+            infoToast(getString(R.string.logout_success))
 
             mAuth.signOut()
 
@@ -284,18 +247,24 @@ class HomeActivity : FullScreenActivity() {
         }
 
         rlIcon3.setOnSoundClickListener {
-            StyleableToast.Builder(this)
-                    .textBold()
-                    .backgroundColor(Color.rgb(22, 36, 71))
-                    .textColor(Color.WHITE)
-                    .textSize(14F)
-                    .text("Open Source Licenses")
-                    .gravity(Gravity.BOTTOM).show()
-
             startActivity(Intent(this, OpenSourceLicensesActivity::class.java))
         }
+    }
 
+    private fun initConnectivityCallback() {
+        val networkRequest = NetworkRequest.Builder()
+                .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
+                .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
+                .build()
 
+        getSystemService<ConnectivityManager>()?.registerNetworkCallback(networkRequest, object : ConnectivityManager.NetworkCallback() {
+            override fun onAvailable(network: Network) {
+                super.onAvailable(network)
+
+                if (retry)
+                    userViewModel.refresh()
+            }
+        })
     }
 
     private fun initViewPager() {
@@ -340,36 +309,34 @@ class HomeActivity : FullScreenActivity() {
     }
 
     private fun showRoomInviteDialog(room: Room) {
+        if (dialogShowing)
+            return
+
         val user = mAuth.currentUser ?: return
+
+        dialogShowing = true
 
         lifecycleScope.launch {
             val accepted = showMultiPlayerInviteDialog(room)
+            dialogShowing = false
             if (accepted) {
-                Log.d("inviteLog", "before request")
                 val result = GameRepository.joinMultiPlayerRoom(user.uid, room.roomId)
-                Log.d("inviteLog", "after request status = ${result.status}")
+
+                Log.d(TAG, "after request status = ${result.status}")
+
                 if (result.status == Result.Status.SUCCESS) {
                     result.data?.let { data ->
-                        Log.d("inviteLog", "data not null: success = ${data.success}, room = ${data.room}")
                         if (data.success) {
                             val intent = Intent(this@HomeActivity, MultiPlayerActivity::class.java)
                                     .putExtra(EXTRA_ROOM, data.room)
                             startActivity(intent)
                         } else
-                            toast(data.message ?: "")
-                    } ?: run {
-                        Log.d("inviteLog", "result.data is null")
+                            errorToast(data.message ?: "")
                     }
                 } else
-                    toast(result.message ?: "")
+                    errorToast(result.message ?: "")
             } else
-                StyleableToast.Builder(binding.root.context)
-                        .textBold()
-                        .backgroundColor(Color.rgb(22, 36, 71))
-                        .textColor(Color.WHITE)
-                        .textSize(14F)
-                        .text("Invite Declined")
-                        .gravity(Gravity.BOTTOM).show()
+                infoToast(getString(R.string.decline_invite))
         }
     }
 }

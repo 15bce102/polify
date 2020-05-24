@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.polify.databinding.FragmentWelcomeBinding
+import com.example.polify.util.errorToast
 import com.example.polify.util.setOnSoundClickListener
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.PermissionToken
@@ -15,7 +16,6 @@ import com.karumi.dexter.listener.PermissionDeniedResponse
 import com.karumi.dexter.listener.PermissionGrantedResponse
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.single.PermissionListener
-import splitties.toast.toast
 
 class WelcomeFragment : Fragment() {
     private lateinit var binding: FragmentWelcomeBinding
@@ -42,7 +42,7 @@ class WelcomeFragment : Fragment() {
                         }
 
                         override fun onPermissionDenied(deniedResponse: PermissionDeniedResponse) {
-                            toast("${deniedResponse.permissionName} permission denied")
+                            errorToast("${deniedResponse.permissionName} permission denied")
                         }
                     }).check()
         }
@@ -60,7 +60,7 @@ class WelcomeFragment : Fragment() {
                         }
 
                         override fun onPermissionDenied(deniedResponse: PermissionDeniedResponse) {
-                            toast("${deniedResponse.permissionName} permission denied")
+                            errorToast("${deniedResponse.permissionName} permission denied")
                         }
                     }).check()
         }

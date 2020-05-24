@@ -3,6 +3,7 @@ package com.example.polify.util
 import android.content.Context
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.Fragment
 import com.andruid.magic.game.model.data.Room
 import com.example.polify.R
 import kotlin.coroutines.Continuation
@@ -49,6 +50,9 @@ suspend fun Context.showConfirmationDialog(@StringRes title: Int, @StringRes msg
 
     return suspendCoroutine { continuation -> result = continuation }
 }
+
+suspend fun Fragment.showConfirmationDialog(@StringRes title: Int, @StringRes msg: Int) =
+        requireContext().showConfirmationDialog(title, msg)
 
 fun Context.buildLoadingDialog(): AlertDialog {
     return AlertDialog.Builder(this, R.style.TranslucentDialog)

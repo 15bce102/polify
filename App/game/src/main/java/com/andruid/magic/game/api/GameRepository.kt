@@ -54,13 +54,12 @@ object GameRepository {
         return sendNetworkRequest { service.updateToken(map) }
     }
 
-    suspend fun updateProfile(uid: String, userName: String, avatar: String): Result<ApiResponse> {
+    suspend fun updateAvatar(uid: String, avatar: String): Result<ApiResponse> {
         val map = mapOf(
                 "uid" to uid,
-                "user_name" to userName,
                 "avatar" to avatar
         )
-        return sendNetworkRequest { service.updateProfile(map) }
+        return sendNetworkRequest { service.updateAvatar(map) }
     }
 
     suspend fun userProfile(uid: String): Result<UserResponse> {
