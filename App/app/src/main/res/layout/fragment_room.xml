@@ -335,7 +335,7 @@
             android:layout_height="0dp"
             app:layout_constraintWidth_percent="0.27"
             app:layout_constraintHeight_percent="0.2"
-            tools:src="@drawable/king"
+            android:src="@drawable/king"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintHorizontal_bias="0.15"
             app:layout_constraintLeft_toLeftOf="parent"

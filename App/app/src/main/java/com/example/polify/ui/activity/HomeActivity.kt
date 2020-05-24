@@ -17,7 +17,6 @@ import android.widget.ImageView
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.databinding.DataBindingUtil
-import androidx.databinding.adapters.ViewBindingAdapter.setPadding
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
