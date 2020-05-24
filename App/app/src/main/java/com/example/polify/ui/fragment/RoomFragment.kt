@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -27,6 +28,7 @@ import com.example.polify.data.*
 import com.example.polify.databinding.FragmentRoomBinding
 import com.example.polify.eventbus.FriendInviteEvent
 import com.example.polify.ui.adapter.FriendAdapter
+import com.example.polify.ui.viewholder.FriendViewHolder
 import com.example.polify.ui.viewmodel.BaseViewModelFactory
 import com.example.polify.ui.viewmodel.FriendViewModel
 import com.example.polify.util.errorToast
@@ -169,6 +171,11 @@ class RoomFragment : Fragment() {
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onFriendInviteEvent(friendInviteEvent: FriendInviteEvent) {
         val (friend) = friendInviteEvent
+        val pos = friendAdapter.currentList.indexOfFirst {
+            f -> f.uid == friend.uid
+        }
+
+        val viewHolder = binding.recyclerView.findViewHolderForAdapterPosition(pos) as FriendViewHolder
 
         val user = mAuth.currentUser ?: return
 
@@ -176,8 +183,11 @@ class RoomFragment : Fragment() {
             val result = GameRepository
                     .sendMultiPlayerRoomInvite(uid = user.uid, friendUid = friend.uid, roomId = room.roomId)
             if (result.status == Result.Status.SUCCESS) {
-                if (result.data?.success == true)
+                if (result.data?.success == true){
                     infoToast(getString(R.string.sent_invite))
+                    viewHolder.hide()
+                }
+
                 else
                     errorToast(result.data?.message)
             } else

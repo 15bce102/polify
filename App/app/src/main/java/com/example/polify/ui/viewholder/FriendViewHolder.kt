@@ -35,24 +35,19 @@ class FriendViewHolder(private val binding: LayoutFriendBinding) : RecyclerView.
         binding.friend = friend
 
         binding.sendRequest.setOnSoundClickListener {
-            StyleableToast.Builder(binding.root.context)
-                    .textBold()
-                    .backgroundColor(Color.rgb(22, 36, 71))
-                    .textColor(Color.WHITE)
-                    .textSize(14F)
-                    .text("Invite Sent")
-                    .gravity(Gravity.BOTTOM).show()
             EventBus.getDefault().post(FriendInviteEvent(friend))
-            binding.sendRequest.isEnabled = false
-
-            Handler().postDelayed({
-                binding.sendRequest.isEnabled = true
-            }, 10000)
-
-
         }
 
         binding.executePendingBindings()
+    }
+
+    fun hide(){
+        binding.sendRequest.isEnabled = false
+        binding.sendRequest.setImageResource(R.drawable.tick)
+        Handler().postDelayed({
+            binding.sendRequest.isEnabled = true
+            binding.sendRequest.setImageResource(R.drawable.plus)
+        }, 10000)
     }
 }
 
