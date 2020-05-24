@@ -1,10 +1,8 @@
 package com.example.polify.ui.fragment
 
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,8 +11,10 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import com.andruid.magic.game.api.GameRepository
 import com.andruid.magic.game.model.response.Result
+import com.example.polify.R
 import com.example.polify.databinding.FragmentOtpBinding
 import com.example.polify.ui.activity.HomeActivity
+import com.example.polify.util.errorToast
 import com.example.polify.util.setOnSoundClickListener
 import com.google.android.gms.tasks.TaskExecutors
 import com.google.firebase.FirebaseException
@@ -22,7 +22,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthProvider
 import com.google.firebase.iid.FirebaseInstanceId
-import com.muddzdev.styleabletoast.StyleableToast
 import kotlinx.coroutines.launch
 import splitties.toast.toast
 import java.util.concurrent.TimeUnit
@@ -47,7 +46,7 @@ class OtpFragment : Fragment() {
         override fun onCodeSent(verificationId: String, forceResendingToken: PhoneAuthProvider.ForceResendingToken) {
             super.onCodeSent(verificationId, forceResendingToken)
             check = true
-            Log.d("hello", "onCodeSent: code sent")
+            Log.d(TAG, "onCodeSent: code sent")
             this@OtpFragment.verificationId = verificationId
         }
 
@@ -74,16 +73,10 @@ class OtpFragment : Fragment() {
             val code = binding.otpView.text.toString().trim()
             if (check && code.length == 6)
                 verifyCode(code)
-            else {
-                StyleableToast.Builder(binding.root.context)
-                        .textBold()
-                        .backgroundColor(Color.rgb(255, 0, 0))
-                        .textColor(Color.WHITE)
-                        .textSize(14F)
-                        .text("Please enter the valid code")
-                        .gravity(Gravity.BOTTOM).show()
-            }
+            else
+                errorToast(getString(R.string.enter_valid_code))
         }
+
         return binding.root
     }
 
@@ -117,22 +110,22 @@ class OtpFragment : Fragment() {
                         lifecycleScope.launch {
                             if (userName != null && avatarUri != null) {
                                 val response = GameRepository.signupUser(user.uid, avatarUri!!, userName!!, token)
-                                if (response.status == Result.Status.SUCCESS)
-                                    startHomeActivity()
-                                else
-                                    toast(response.message ?: "null message")
+                                if (response.status == Result.Status.SUCCESS) {
+                                    if (response.data?.success == true)
+                                        startHomeActivity()
+                                    else
+                                        errorToast(response.data?.message)
+                                } else
+                                    errorToast(response.message)
                             } else {
                                 val response = GameRepository.login(user.uid, token)
-                                if (response.status == Result.Status.SUCCESS)
-                                    startHomeActivity()
-                                else
-                                    StyleableToast.Builder(binding.root.context)
-                                        .textBold()
-                                        .backgroundColor(Color.rgb(255, 0, 0))
-                                        .textColor(Color.WHITE)
-                                        .textSize(14F)
-                                        .text(response.message!!)
-                                        .gravity(Gravity.BOTTOM).show()
+                                if (response.status == Result.Status.SUCCESS) {
+                                    if (response.data?.success == true)
+                                        startHomeActivity()
+                                    else
+                                        errorToast(response.data?.message)
+                                } else
+                                    errorToast(response.message)
                             }
                         }
                     }

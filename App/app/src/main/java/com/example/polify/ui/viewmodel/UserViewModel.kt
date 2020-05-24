@@ -16,6 +16,10 @@ class UserViewModel(private val uid: String) : ViewModel() {
     val user: LiveData<Result<UserResponse>>
         get() = _user
 
+    init {
+        loadProfile()
+    }
+
     private fun loadProfile() {
         viewModelScope.launch {
             _user.postValue(Result.loading(null))

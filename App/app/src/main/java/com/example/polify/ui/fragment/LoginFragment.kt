@@ -1,8 +1,6 @@
 package com.example.polify.ui.fragment
 
-import android.graphics.Color
 import android.os.Bundle
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,11 +12,10 @@ import com.andruid.magic.game.api.GameRepository
 import com.andruid.magic.game.model.response.Result
 import com.example.polify.R
 import com.example.polify.databinding.FragmentLoginBinding
+import com.example.polify.util.errorToast
 import com.example.polify.util.isValidPhoneNumber
 import com.example.polify.util.setOnSoundClickListener
-import com.muddzdev.styleabletoast.StyleableToast
 import kotlinx.coroutines.launch
-import splitties.toast.toast
 
 class LoginFragment : Fragment() {
     private lateinit var binding: FragmentLoginBinding
@@ -54,25 +51,11 @@ class LoginFragment : Fragment() {
                                         LoginFragmentDirections.actionLoginFragmentToOtpFragment(
                                                 countryCodePicker.fullNumberWithPlus, null, null))
                             else
-                                StyleableToast.Builder(binding.root.context)
-                                    .textBold()
-                                    .backgroundColor(Color.rgb(242, 59, 35))
-                                    .textColor(Color.WHITE)
-                                    .textSize(14F)
-                                    .text(result.data?.message ?: "")
-                                    .gravity(Gravity.BOTTOM).show()
-
+                                errorToast(result.data?.message ?: "")
                         }
                     }
-                }
-                else
-                    StyleableToast.Builder(binding.root.context)
-                            .textBold()
-                            .backgroundColor(Color.rgb(242, 59, 35))
-                            .textColor(Color.WHITE)
-                            .textSize(14F)
-                            .text("Invalid number format")
-                            .gravity(Gravity.BOTTOM).show()
+                } else
+                    errorToast(getString(R.string.error_invalid_number))
             }
 
             textRegister.setOnSoundClickListener {

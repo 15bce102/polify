@@ -4,10 +4,8 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -31,15 +29,15 @@ import com.example.polify.eventbus.FriendInviteEvent
 import com.example.polify.ui.adapter.FriendAdapter
 import com.example.polify.ui.viewmodel.BaseViewModelFactory
 import com.example.polify.ui.viewmodel.FriendViewModel
+import com.example.polify.util.errorToast
+import com.example.polify.util.infoToast
 import com.example.polify.util.setOnSoundClickListener
 import com.example.polify.util.showConfirmationDialog
 import com.google.firebase.auth.FirebaseAuth
-import com.muddzdev.styleabletoast.StyleableToast
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import splitties.toast.toast
 
 class RoomFragment : Fragment() {
     private lateinit var binding: FragmentRoomBinding
@@ -55,7 +53,7 @@ class RoomFragment : Fragment() {
     private val callback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             lifecycleScope.launch {
-                val shouldLeave = requireContext().showConfirmationDialog(R.string.title_leave_room, R.string.desc_leave_room)
+                val shouldLeave = showConfirmationDialog(R.string.title_leave_room, R.string.desc_leave_room)
                 if (!shouldLeave)
                     return@launch
 
@@ -64,26 +62,13 @@ class RoomFragment : Fragment() {
                 lifecycleScope.launch {
                     val result = GameRepository.leaveMultiPlayerRoom(user.uid, room.roomId)
                     if (result.status == Result.Status.SUCCESS) {
-                        result.data?.let { data ->
-                            if (data.success) {
-                                StyleableToast.Builder(binding.root.context)
-                                        .textBold()
-                                        .backgroundColor(Color.rgb(22, 36, 71))
-                                        .textColor(Color.WHITE)
-                                        .textSize(14F)
-                                        .text("Room Left Successfully")
-                                        .gravity(Gravity.BOTTOM).show()
-                            } else {
-                                StyleableToast.Builder(binding.root.context)
-                                        .textBold()
-                                        .backgroundColor(Color.rgb(255, 0, 0))
-                                        .textColor(Color.WHITE)
-                                        .textSize(14F)
-                                        .text("could not leave room")
-                                        .gravity(Gravity.BOTTOM).show()
-                            }
-                        }
-                    }
+                        if (result.data?.success == true)
+                            infoToast(getString(R.string.room_leave_success))
+                        else
+                            errorToast(result.data?.message)
+                    } else
+                        errorToast(result.message)
+
                     requireActivity().finish()
                 }
             }
@@ -94,7 +79,7 @@ class RoomFragment : Fragment() {
             if (intent.action == ACTION_ROOM_UPDATE) {
                 intent.extras?.let { extras ->
                     val message = extras[EXTRA_MESSAGE] as String
-                    toast(message)
+                    infoToast(message)
 
                     (extras[EXTRA_ROOM] as Room?)?.let {
                         this@RoomFragment.room.members = it.members
@@ -168,18 +153,15 @@ class RoomFragment : Fragment() {
             val user = mAuth.currentUser ?: return@setOnSoundClickListener
 
             lifecycleScope.launch {
-                Log.d("mpLog", "before start")
                 val result = GameRepository.startMultiPlayerBattle(user.uid, room.roomId)
-                Log.d("mpLog", "after start status = ${result.status}")
 
                 if (result.status == Result.Status.SUCCESS) {
-                    result.data?.let { data ->
-                        if (data.success)
-                            toast("match will start shortly")
-                        else
-                            toast(data.message ?: "null")
-                    }
-                }
+                    if (result.data?.success == true)
+                        infoToast("match will start shortly")
+                    else
+                        errorToast(result.data?.message)
+                } else
+                    errorToast(result.message)
             }
         }
     }
@@ -188,17 +170,18 @@ class RoomFragment : Fragment() {
     fun onFriendInviteEvent(friendInviteEvent: FriendInviteEvent) {
         val (friend) = friendInviteEvent
 
-        mAuth.currentUser?.let { user ->
-            lifecycleScope.launch {
-                val result = GameRepository
-                        .sendMultiPlayerRoomInvite(uid = user.uid, friendUid = friend.uid, roomId = room.roomId)
-                if (result.status == Result.Status.SUCCESS) {
-                    result.data?.let { data ->
-                        if (data.success)
-                        {}
-                    }
-                }
-            }
+        val user = mAuth.currentUser ?: return
+
+        lifecycleScope.launch {
+            val result = GameRepository
+                    .sendMultiPlayerRoomInvite(uid = user.uid, friendUid = friend.uid, roomId = room.roomId)
+            if (result.status == Result.Status.SUCCESS) {
+                if (result.data?.success == true)
+                    infoToast(getString(R.string.sent_invite))
+                else
+                    errorToast(result.data?.message)
+            } else
+                errorToast(result.message)
         }
     }
 

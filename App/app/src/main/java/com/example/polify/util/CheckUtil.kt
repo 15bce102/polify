@@ -1,6 +1,8 @@
 package com.example.polify.util
 
 import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.telephony.TelephonyManager
 import android.util.Log
 import androidx.core.content.getSystemService
@@ -60,4 +62,13 @@ fun List<String>.toFullPhoneNumbers(context: Context): List<String> {
             }
         }
     }
+}
+
+fun Context.hasInternet(): Boolean {
+    return getSystemService<ConnectivityManager>()?.let { cm ->
+        cm.getNetworkCapabilities(cm.activeNetwork)?.let { nc ->
+            return nc.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) ||
+                    nc.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
+        }
+    } ?: false
 }

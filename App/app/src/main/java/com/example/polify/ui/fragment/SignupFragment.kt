@@ -13,13 +13,13 @@ import com.example.polify.R
 import com.example.polify.databinding.FragmentSignupBinding
 import com.example.polify.eventbus.AvatarEvent
 import com.example.polify.ui.dialog.AvatarDialogFragment
+import com.example.polify.util.errorToast
 import com.example.polify.util.isValidPhoneNumber
 import com.example.polify.util.isValidUserName
 import com.example.polify.util.setOnSoundClickListener
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import splitties.toast.toast
 
 class SignupFragment : Fragment() {
     private lateinit var binding: FragmentSignupBinding
@@ -72,7 +72,7 @@ class SignupFragment : Fragment() {
                             SignupFragmentDirections.actionSignupFragmentToOtpFragment(
                                     countryCodePicker.fullNumberWithPlus, userName, avatarUrl))
                 else
-                    toast(R.string.error_invalid_number)
+                    errorToast(getString(R.string.error_invalid_number))
             }
 
             textLogin.setOnSoundClickListener {

@@ -1,7 +1,6 @@
 package com.example.polify.ui.activity
 
 import android.os.Bundle
-import android.util.Log
 import android.view.WindowManager
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
@@ -11,6 +10,7 @@ import com.andruid.magic.game.model.response.Result
 import com.example.polify.R
 import com.example.polify.data.EXTRA_ROOM
 import com.example.polify.ui.fragment.RoomWaitingFragmentDirections
+import com.example.polify.util.errorToast
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 import splitties.toast.toast
@@ -33,9 +33,9 @@ class MultiPlayerActivity : FullScreenActivity() {
     }
 
     private fun createRoom() {
-        lifecycleScope.launch {
-            val user = mAuth.currentUser ?: return@launch
+        val user = mAuth.currentUser ?: return
 
+        lifecycleScope.launch {
             val result = GameRepository.createMultiPlayerRoom(user.uid)
             if (result.status == Result.Status.SUCCESS) {
                 result.data?.let { data ->
@@ -44,7 +44,7 @@ class MultiPlayerActivity : FullScreenActivity() {
                         findNavController(R.id.nav_host_fragment).navigate(
                                 RoomWaitingFragmentDirections.actionRoomWaitingFragmentToRoomFragment(room))
                     } else {
-                        toast(data.message ?: "error")
+                        errorToast(data.message ?: "error")
                         finish()
                     }
                 }

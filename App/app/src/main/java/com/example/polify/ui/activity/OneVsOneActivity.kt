@@ -29,7 +29,8 @@ class OneVsOneActivity : FullScreenActivity() {
         override fun onReceive(context: Context, intent: Intent) {
             when (intent.action) {
                 ACTION_MATCH_FOUND -> {
-                    Log.d("cloudLog", "broadcast of match found in activity")
+                    Log.d(TAG, "broadcast of match found in activity")
+
                     intent.extras?.let {
                         battle = it.getParcelable(EXTRA_BATTLE)!!
 
@@ -39,7 +40,6 @@ class OneVsOneActivity : FullScreenActivity() {
                             val startTime = System.currentTimeMillis()
 
                             lifecycle.addObserver(object : LifecycleObserver {
-
                                 @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
                                 fun onForeground() {
                                     startBattle(battle, startTime)
@@ -69,7 +69,8 @@ class OneVsOneActivity : FullScreenActivity() {
     }
 
     private fun startBattle(battle: Battle, startTime: Long = -1L) {
-        Log.d("navLog", "battle=${battle}, startTime = ${startTime}")
+        Log.d(TAG, "battle=${battle}, startTime = $startTime")
+
         findNavController(R.id.nav_host_fragment).navigate(
                 WaitingFragmentDirections.actionWaitingFragmentToQuestionsFragment(battle, startTime, BATTLE_ONE_VS_ONE))
     }

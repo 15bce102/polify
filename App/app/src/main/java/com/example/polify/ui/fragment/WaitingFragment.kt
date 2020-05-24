@@ -22,6 +22,26 @@ class WaitingFragment : Fragment() {
 
     private val timer = Timer()
     private val mAuth by lazy { FirebaseAuth.getInstance() }
+    private val callback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            Log.d(TAG, "on back pressed fragment")
+
+            val user = mAuth.currentUser
+            if (user == null) {
+                requireActivity().finish()
+                return
+            }
+
+            lifecycleScope.launch {
+                val response = GameRepository.leaveWaitingRoom(user.uid)
+                if (response.status == Result.Status.SUCCESS)
+                    Log.d(TAG, "left waiting room")
+                else
+                    Log.e(TAG, "left waiting room error")
+                requireActivity().finish()
+            }
+        }
+    }
 
     private var seconds = 0
 
@@ -30,21 +50,6 @@ class WaitingFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val callback = object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                Log.d(TAG, "on back pressed fragment")
-                lifecycleScope.launch {
-                    mAuth.currentUser?.let { user ->
-                        val response = GameRepository.leaveWaitingRoom(user.uid)
-                        if (response.status == Result.Status.SUCCESS)
-                            Log.d(TAG, "left waiting room")
-                        else
-                            Log.e(TAG, "left waiting room error")
-                        requireActivity().finish()
-                    }
-                }
-            }
-        }
         requireActivity().onBackPressedDispatcher.addCallback(this, callback)
     }
 

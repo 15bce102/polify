@@ -7,6 +7,10 @@ import com.andruid.magic.game.model.response.Result
 import kotlinx.coroutines.*
 
 class FriendViewModel(uid: String) : ViewModel() {
+    companion object {
+        private const val STATUS_REFRESH_TIME_MS = (10 * 1000).toLong()
+    }
+
     private val _friends: MutableLiveData<Result<FriendsResponse>> = MutableLiveData(Result.loading(null))
     val friends: LiveData<Result<FriendsResponse>>
         get() = _friends
@@ -16,7 +20,7 @@ class FriendViewModel(uid: String) : ViewModel() {
             while (isActive) {
                 val response = GameRepository.getMyFriends(uid)
                 _friends.postValue(response)
-                delay(2*60*1000)
+                delay(STATUS_REFRESH_TIME_MS)
             }
         }
     }

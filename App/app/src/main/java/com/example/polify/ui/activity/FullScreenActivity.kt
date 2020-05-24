@@ -22,29 +22,27 @@ import org.greenrobot.eventbus.ThreadMode
 
 @SuppressLint("Registered")
 open class FullScreenActivity : AppCompatActivity() {
-    var service: GameService? = null
+    companion object {
+        private val TAG = "${this::class.java.simpleName}Log"
+    }
+
     private var isBound = false
 
-    private val sounds = IntArray(4)
+    private val sounds = IntArray(2)
     private val soundPool by lazy {
         val attrs = AudioAttributes.Builder()
                 .setUsage(AudioAttributes.USAGE_GAME)
                 .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
                 .build()
         SoundPool.Builder()
-                .setMaxStreams(4)
+                .setMaxStreams(2)
                 .setAudioAttributes(attrs)
                 .build()
     }
     private val serviceConnection = object : ServiceConnection {
-        override fun onServiceConnected(name: ComponentName?, binder: IBinder) {
-            service = (binder as GameService.ServiceBinder).getService()
-            //service?.playSong(R.raw.normal)
-        }
+        override fun onServiceConnected(name: ComponentName?, binder: IBinder) {}
 
-        override fun onServiceDisconnected(name: ComponentName?) {
-            service = null
-        }
+        override fun onServiceDisconnected(name: ComponentName?) {}
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,7 +50,6 @@ open class FullScreenActivity : AppCompatActivity() {
 
         doBindService()
         initButtonSounds()
-        //initTimerSound()
 
         volumeControlStream = AudioManager.STREAM_MUSIC
     }
@@ -69,16 +66,6 @@ open class FullScreenActivity : AppCompatActivity() {
             hideSystemUI()
     }
 
-    override fun onResume() {
-        super.onResume()
-        //service?.playSong(R.raw.normal)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        //service?.pauseSong()
-    }
-
     override fun onStart() {
         super.onStart()
         EventBus.getDefault().register(this)
@@ -91,20 +78,10 @@ open class FullScreenActivity : AppCompatActivity() {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onSoundEvent(soundEvent: SoundEvent) {
-        Log.d("soundLog", "on sound event")
+        Log.d(TAG, "on sound event")
         when (soundEvent.type) {
             SoundEvent.Sound.TYPE_BUTTON_TAP ->
                 soundPool.play(sounds[0], 1F, 1F, 1,0, 1.0F)
-            /*SoundEvent.Sound.TYPE_TIMER_START -> {
-                if (isTicking)
-                    soundPool.resume(sounds[1])
-                else {
-                    isTicking = true
-                    soundPool.play(sounds[1], 1F, 1F, 1, -1, 1.0F)
-                }
-            }
-            SoundEvent.Sound.TYPE_TIMER_STOP ->
-                soundPool.pause(sounds[1])*/
         }
     }
 
@@ -131,9 +108,5 @@ open class FullScreenActivity : AppCompatActivity() {
 
     private fun initButtonSounds() {
         sounds[0] = soundPool.load(this, R.raw.tap, 1)
-    }
-
-    private fun initTimerSound() {
-        sounds[1] = soundPool.load(this, R.raw.clock, 1)
     }
 }
