@@ -33,21 +33,21 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <androidx.appcompat.widget.AppCompatTextView
+
+            <me.grantland.widget.AutofitTextView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="8dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:textAlignment="gravity"
+                android:maxLines="6"
+                android:textColor="@color/lightBlu"
+                android:textSize="20sp"
+                app:minTextSize="16sp"
+                android:textStyle="bold"
                 android:fontFamily="serif-monospace"
                 android:gravity="center_horizontal"
                 android:text="@{question.questionText}"
-                android:textAlignment="gravity"
-                android:textColor="@color/lightBlu"
-                android:autoSizeTextType="uniform"
-                android:autoSizeMinTextSize="18dp"
-                android:autoSizeMaxTextSize="26dp"
-                android:autoSizeStepGranularity="1dp"
-                android:textStyle="bold"
-                tools:text="The process of reading a database schema" />
+                tools:text="The process of reading a database schema"/>
         </com.google.android.material.card.MaterialCardView>
 
         <androidx.recyclerview.widget.RecyclerView
