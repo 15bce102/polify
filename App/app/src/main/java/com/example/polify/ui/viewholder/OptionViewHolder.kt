@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.andruid.magic.game.model.data.Option
 import com.example.polify.R
 import com.example.polify.databinding.LayoutOptionBinding
+import splitties.resources.color
 
 class OptionViewHolder(private val binding: LayoutOptionBinding) : RecyclerView.ViewHolder(binding.root) {
     companion object {
@@ -25,7 +26,7 @@ class OptionViewHolder(private val binding: LayoutOptionBinding) : RecyclerView.
     }
 
     fun highlightAnswer(correct: Boolean) {
-        val bg = if (correct) Color.GREEN else Color.RED
+        val bg = if (correct) binding.root.context.color(R.color.colorCorrect) else Color.RED
         binding.optionCard.setCardBackgroundColor(bg)
     }
 

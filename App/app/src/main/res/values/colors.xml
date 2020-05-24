@@ -26,4 +26,6 @@
 
     <color name="lightBlu">#c3edea</color>
     <color name="darkBlu">#162447</color>
+
+    <color name="colorCorrect">#82c341</color>
 </resources>
