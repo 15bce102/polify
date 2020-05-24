@@ -35,14 +35,17 @@
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_marginTop="8dp"
                 android:fontFamily="serif-monospace"
                 android:gravity="center_horizontal"
                 android:text="@{question.questionText}"
                 android:textAlignment="gravity"
                 android:textColor="@color/lightBlu"
-                android:textSize="20sp"
+                android:autoSizeTextType="uniform"
+                android:autoSizeMinTextSize="18dp"
+                android:autoSizeMaxTextSize="26dp"
+                android:autoSizeStepGranularity="1dp"
                 android:textStyle="bold"
                 tools:text="The process of reading a database schema" />
         </com.google.android.material.card.MaterialCardView>

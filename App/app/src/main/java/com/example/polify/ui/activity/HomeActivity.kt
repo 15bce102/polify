@@ -41,6 +41,7 @@ import com.example.polify.ui.viewmodel.UserViewModel
 import com.example.polify.util.scheduleFriendsUpdate
 import com.example.polify.util.setOnSoundClickListener
 import com.example.polify.util.showMultiPlayerInviteDialog
+
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.auth.FirebaseAuth
 import com.muddzdev.styleabletoast.StyleableToast
@@ -55,6 +56,8 @@ import splitties.resources.drawable
 import splitties.toast.toast
 
 class HomeActivity : FullScreenActivity() {
+
+
     private lateinit var binding: ActivityHomeBinding
 
     private val argbEvaluator by lazy { ArgbEvaluator() }
@@ -109,7 +112,7 @@ class HomeActivity : FullScreenActivity() {
                     .textSize(14F)
                     .text("Refreshing Friends Now")
                     .gravity(Gravity.BOTTOM).show()
-            scheduleFriendsUpdate(refresh = true)
+
         }
 
         LocalBroadcastManager.getInstance(this)

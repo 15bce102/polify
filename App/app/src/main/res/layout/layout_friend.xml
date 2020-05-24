@@ -54,10 +54,10 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/sendRequest"
-            android:layout_width="15dp"
-            android:layout_height="15dp"
-            android:layout_marginStart="65dp"
-            android:layout_marginTop="63dp"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginStart="62dp"
+            android:layout_marginTop="58dp"
             android:adjustViewBounds="true"
             android:src="@drawable/plus" />
     </com.google.android.material.card.MaterialCardView>
