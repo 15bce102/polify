@@ -84,8 +84,15 @@ class HomeActivity : FullScreenActivity() {
         }
 
         userViewModel.user.observe(this, Observer { result ->
-            if (result.status == Result.Status.SUCCESS)
-                binding.user = result.data?.user
+            when (result.status) {
+                Result.Status.LOADING -> {
+                    binding.loadingView.visibility = View.VISIBLE
+                }
+                Result.Status.SUCCESS -> {
+                    binding.user = result.data?.user
+                    binding.loadingView.visibility = View.GONE
+                }
+            }
         })
 
         initViewPager()

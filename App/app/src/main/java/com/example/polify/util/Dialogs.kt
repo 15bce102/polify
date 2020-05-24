@@ -49,3 +49,10 @@ suspend fun Context.showConfirmationDialog(@StringRes title: Int, @StringRes msg
 
     return suspendCoroutine { continuation -> result = continuation }
 }
+
+fun Context.buildLoadingDialog(): AlertDialog {
+    return AlertDialog.Builder(this, R.style.TranslucentDialog)
+            .setCancelable(false)
+            .setView(R.layout.dialog_loading)
+            .create()
+}
