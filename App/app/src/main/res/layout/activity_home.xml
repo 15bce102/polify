@@ -214,6 +214,7 @@
             tools:visibility="visible">
 
             <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/loadingAnimView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -223,8 +224,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 android:background="#66000000"
                 app:lottie_autoPlay="true"
-                app:lottie_loop="true"
-                app:lottie_rawRes="@raw/loading" />
+                app:lottie_loop="true" />
         </FrameLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

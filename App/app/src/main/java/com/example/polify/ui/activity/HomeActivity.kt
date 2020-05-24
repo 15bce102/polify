@@ -8,6 +8,10 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Color
+import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkCapabilities
+import android.net.NetworkRequest
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -16,6 +20,7 @@ import android.view.View
 import android.widget.ImageView
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
+import androidx.core.content.getSystemService
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
@@ -57,6 +62,8 @@ import splitties.toast.toast
 class HomeActivity : FullScreenActivity() {
     private lateinit var binding: ActivityHomeBinding
 
+    private var retry = false
+
     private val argbEvaluator by lazy { ArgbEvaluator() }
     private val mAuth by lazy { FirebaseAuth.getInstance() }
     private val userViewModel by viewModels<UserViewModel> {
@@ -86,11 +93,18 @@ class HomeActivity : FullScreenActivity() {
         userViewModel.user.observe(this, Observer { result ->
             when (result.status) {
                 Result.Status.LOADING -> {
+                    binding.loadingAnimView.setAnimation(R.raw.loading)
                     binding.loadingView.visibility = View.VISIBLE
                 }
                 Result.Status.SUCCESS -> {
                     binding.user = result.data?.user
                     binding.loadingView.visibility = View.GONE
+                    retry = false
+                }
+                Result.Status.ERROR -> {
+                    binding.loadingAnimView.setAnimation(R.raw.error)
+                    binding.loadingView.visibility = View.VISIBLE
+                    retry = true
                 }
             }
         })
@@ -98,6 +112,7 @@ class HomeActivity : FullScreenActivity() {
         initViewPager()
         initListeners()
         initFloatingMenu()
+        initConnectivityCallback()
 
         scheduleFriendsUpdate()
 
@@ -116,9 +131,19 @@ class HomeActivity : FullScreenActivity() {
                 .registerReceiver(multiPlayerReceiver, IntentFilter(ACTION_ROOM_INVITE))
     }
 
-    override fun onResume() {
-        super.onResume()
-        userViewModel.refresh()
+    private fun initConnectivityCallback() {
+        val networkRequest = NetworkRequest.Builder()
+                .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
+                .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
+                .build()
+
+        getSystemService<ConnectivityManager>()?.registerNetworkCallback(networkRequest, object : ConnectivityManager.NetworkCallback() {
+            override fun onAvailable(network: Network) {
+                super.onAvailable(network)
+                if (retry)
+                    userViewModel.refresh()
+            }
+        })
     }
 
     override fun onDestroy() {
@@ -241,11 +266,9 @@ class HomeActivity : FullScreenActivity() {
                     .text("Contacts Sync Started")
                     .gravity(Gravity.BOTTOM).show()
             scheduleFriendsUpdate()
-
         }
 
         rlIcon2.setOnSoundClickListener {
-
             StyleableToast.Builder(this)
                     .textBold()
                     .backgroundColor(Color.rgb(22, 36, 71))
@@ -253,14 +276,14 @@ class HomeActivity : FullScreenActivity() {
                     .textSize(14F)
                     .text("Successfully Logged Out")
                     .gravity(Gravity.BOTTOM).show()
+
             mAuth.signOut()
+
+            startActivity(Intent(this, LoginActivity::class.java))
             finish()
         }
 
         rlIcon3.setOnSoundClickListener {
-
-
-            //     val st = StyleableToast.makeText(this, "Open Source Licences", Toast.LENGTH_LONG, R.style.mtToast)
             StyleableToast.Builder(this)
                     .textBold()
                     .backgroundColor(Color.rgb(22, 36, 71))
@@ -268,7 +291,8 @@ class HomeActivity : FullScreenActivity() {
                     .textSize(14F)
                     .text("Open Source Licenses")
                     .gravity(Gravity.BOTTOM).show()
-            //        st.show()
+
+            startActivity(Intent(this, OpenSourceLicensesActivity::class.java))
         }
 
 
@@ -310,8 +334,7 @@ class HomeActivity : FullScreenActivity() {
         }
 
         binding.apply {
-            TabLayoutMediator(tabLayout, viewPager) { tab, position ->
-                //Some implementation
+            TabLayoutMediator(tabLayout, viewPager) { _, _ ->
             }.attach()
         }
     }
