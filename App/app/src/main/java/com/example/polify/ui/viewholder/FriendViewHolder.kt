@@ -34,8 +34,8 @@ class FriendViewHolder(private val binding: LayoutFriendBinding) : RecyclerView.
                     .backgroundColor(Color.rgb(22, 36, 71))
                     .textColor(Color.WHITE)
                     .textSize(14F)
-                    .text("Open Source Licenses")
-                    .gravity(Gravity.TOP).show()
+                    .text("Invite Sent")
+                    .gravity(Gravity.BOTTOM).show()
             EventBus.getDefault().post(FriendInviteEvent(friend))
         }
 

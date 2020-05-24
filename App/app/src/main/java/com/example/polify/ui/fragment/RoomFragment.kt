@@ -4,8 +4,10 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -32,6 +34,7 @@ import com.example.polify.ui.viewmodel.FriendViewModel
 import com.example.polify.util.setOnSoundClickListener
 import com.example.polify.util.showConfirmationDialog
 import com.google.firebase.auth.FirebaseAuth
+import com.muddzdev.styleabletoast.StyleableToast
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -63,9 +66,21 @@ class RoomFragment : Fragment() {
                     if (result.status == Result.Status.SUCCESS) {
                         result.data?.let { data ->
                             if (data.success) {
-                                toast("Room left successfully")
+                                StyleableToast.Builder(binding.root.context)
+                                        .textBold()
+                                        .backgroundColor(Color.rgb(22, 36, 71))
+                                        .textColor(Color.WHITE)
+                                        .textSize(14F)
+                                        .text("Room Left Successfully")
+                                        .gravity(Gravity.BOTTOM).show()
                             } else {
-                                toast("Could not leave room")
+                                StyleableToast.Builder(binding.root.context)
+                                        .textBold()
+                                        .backgroundColor(Color.rgb(255, 0, 0))
+                                        .textColor(Color.WHITE)
+                                        .textSize(14F)
+                                        .text("could not leave room")
+                                        .gravity(Gravity.BOTTOM).show()
                             }
                         }
                     }
@@ -180,7 +195,7 @@ class RoomFragment : Fragment() {
                 if (result.status == Result.Status.SUCCESS) {
                     result.data?.let { data ->
                         if (data.success)
-                            toast("Invite sent!!")
+                        {}
                     }
                 }
             }

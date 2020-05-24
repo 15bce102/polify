@@ -102,7 +102,13 @@ class HomeActivity : FullScreenActivity() {
         scheduleFriendsUpdate()
 
         binding.imgPlus.setOnSoundClickListener {
-            toast("refreshing friends now")
+            StyleableToast.Builder(binding.root.context)
+                    .textBold()
+                    .backgroundColor(Color.rgb(22, 36, 71))
+                    .textColor(Color.WHITE)
+                    .textSize(14F)
+                    .text("Refreshing Friends Now")
+                    .gravity(Gravity.BOTTOM).show()
             scheduleFriendsUpdate(refresh = true)
         }
 
@@ -132,7 +138,13 @@ class HomeActivity : FullScreenActivity() {
                 val userName = binding.txtProfileName.text.toString().trim()
                 val response = GameRepository.updateProfile(user.uid, userName, avatarUrl)
                 if (response.status == Result.Status.SUCCESS)
-                    toast("Avatar updated")
+                    StyleableToast.Builder(binding.root.context)
+                            .textBold()
+                            .backgroundColor(Color.rgb(22, 36, 71))
+                            .textColor(Color.WHITE)
+                            .textSize(14F)
+                            .text("Avatar Updated")
+                            .gravity(Gravity.BOTTOM).show()
             }
         }
     }
@@ -328,7 +340,13 @@ class HomeActivity : FullScreenActivity() {
                 } else
                     toast(result.message ?: "")
             } else
-                toast("Invite declined")
+                StyleableToast.Builder(binding.root.context)
+                        .textBold()
+                        .backgroundColor(Color.rgb(22, 36, 71))
+                        .textColor(Color.WHITE)
+                        .textSize(14F)
+                        .text("Invite Declined")
+                        .gravity(Gravity.BOTTOM).show()
         }
     }
 }

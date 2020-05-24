@@ -1,6 +1,8 @@
 package com.example.polify.ui.fragment
 
+import android.graphics.Color
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +16,7 @@ import com.example.polify.R
 import com.example.polify.databinding.FragmentLoginBinding
 import com.example.polify.util.isValidPhoneNumber
 import com.example.polify.util.setOnSoundClickListener
+import com.muddzdev.styleabletoast.StyleableToast
 import kotlinx.coroutines.launch
 import splitties.toast.toast
 
@@ -51,13 +54,25 @@ class LoginFragment : Fragment() {
                                         LoginFragmentDirections.actionLoginFragmentToOtpFragment(
                                                 countryCodePicker.fullNumberWithPlus, null, null))
                             else
-                                toast(result.data?.message ?: "")
+                                StyleableToast.Builder(binding.root.context)
+                                    .textBold()
+                                    .backgroundColor(Color.rgb(242, 59, 35))
+                                    .textColor(Color.WHITE)
+                                    .textSize(14F)
+                                    .text(result.data?.message ?: "")
+                                    .gravity(Gravity.BOTTOM).show()
 
                         }
                     }
                 }
                 else
-                    toast(R.string.error_invalid_number)
+                    StyleableToast.Builder(binding.root.context)
+                            .textBold()
+                            .backgroundColor(Color.rgb(242, 59, 35))
+                            .textColor(Color.WHITE)
+                            .textSize(14F)
+                            .text("Invalid number format")
+                            .gravity(Gravity.BOTTOM).show()
             }
 
             textRegister.setOnSoundClickListener {

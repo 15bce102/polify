@@ -16,14 +16,16 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        >
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/textBoxQuestion"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginBottom="100dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
             app:cardBackgroundColor="@color/darkBlu"
             app:cardCornerRadius="16dp"
             app:layout_constraintBottom_toTopOf="@id/optionsRV"
@@ -34,27 +36,26 @@
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="8dp"
+                android:layout_marginTop="8dp"
                 android:fontFamily="serif-monospace"
                 android:gravity="center_horizontal"
-                android:textStyle="bold"
                 android:text="@{question.questionText}"
                 android:textAlignment="gravity"
                 android:textColor="@color/lightBlu"
                 android:textSize="20sp"
+                android:textStyle="bold"
                 tools:text="The process of reading a database schema" />
         </com.google.android.material.card.MaterialCardView>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/optionsRV"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/textBoxQuestion"
-            app:layout_constraintVertical_bias="0.8"
             tools:itemCount="4"
             tools:listitem="@layout/layout_option" />
     </androidx.constraintlayout.widget.ConstraintLayout>

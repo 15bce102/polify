@@ -1,8 +1,10 @@
 package com.example.polify.ui.fragment
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,6 +22,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthProvider
 import com.google.firebase.iid.FirebaseInstanceId
+import com.muddzdev.styleabletoast.StyleableToast
 import kotlinx.coroutines.launch
 import splitties.toast.toast
 import java.util.concurrent.TimeUnit
@@ -72,7 +75,13 @@ class OtpFragment : Fragment() {
             if (check && code.length == 6)
                 verifyCode(code)
             else {
-                toast("Please Enter the valid code or wai for same")
+                StyleableToast.Builder(binding.root.context)
+                        .textBold()
+                        .backgroundColor(Color.rgb(255, 0, 0))
+                        .textColor(Color.WHITE)
+                        .textSize(14F)
+                        .text("Please enter the valid code")
+                        .gravity(Gravity.BOTTOM).show()
             }
         }
         return binding.root
@@ -117,7 +126,13 @@ class OtpFragment : Fragment() {
                                 if (response.status == Result.Status.SUCCESS)
                                     startHomeActivity()
                                 else
-                                    toast(response.message!!)
+                                    StyleableToast.Builder(binding.root.context)
+                                        .textBold()
+                                        .backgroundColor(Color.rgb(255, 0, 0))
+                                        .textColor(Color.WHITE)
+                                        .textSize(14F)
+                                        .text(response.message!!)
+                                        .gravity(Gravity.BOTTOM).show()
                             }
                         }
                     }

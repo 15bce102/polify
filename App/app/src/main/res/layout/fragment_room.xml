@@ -98,6 +98,8 @@
             app:layout_constraintVertical_bias="1.0">
 
 
+
+
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/player1"
                 android:layout_width="wrap_content"
@@ -112,9 +114,16 @@
                     android:layout_height="wrap_content">
 
                     <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/img_avatar"
+                        android:layout_width="45dp"
+                        android:layout_height="50dp"
+                        android:layout_marginTop="-10dp"
+                        android:src="@drawable/king" />
+
+                    <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/img_player1"
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
+                        android:layout_width="109dp"
+                        android:layout_height="99dp"
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="25dp"
                         app:imageUrl="@{member1.avatar}"
@@ -329,18 +338,6 @@
             app:layout_constraintVertical_bias="1.01" />
 
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/img_avatar"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintWidth_percent="0.27"
-            app:layout_constraintHeight_percent="0.2"
-            android:src="@drawable/king"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintHorizontal_bias="0.15"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.25"/>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
