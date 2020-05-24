@@ -59,7 +59,10 @@ class WaitingFragment : Fragment() {
         timer.scheduleAtFixedRate(object : TimerTask() {
             override fun run() {
                 seconds++
-                binding.timerTV.text = seconds.toString()
+
+                requireActivity().runOnUiThread {
+                    binding.timerTV.text = seconds.toString()
+                }
             }
         }, 1000, 1000)
 
