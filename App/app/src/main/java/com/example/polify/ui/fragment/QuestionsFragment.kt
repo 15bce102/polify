@@ -95,9 +95,10 @@ class QuestionsFragment : Fragment() {
 
             exoPlayer.playWhenReady = false
 
-            if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
+            if (lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
                 Log.d("queLog", "app in foreground")
                 showCorrectWrongAnim(pos) {
+                    Log.d("qLog", "anim completed for $pos")
                     moveToNextQuestion(pos)
                 }
             } else {
@@ -129,9 +130,10 @@ class QuestionsFragment : Fragment() {
         questionsViewModel.questions.observe(viewLifecycleOwner, Observer { result ->
             if (result.status == Result.Status.SUCCESS) {
                 (result.data?.questions)?.let { questions ->
-                    questionsAdapter.submitList(questions)
-                    binding.progressQues.max = questions.size
-                    startMatch(questions)
+                    questionsAdapter.submitList(questions) {
+                        Log.d("qLog", "number of questions = ${questions.size}")
+                        startMatch(questions)
+                    }
                 }
             }
         })
@@ -142,7 +144,7 @@ class QuestionsFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         EventBus.getDefault().register(this)
-        if (binding.viewPager.currentItem != questionsAdapter.itemCount - 1)
+        if (!finished)
             exoPlayer.playWhenReady = true
     }
 
@@ -156,6 +158,7 @@ class QuestionsFragment : Fragment() {
         super.onDestroy()
         Log.d(TAG, "onDestroy questions fragment")
 
+        countDownTimer.cancel()
         exoPlayer.release()
         binding.answerAnimView.removeAllAnimatorListeners()
 
@@ -235,9 +238,13 @@ class QuestionsFragment : Fragment() {
         binding.viewPager.apply {
             adapter = questionsAdapter
             isUserInputEnabled = false
+
             registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
                 override fun onPageSelected(position: Int) {
                     super.onPageSelected(position)
+
+                    Log.d("qLog", "viewpager page position = $position")
+
                     binding.progressQues.progress = position + 1
 
                     qid = questionsAdapter.currentList[position].qid
@@ -257,6 +264,8 @@ class QuestionsFragment : Fragment() {
     }
 
     private fun startMatch(questions: List<Question>) {
+        binding.progressQues.max = questions.size
+
         if (startTime == -1L)
             return
 
@@ -268,12 +277,15 @@ class QuestionsFragment : Fragment() {
         if (questionPos < questions.size)
             binding.viewPager.currentItem = questionPos.toInt() - 1
         else {
+            binding.progressQues.progress = binding.progressQues.max
             binding.timerAnimView.progress = 100F
             finishGame()
         }
     }
 
     private fun moveToNextQuestion(pos: Int) {
+        Log.d("queLog", "finished que $pos")
+
         val question = questionsAdapter.currentList[pos]
         val correctPos = question.correctAnswer[0] - 'A'
 
@@ -282,11 +294,9 @@ class QuestionsFragment : Fragment() {
 
         selectedOptPos = -1
 
-        Log.d("queLog", "finished que $pos")
-
-        if (pos == questionsAdapter.itemCount - 1) {
+        if (pos == questionsAdapter.itemCount - 1)
             finishGame()
-        } else
+        else
             binding.viewPager.setCurrentItem(pos + 1, true)
     }
 
@@ -294,7 +304,7 @@ class QuestionsFragment : Fragment() {
         val question = questionsAdapter.currentList[questionPos]
 
         if (qid == question.qid) {
-            Log.d("queLog", "selected option pos = $selectedOptPos")
+            Log.d("queLog", "selected option pos = $selectedOptPos, playing anim")
             val correctPos = question.correctAnswer[0] - 'A'
 
             if (selectedOptPos != correctPos) {
@@ -314,6 +324,7 @@ class QuestionsFragment : Fragment() {
                     override fun onAnimationEnd(animation: Animator?) {
                         visibility = View.GONE
                         next()
+                        removeAnimatorListener(this)
                     }
 
                     override fun onAnimationRepeat(animation: Animator?) {}
