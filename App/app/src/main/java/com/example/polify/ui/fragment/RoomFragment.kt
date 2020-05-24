@@ -69,6 +69,7 @@ class RoomFragment : Fragment() {
                             }
                         }
                     }
+                    requireActivity().finish()
                 }
             }
         }

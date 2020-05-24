@@ -1,5 +1,6 @@
 package com.example.polify.ui.fragment
 
+import android.animation.Animator
 import android.media.AudioManager
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -10,6 +11,7 @@ import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -40,7 +42,6 @@ import com.google.android.exoplayer2.upstream.DataSource
 import com.google.android.exoplayer2.upstream.DataSpec
 import com.google.android.exoplayer2.upstream.RawResourceDataSource
 import com.google.firebase.auth.FirebaseAuth
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -91,21 +92,68 @@ class QuestionsFragment : Fragment() {
     private val countDownTimer = object : CountDownTimer(QUE_TIME_LIMIT_MS, 1000) {
         override fun onFinish() {
             val pos = binding.viewPager.currentItem
-            val optionsRV = binding.viewPager.findViewById<RecyclerView>(R.id.optionsRV)
-            highlightAns(optionsRV, pos)
 
             exoPlayer.playWhenReady = false
 
-            lifecycleScope.launch {
-                delay(1000)
-                if (pos == questionsAdapter.itemCount - 1) {
-                    finishGame()
-                } else
-                    binding.viewPager.setCurrentItem(pos + 1, true)
+            if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
+                showCorrectWrongAnim(pos) {
+                    moveToNextQuestion(pos)
+                }
             }
+            else
+                moveToNextQuestion(pos)
         }
 
-        override fun onTick(millisUntilFinished: Long) {}
+        override fun onTick(millisUntilFinished: Long) {
+            binding.timerAnimView.progress = 1 - millisUntilFinished.toFloat() / QUE_TIME_LIMIT_MS
+        }
+    }
+
+    private fun moveToNextQuestion(pos: Int) {
+        if (pos == questionsAdapter.itemCount - 1) {
+            finishGame()
+        } else
+            binding.viewPager.setCurrentItem(pos + 1, true)
+    }
+
+    private fun showCorrectWrongAnim(questionPos: Int, next: () -> Unit) {
+        val question = questionsAdapter.currentList[questionPos]
+
+        if (qid == question.qid) {
+            Log.d(TAG, "selected option pos = $selectedOptPos")
+            val correctPos = question.correctAnswer[0] - 'A'
+
+            if (selectedOptPos != correctPos) {
+                val optionsRV = binding.viewPager.findViewById<RecyclerView>(R.id.optionsRV)
+                val correctViewHolder = optionsRV?.findViewHolderForItemId(correctPos.toLong()) as OptionViewHolder?
+                correctViewHolder?.highlightAnswer(true)
+            }
+
+            binding.answerAnimView.apply {
+                setAnimation(
+                        if (selectedOptPos == correctPos)
+                            R.raw.correct
+                        else
+                            R.raw.wrong
+                )
+                addAnimatorUpdateListener { valueAnimator ->
+                    val progress = (valueAnimator.animatedValue as Float * 100).toInt()
+                    Log.d("animLog", "tick anim progress percent = $progress")
+                }
+                addAnimatorListener(object : Animator.AnimatorListener {
+                    override fun onAnimationEnd(animation: Animator?) {
+                        visibility = View.GONE
+                        next()
+                    }
+
+                    override fun onAnimationRepeat(animation: Animator?) {}
+                    override fun onAnimationCancel(animation: Animator?) {}
+                    override fun onAnimationStart(animation: Animator?) {}
+                })
+                visibility = View.VISIBLE
+                playAnimation()
+            }
+        }
     }
 
     private fun finishGame() {
@@ -143,6 +191,11 @@ class QuestionsFragment : Fragment() {
 
         initViewPager()
         initPlayers()
+
+        binding.timerAnimView.addAnimatorUpdateListener { valueAnimator ->
+            val progress = (valueAnimator.animatedValue as Float * 100).toInt()
+            Log.d("animLog", "timer anim progress percent = $progress")
+        }
 
         questionsViewModel.questions.observe(viewLifecycleOwner, Observer { result ->
             if (result.status == Result.Status.SUCCESS) {
@@ -190,7 +243,8 @@ class QuestionsFragment : Fragment() {
                     countDownTimer.cancel()
                     countDownTimer.start()
 
-                    exoPlayer.playWhenReady = true
+                    if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED))
+                        exoPlayer.playWhenReady = true
 
                     binding.timerAnimView.playAnimation()
                 }
@@ -233,6 +287,7 @@ class QuestionsFragment : Fragment() {
         Log.d("cloudLog", "onDestroy questions fragment")
 
         exoPlayer.release()
+        binding.answerAnimView.removeAllAnimatorListeners()
 
         val user = mAuth.currentUser ?: return
 
