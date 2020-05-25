@@ -120,6 +120,19 @@ class HomeActivity : FullScreenActivity() {
 
         binding.imgPlus.setOnSoundClickListener {
             //TODO: show ad for coins
+            val user = mAuth.currentUser ?: return@setOnSoundClickListener
+
+            lifecycleScope.launch {
+                val result = GameRepository.addCoins(user.uid)
+                if (result.status == Result.Status.SUCCESS) {
+                    if (result.data?.success == true) {
+                        infoToast("Coins added")
+                        userViewModel.refresh()
+                    } else
+                        errorToast("Could not add coins")
+                } else
+                    errorToast("Could not add coins")
+            }
         }
 
         LocalBroadcastManager.getInstance(this)

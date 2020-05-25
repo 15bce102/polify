@@ -48,6 +48,10 @@ interface RetrofitService {
     @POST("/my-friends")
     suspend fun getMyFriends(@Body map: Map<String, @JvmSuppressWildcards Any>): Response<FriendsResponse>
 
+    @Headers("Content-Type: application/json")
+    @POST("/add-coins")
+    suspend fun addCoins(@Body map: Map<String, @JvmSuppressWildcards Any>): Response<ApiResponse>
+
     /** Battle related requests **/
 
     @Headers("Content-Type: application/json")

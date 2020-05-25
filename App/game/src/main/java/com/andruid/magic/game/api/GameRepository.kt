@@ -67,17 +67,10 @@ object GameRepository {
         return sendNetworkRequest { service.getProfile(map) }
     }
 
-    suspend fun joinWaitingRoom(uid: String) =
-            sendNetworkRequest { service.joinWaitingRoom(uid) }
-
-    suspend fun leaveWaitingRoom(uid: String) =
-            sendNetworkRequest { service.leaveWaitingRoom(uid) }
-
-    suspend fun getBattleQuestions(bid: String) =
-            sendNetworkRequest { service.getQuestions(bid) }
-
-    suspend fun updateBattleScore(bid: String, uid: String, score: Int) =
-            sendNetworkRequest { service.updateScore(bid, uid, score) }
+    suspend fun getMyFriends(uid: String): Result<FriendsResponse> {
+        val map = mapOf("uid" to uid)
+        return sendNetworkRequest { service.getMyFriends(map) }
+    }
 
     suspend fun getAvatars() =
             sendNetworkRequest { service.getAvatars() }
@@ -97,6 +90,23 @@ object GameRepository {
         return sendNetworkRequest { service.updateFriends(map) }
     }
 
+    suspend fun addCoins(uid: String): Result<ApiResponse> {
+        val map = mapOf("uid" to uid)
+        return sendNetworkRequest { service.addCoins(map) }
+    }
+
+    suspend fun joinWaitingRoom(uid: String) =
+            sendNetworkRequest { service.joinWaitingRoom(uid) }
+
+    suspend fun leaveWaitingRoom(uid: String) =
+            sendNetworkRequest { service.leaveWaitingRoom(uid) }
+
+    suspend fun getBattleQuestions(bid: String) =
+            sendNetworkRequest { service.getQuestions(bid) }
+
+    suspend fun updateBattleScore(bid: String, uid: String, score: Int) =
+            sendNetworkRequest { service.updateScore(bid, uid, score) }
+
     suspend fun createMultiPlayerRoom(uid: String): Result<RoomResponse> {
         val map = mapOf("uid" to uid)
         return sendNetworkRequest { service.createMultiPlayerRoom(map) }
@@ -108,11 +118,6 @@ object GameRepository {
                 "room_id" to roomId
         )
         return sendNetworkRequest { service.leaveMultiPlayerRoom(map) }
-    }
-
-    suspend fun getMyFriends(uid: String): Result<FriendsResponse> {
-        val map = mapOf("uid" to uid)
-        return sendNetworkRequest { service.getMyFriends(map) }
     }
 
     suspend fun sendMultiPlayerRoomInvite(uid: String, friendUid: String, roomId: String): Result<ApiResponse> {
