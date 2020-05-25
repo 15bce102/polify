@@ -18,6 +18,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
+import coil.api.load
 import com.andruid.magic.game.api.GameRepository
 import com.andruid.magic.game.model.data.Question
 import com.andruid.magic.game.model.response.Result
@@ -201,10 +202,14 @@ class QuestionsFragment : Fragment() {
 
     private fun initListeners() {
         binding.muteBtn.setOnSoundClickListener {
-            if (exoPlayer.volume == 0F)
+            if (exoPlayer.volume == 0F) {
+                binding.muteBtn.load(R.drawable.sound)
                 muteAudio(false)
-            else
+            }
+            else {
+                binding.muteBtn.load(R.drawable.no_sound)
                 muteAudio(true)
+            }
         }
     }
 
@@ -214,7 +219,7 @@ class QuestionsFragment : Fragment() {
                     .setUsage(C.USAGE_GAME)
                     .setContentType(C.CONTENT_TYPE_SONIFICATION)
                     .build()
-            setAudioAttributes(audioAttributes, true)
+            setAudioAttributes(audioAttributes, false)
             setHandleAudioBecomingNoisy(true)
             setHandleWakeLock(true)
 
