@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation_practice"
+    app:startDestination="@id/questionsFragment"
+    tools:ignore="UnusedNavigation">
+
+    <fragment
+        android:id="@+id/questionsFragment"
+        android:name="com.droidx.trivianest.ui.fragment.QuestionsFragment"
+        android:label="fragment_questions"
+        tools:layout="@layout/fragment_questions">
+        <argument
+            android:name="battle"
+            android:defaultValue="@null"
+            app:argType="com.droidx.trivianest.model.data.Battle"
+            app:nullable="true" />
+        <argument
+            android:name="start_time"
+            android:defaultValue="-1L"
+            app:argType="long" />
+        <argument
+            android:name="battleType"
+            android:defaultValue="test"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_questionsFragment_to_resultsFragment"
+            app:destination="@id/resultsFragment"
+            app:popUpTo="@id/questionsFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/resultsFragment"
+        android:name="com.droidx.trivianest.ui.fragment.ResultsFragment"
+        android:label="fragment_results"
+        tools:layout="@layout/fragment_results">
+        <argument
+            android:name="battle_id"
+            android:defaultValue="test"
+            app:argType="string" />
+        <argument
+            android:name="score"
+            android:defaultValue="0"
+            app:argType="integer" />
+    </fragment>
+</navigation>

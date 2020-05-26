@@ -1,0 +1,108 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="result"
+            type="com.droidx.trivianest.model.data.PlayerResult" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            app:cardBackgroundColor="#000000"
+            app:cardCornerRadius="20dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:alpha="0.9"
+                android:background="@drawable/app_background">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/img_profile"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="25dp"
+                    android:background="@color/cardview_dark_background"
+                    android:scaleType="centerCrop"
+                    app:imageUrl="@{result.player.avatar}"
+                    tools:ignore="PrivateResource"
+                    tools:src="@drawable/demo2" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/txt_profile_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_toEndOf="@id/img_profile"
+                    android:fontFamily="sans-serif-condensed-medium"
+                    android:gravity="start"
+                    android:text="@{result.player.userName}"
+                    android:textAlignment="textStart"
+                    android:textColor="#FFFFFF"
+                    android:textSize="32sp"
+                    android:textStyle="bold"
+                    tools:text="Darren Mistry" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/txt_profile_level"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="11dp"
+                    android:layout_marginTop="45dp"
+                    android:layout_toEndOf="@+id/img_profile"
+                    android:fontFamily="sans-serif-thin"
+                    android:text="@{result.newLevel}"
+                    android:textColor="#ffffff"
+                    android:textSize="15sp"
+                    tools:text="Newbie" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/txt_profile_score"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/txt_profile_level"
+                    android:layout_marginStart="11dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_toEndOf="@+id/img_profile"
+                    android:fontFamily="sans-serif-black"
+                    android:text="@{result.coinsUpdate}"
+                    android:textColor="#FFFF00"
+                    android:textSize="40sp"
+                    tools:text="50" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/txt_score"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/txt_profile_level"
+                    android:layout_marginStart="45dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_toEndOf="@+id/txt_profile_score"
+                    android:fontFamily="sans-serif-black"
+                    android:text="Score @{String.valueOf(result.player.score)}"
+                    android:textColor="#FFFF00"
+                    android:textSize="40sp"
+                    tools:text="Score 5" />
+            </RelativeLayout>
+        </com.google.android.material.card.MaterialCardView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -1,0 +1,56 @@
+{
+  "project_info": {
+    "project_number": "614876535479",
+    "firebase_url": "https://polify-c5c9c.firebaseio.com",
+    "project_id": "polify-c5c9c",
+    "storage_bucket": "polify-c5c9c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:614876535479:android:84ac020c0aeedcfd034b32",
+        "android_client_info": {
+          "package_name": "com.droidx.trivianest"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "614876535479-bh2rr3nju86j0g645e6rhpmkt15g6qjh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.droidx.trivianest",
+            "certificate_hash": "80b0e5e90dd3b2fd387c954586dcf566d7a8446a"
+          }
+        },
+        {
+          "client_id": "614876535479-300503ev8gruqjr2n682mfg8bpkp0rv5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.droidx.trivianest",
+            "certificate_hash": "c7e754825783151083766911d53c15e55c22ee9e"
+          }
+        },
+        {
+          "client_id": "614876535479-2ahge0fe94i471a3v87u3mikubgjrkoj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD-PvKz0yEX_8WZ_c4mDfTWXmeKAJgjZC4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "614876535479-2ahge0fe94i471a3v87u3mikubgjrkoj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

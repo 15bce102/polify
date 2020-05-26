@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="option"
+            type="com.droidx.trivianest.model.data.Option" />
+    </data>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/optionCard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        app:cardBackgroundColor="@color/darkBlu"
+        app:cardCornerRadius="16dp">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:fontFamily="serif-monospace"
+            android:textStyle="bold"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:text="@{option.opt}"
+            android:textColor="@color/lightBlu"
+            android:textSize="16sp"
+            tools:text="Data Modelling" />
+    </com.google.android.material.card.MaterialCardView>
+</layout>

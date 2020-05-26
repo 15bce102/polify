@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable
+            name="friend"
+            type="com.droidx.trivianest.model.data.Friend" />
+    </data>
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardview"
+        android:layout_width="90dp"
+        android:layout_height="90dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="5dp"
+        card_view:cardBackgroundColor="@color/cardview_dark_background"
+        tools:ignore="PrivateResource">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/avatar"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="12dp"
+            android:adjustViewBounds="true"
+            app:imageUrl="@{friend.avatar}"
+            tools:src="@drawable/demo2" />
+        <!--Text View over Card View-->
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/Name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="24dp"
+            android:ellipsize="marquee"
+            android:maxLength="5"
+            tools:text="Darren"
+            android:text="@{friend.userName}"
+            android:textAlignment="center"
+            android:textColor="#ffffff"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/status"
+            android:layout_width="5dp"
+            android:layout_height="5dp"
+            app:friendStatus="@{friend.status}"
+            android:layout_marginStart="18dp"
+            android:layout_marginTop="67dp"
+            android:adjustViewBounds="true"
+            tools:background="#f23b5f" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/sendRequest"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginStart="62dp"
+            android:layout_marginTop="58dp"
+            android:adjustViewBounds="true"
+            android:src="@drawable/plus" />
+    </com.google.android.material.card.MaterialCardView>
+</layout>
