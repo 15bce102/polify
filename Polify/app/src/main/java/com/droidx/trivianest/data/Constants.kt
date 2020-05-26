@@ -1,5 +1,7 @@
 package com.droidx.trivianest.data
 
+const val TEST_AD_ID = "ca-app-pub-3940256099942544/5224354917"
+
 const val ACTION_MATCH_FOUND = "com.example.polify.MATCH_FOUND"
 const val ACTION_MATCH_RESULTS = "com.example.polify.MATCH_RESULTS"
 const val ACTION_ROOM_INVITE = "com.example.polify.ROOM_INVITE"

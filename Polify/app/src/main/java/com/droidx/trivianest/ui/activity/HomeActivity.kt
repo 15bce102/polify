@@ -17,6 +17,7 @@ import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import androidx.activity.viewModels
+import androidx.annotation.NonNull
 import androidx.annotation.RequiresApi
 import androidx.core.content.getSystemService
 import androidx.databinding.DataBindingUtil
@@ -30,22 +31,24 @@ import com.droidx.trivianest.api.GameRepository
 import com.droidx.trivianest.data.ACTION_ROOM_INVITE
 import com.droidx.trivianest.data.EXTRA_PLAYERS
 import com.droidx.trivianest.data.EXTRA_ROOM
+import com.droidx.trivianest.data.TEST_AD_ID
 import com.droidx.trivianest.databinding.ActivityHomeBinding
 import com.droidx.trivianest.eventbus.AvatarEvent
 import com.droidx.trivianest.eventbus.BattleSelectEvent
 import com.droidx.trivianest.model.BattleSelect
 import com.droidx.trivianest.model.data.Player
 import com.droidx.trivianest.model.data.Room
+import com.droidx.trivianest.model.response.Result
 import com.droidx.trivianest.ui.adapter.SelectBattleAdapter
 import com.droidx.trivianest.ui.dialog.AvatarDialogFragment
 import com.droidx.trivianest.ui.viewmodel.BaseViewModelFactory
 import com.droidx.trivianest.ui.viewmodel.UserViewModel
 import com.droidx.trivianest.util.*
 import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.MobileAds
-import com.google.android.gms.ads.reward.RewardItem
-import com.google.android.gms.ads.reward.RewardedVideoAd
-import com.google.android.gms.ads.reward.RewardedVideoAdListener
+import com.google.android.gms.ads.rewarded.RewardItem
+import com.google.android.gms.ads.rewarded.RewardedAd
+import com.google.android.gms.ads.rewarded.RewardedAdCallback
+import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.auth.FirebaseAuth
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton
@@ -56,14 +59,52 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import splitties.resources.color
 import splitties.resources.drawable
-import com.droidx.trivianest.model.response.Result
 
-class HomeActivity : FullScreenActivity(), RewardedVideoAdListener {
+class HomeActivity : FullScreenActivity() {
     companion object {
         private val TAG = "${this::class.java.simpleName}Log"
     }
 
-    private lateinit var mRewardedVideoAd: RewardedVideoAd
+    private lateinit var rewardedAd: RewardedAd
+
+    private val adLoadCallback = object : RewardedAdLoadCallback() {
+        override fun onRewardedAdLoaded() {
+            Log.d(TAG, "onRewardedAdLoaded: load success")
+        }
+
+        override fun onRewardedAdFailedToLoad(errorCode: Int) {
+            Log.d(TAG, "onRewardedAdFailedToLoad: load failed: $errorCode")
+        }
+    }
+    private val adCallback = object : RewardedAdCallback() {
+        override fun onUserEarnedReward(@NonNull reward: RewardItem) {
+            Log.d(TAG, "onRewarded")
+            val user = mAuth.currentUser ?: return
+
+            lifecycleScope.launch {
+                val result = GameRepository.addCoins(user.uid)
+                if (result.status == Result.Status.SUCCESS) {
+                    if (result.data?.success == true) {
+                        incAdCount()
+                        infoToast("50 Coins added")
+                        userViewModel.refresh()
+
+                    } else
+                        errorToast("Could not add coins")
+                } else
+                    errorToast("Could not add coins")
+            }
+        }
+
+        override fun onRewardedAdFailedToShow(errorCode: Int) {
+            errorToast("Could not show ad")
+        }
+
+        override fun onRewardedAdOpened() {}
+        override fun onRewardedAdClosed() {
+            rewardedAd = createAndLoadRewardedAd()
+        }
+    }
 
     private var dialogShowing = false
     private var retry = false
@@ -95,10 +136,7 @@ class HomeActivity : FullScreenActivity(), RewardedVideoAdListener {
             lifecycleOwner = this@HomeActivity
         }
 
-        MobileAds.initialize(this, "ca-app-pub-3940256099942544~3347511713")
-        mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(this)
-        mRewardedVideoAd.rewardedVideoAdListener = this
-        loadRewardedVideoAd()
+        rewardedAd = createAndLoadRewardedAd()
 
         userViewModel.user.observe(this, Observer { result ->
             when (result.status) {
@@ -129,11 +167,20 @@ class HomeActivity : FullScreenActivity(), RewardedVideoAdListener {
             initFloatingMenu()
 
         scheduleFriendsUpdate()
+        scheduleAdsCountClear()
 
         binding.imgPlus.setOnSoundClickListener {
-            if (mRewardedVideoAd.isLoaded) {
-                mRewardedVideoAd.show()
+            if (!canWatchMoreAds()) {
+                errorToast("You have watched all ads for today!")
+                return@setOnSoundClickListener
             }
+
+            if (!rewardedAd.isLoaded) {
+                errorToast("Ad loading...please wait")
+                return@setOnSoundClickListener
+            }
+
+            rewardedAd.show(this, adCallback)
         }
 
         LocalBroadcastManager.getInstance(this)
@@ -354,59 +401,10 @@ class HomeActivity : FullScreenActivity(), RewardedVideoAdListener {
         }
     }
 
-    private fun loadRewardedVideoAd() {
-        mRewardedVideoAd.loadAd("ca-app-pub-3940256099942544/5224354917", AdRequest.Builder().build())
-    }
+    private fun createAndLoadRewardedAd(): RewardedAd {
+        val rewardedAd = RewardedAd(this, TEST_AD_ID)
+        rewardedAd.loadAd(AdRequest.Builder().build(), adLoadCallback)
 
-
-    override fun onRewardedVideoAdClosed() {
-        Log.d(TAG, "OnRewardedVideoAdClosed")
-        loadRewardedVideoAd()
-    }
-
-    override fun onRewardedVideoAdLeftApplication() {
-        Log.d(TAG, "onRewardedVideoAdLeftApplication")
-    }
-
-    override fun onRewardedVideoAdLoaded() {
-        Log.d(TAG, "onRewardedVideoAdLoaded")
-    }
-
-    override fun onRewardedVideoAdOpened() {
-
-        Log.d(TAG, "onRewardedVideoAdOpened")
-    }
-
-    override fun onRewardedVideoCompleted() {
-
-        Log.d(TAG, "onRewardedVideoCompleted")
-    }
-
-    override fun onRewarded(p0: RewardItem?) {
-
-        Log.d(TAG, "onRewarded")
-        val user = mAuth.currentUser ?: return
-
-        lifecycleScope.launch {
-            val result = GameRepository.addCoins(user.uid)
-            if (result.status == Result.Status.SUCCESS) {
-                if (result.data?.success == true) {
-                    infoToast("100 Coins added")
-                    userViewModel.refresh()
-
-                } else
-                    errorToast("Could not add coins")
-            } else
-                errorToast("Could not add coins")
-        }
-    }
-
-    override fun onRewardedVideoStarted() {
-
-        Log.d(TAG, "onRewardedVideoStarted")
-    }
-
-    override fun onRewardedVideoAdFailedToLoad(p0: Int) {
-        Log.d(TAG, "onRewardedVideoAdFailedToLoad")
+        return rewardedAd
     }
 }
