@@ -18,6 +18,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
+import coil.api.load
 import com.andruid.magic.game.api.GameRepository
 import com.andruid.magic.game.model.data.Question
 import com.andruid.magic.game.model.response.Result
@@ -32,6 +33,7 @@ import com.example.polify.ui.adapter.QuestionAdapter
 import com.example.polify.ui.viewholder.OptionViewHolder
 import com.example.polify.ui.viewmodel.BaseViewModelFactory
 import com.example.polify.ui.viewmodel.QuestionViewModel
+import com.example.polify.util.setOnSoundClickListener
 import com.example.polify.util.showConfirmationDialog
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.SimpleExoPlayer
@@ -64,6 +66,7 @@ class QuestionsFragment : Fragment() {
     private val battle by lazy { args.battle }
     private val battleType by lazy { args.battleType }
     private val startTime by lazy { args.startTime }
+    private var currentVolume = 0F
 
     private lateinit var binding: FragmentQuestionsBinding
 
@@ -125,6 +128,7 @@ class QuestionsFragment : Fragment() {
         binding = FragmentQuestionsBinding.inflate(inflater, container, false)
 
         initViewPager()
+        initListeners()
         initPlayers()
 
         questionsViewModel.questions.observe(viewLifecycleOwner, Observer { result ->
@@ -196,13 +200,26 @@ class QuestionsFragment : Fragment() {
         optionsEnabled = false
     }
 
+    private fun initListeners() {
+        binding.muteBtn.setOnSoundClickListener {
+            if (exoPlayer.volume == 0F) {
+                binding.muteBtn.load(R.drawable.sound)
+                muteAudio(false)
+            }
+            else {
+                binding.muteBtn.load(R.drawable.no_sound)
+                muteAudio(true)
+            }
+        }
+    }
+
     private fun initExoPlayer() {
         exoPlayer.apply {
             val audioAttributes = AudioAttributes.Builder()
                     .setUsage(C.USAGE_GAME)
-                    .setContentType(C.CONTENT_TYPE_MUSIC)
+                    .setContentType(C.CONTENT_TYPE_SONIFICATION)
                     .build()
-            setAudioAttributes(audioAttributes, true)
+            setAudioAttributes(audioAttributes, false)
             setHandleAudioBecomingNoisy(true)
             setHandleWakeLock(true)
 
@@ -356,5 +373,14 @@ class QuestionsFragment : Fragment() {
         } catch (e: IllegalStateException) {
             e.printStackTrace()
         }
+    }
+
+    private fun muteAudio(mute: Boolean = false) {
+        if (mute) {
+            currentVolume = exoPlayer.volume
+            exoPlayer.volume = 0F
+        }
+        else
+            exoPlayer.volume = currentVolume
     }
 }
