@@ -7,6 +7,8 @@
         <variable
             name="result"
             type="com.andruid.magic.game.model.data.PlayerResult" />
+
+
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -87,7 +89,21 @@
                     android:text="@{result.coinsUpdate}"
                     android:textColor="#FFFF00"
                     android:textSize="40sp"
-                    tools:text="+1000" />
+                    tools:text="50" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/txt_score"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/txt_profile_level"
+                    android:layout_marginStart="45dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_toEndOf="@+id/txt_profile_score"
+                    android:fontFamily="sans-serif-black"
+                    android:text="Score @{String.valueOf(result.player.score)}"
+                    android:textColor="#FFFF00"
+                    android:textSize="40sp"
+                    tools:text="Score 5" />
             </RelativeLayout>
         </com.google.android.material.card.MaterialCardView>
     </androidx.constraintlayout.widget.ConstraintLayout>

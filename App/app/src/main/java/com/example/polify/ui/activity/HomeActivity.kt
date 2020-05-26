@@ -42,6 +42,11 @@ import com.example.polify.ui.dialog.AvatarDialogFragment
 import com.example.polify.ui.viewmodel.BaseViewModelFactory
 import com.example.polify.ui.viewmodel.UserViewModel
 import com.example.polify.util.*
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.reward.RewardItem
+import com.google.android.gms.ads.reward.RewardedVideoAd
+import com.google.android.gms.ads.reward.RewardedVideoAdListener
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.auth.FirebaseAuth
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton
@@ -53,10 +58,12 @@ import org.greenrobot.eventbus.ThreadMode
 import splitties.resources.color
 import splitties.resources.drawable
 
-class HomeActivity : FullScreenActivity() {
+class HomeActivity : FullScreenActivity(), RewardedVideoAdListener {
     companion object {
         private val TAG = "${this::class.java.simpleName}Log"
     }
+
+    private lateinit var mRewardedVideoAd: RewardedVideoAd
 
     private var dialogShowing = false
     private var retry = false
@@ -84,9 +91,16 @@ class HomeActivity : FullScreenActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+
+
         binding = DataBindingUtil.setContentView<ActivityHomeBinding>(this, R.layout.activity_home).apply {
             lifecycleOwner = this@HomeActivity
         }
+
+        MobileAds.initialize(this,"ca-app-pub-3940256099942544~3347511713")
+        mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(this)
+        mRewardedVideoAd.rewardedVideoAdListener = this
+        loadRewardedVideoAd()
 
         userViewModel.user.observe(this, Observer { result ->
             when (result.status) {
@@ -119,20 +133,12 @@ class HomeActivity : FullScreenActivity() {
         scheduleFriendsUpdate()
 
         binding.imgPlus.setOnSoundClickListener {
-            //TODO: show ad for coins
-            val user = mAuth.currentUser ?: return@setOnSoundClickListener
 
-            lifecycleScope.launch {
-                val result = GameRepository.addCoins(user.uid)
-                if (result.status == Result.Status.SUCCESS) {
-                    if (result.data?.success == true) {
-                        infoToast("Coins added")
-                        userViewModel.refresh()
-                    } else
-                        errorToast("Could not add coins")
-                } else
-                    errorToast("Could not add coins")
+            if(mRewardedVideoAd.isLoaded){
+                mRewardedVideoAd.show()
             }
+
+
         }
 
         LocalBroadcastManager.getInstance(this)
@@ -351,5 +357,62 @@ class HomeActivity : FullScreenActivity() {
             } else
                 infoToast(getString(R.string.decline_invite))
         }
+    }
+
+    private fun loadRewardedVideoAd(){
+        mRewardedVideoAd.loadAd("ca-app-pub-3940256099942544/5224354917",AdRequest.Builder().build())
+    }
+
+
+
+    override fun onRewardedVideoAdClosed() {
+        Log.d(TAG,"OnRewardedVideoAdClosed")
+        loadRewardedVideoAd()
+    }
+
+    override fun onRewardedVideoAdLeftApplication() {
+        Log.d(TAG,"onRewardedVideoAdLeftApplication")
+    }
+
+    override fun onRewardedVideoAdLoaded() {
+        Log.d(TAG,"onRewardedVideoAdLoaded")
+    }
+
+    override fun onRewardedVideoAdOpened() {
+
+        Log.d(TAG,"onRewardedVideoAdOpened")
+    }
+
+    override fun onRewardedVideoCompleted() {
+
+        Log.d(TAG,"onRewardedVideoCompleted")
+    }
+
+    override fun onRewarded(p0: RewardItem?) {
+
+        Log.d(TAG,"onRewarded")
+        val user = mAuth.currentUser ?: return
+
+        lifecycleScope.launch {
+            val result = GameRepository.addCoins(user.uid)
+            if (result.status == Result.Status.SUCCESS) {
+                if (result.data?.success == true) {
+                      infoToast("100 Coins added")
+                        userViewModel.refresh()
+
+                } else
+                    errorToast("Could not add coins")
+            } else
+                errorToast("Could not add coins")
+        }
+    }
+
+    override fun onRewardedVideoStarted() {
+
+        Log.d(TAG,"onRewardedVideoStarted")
+    }
+
+    override fun onRewardedVideoAdFailedToLoad(p0: Int) {
+        Log.d(TAG,"onRewardedVideoAdFailedToLoad")
     }
 }

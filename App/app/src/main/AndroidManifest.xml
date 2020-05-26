@@ -74,6 +74,10 @@
             tools:ignore="LockedOrientationActivity" />
         <activity android:name=".ui.activity.OpenSourceLicensesActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
+
+        <meta-data
+            android:name="com.google.android.gms.ads.AD_MANAGER_APP"
+            android:value="true"/>
     </application>
 
 </manifest>
