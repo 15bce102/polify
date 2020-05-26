@@ -89,4 +89,9 @@ dependencies {
     implementation 'me.grantland:autofittextview:0.2.+'
     implementation project(path: ':game')
     implementation 'com.google.firebase:firebase-auth:16.0.5'
+
+
+    implementation 'com.google.android.gms:play-services-ads:19.1.0'
+
+
 }
