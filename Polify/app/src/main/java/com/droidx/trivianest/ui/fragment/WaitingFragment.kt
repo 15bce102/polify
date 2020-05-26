@@ -9,11 +9,13 @@ import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.droidx.trivianest.api.GameRepository
+import com.droidx.trivianest.data.WAIT_TIME_LIMIT_SEC
 import com.droidx.trivianest.databinding.FragmentWaitingBinding
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 import java.util.*
 import com.droidx.trivianest.model.response.Result
+import com.droidx.trivianest.util.errorToast
 
 class WaitingFragment : Fragment() {
     companion object {
@@ -62,6 +64,11 @@ class WaitingFragment : Fragment() {
 
                 requireActivity().runOnUiThread {
                     binding.timerTV.text = seconds.toString()
+
+                    if (seconds == WAIT_TIME_LIMIT_SEC) {
+                        errorToast("No match found for battle")
+                        requireActivity().finish()
+                    }
                 }
             }
         }, 1000, 1000)
