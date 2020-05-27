@@ -312,10 +312,6 @@ class QuestionsFragment : Fragment() {
 
         selectedOptPos = -1
 
-        lifecycleScope.launch {
-            delay(2500)
-        }
-
         if (pos == questionsAdapter.itemCount - 1)
             finishGame()
         else
@@ -344,9 +340,13 @@ class QuestionsFragment : Fragment() {
                 )
                 addAnimatorListener(object : Animator.AnimatorListener {
                     override fun onAnimationEnd(animation: Animator?) {
-                        visibility = View.GONE
-                        next()
-                        removeAnimatorListener(this)
+                        val listener = this
+                        lifecycleScope.launch {
+                            delay(2000)
+                            visibility = View.GONE
+                            next()
+                            removeAnimatorListener(listener)
+                        }
                     }
 
                     override fun onAnimationRepeat(animation: Animator?) {}
