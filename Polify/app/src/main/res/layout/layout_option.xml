@@ -18,13 +18,15 @@
         app:cardBackgroundColor="@color/darkBlu"
         app:cardCornerRadius="16dp">
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <me.grantland.widget.AutofitTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:fontFamily="serif-monospace"
             android:textStyle="bold"
             android:paddingStart="16dp"
+            android:maxLines="8"
+            app:minTextSize="12sp"
             android:paddingEnd="16dp"
             android:text="@{option.opt}"
             android:textColor="@color/lightBlu"
