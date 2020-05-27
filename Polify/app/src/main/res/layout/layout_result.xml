@@ -95,12 +95,12 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/txt_profile_level"
                     android:layout_marginStart="45dp"
-                    android:layout_marginTop="15dp"
+                    android:layout_marginTop="30dp"
                     android:layout_toEndOf="@+id/txt_profile_score"
                     android:fontFamily="sans-serif-black"
-                    android:text="Score @{String.valueOf(result.player.score)}"
+                    android:text="@{@string/score(result.player.score)}"
                     android:textColor="#FFFF00"
-                    android:textSize="40sp"
+                    android:textSize="20sp"
                     tools:text="Score 5" />
             </RelativeLayout>
         </com.google.android.material.card.MaterialCardView>

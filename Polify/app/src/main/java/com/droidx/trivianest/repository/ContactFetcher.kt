@@ -3,6 +3,7 @@ package com.droidx.trivianest.repository
 import android.app.Application
 import android.content.Context
 import android.provider.ContactsContract
+import android.util.Log
 import androidx.core.content.ContentResolverCompat
 import com.droidx.trivianest.model.Contact
 import com.google.firebase.auth.FirebaseAuth
@@ -85,9 +86,13 @@ object ContactFetcher {
                                     type,
                                     customLabel
                             )
-                    val num = number.replace("\\s".toRegex(),"")
+                    var num = number.replace("\\s".toRegex(),"")
                     val authNumber = mAuth.currentUser!!.phoneNumber!!.substring(3,mAuth.currentUser!!.phoneNumber!!.length)
-
+                    if(num.substring(0,3)=="+91"){
+                        num = num.substring(3,num.length)
+                    }
+                    
+                    Log.d("hello","$num $authNumber")
                     if(num != authNumber){
                         contact.addNumber(number, phoneType.toString())
                     }

@@ -16,7 +16,7 @@
         android:supportsRtl="true"
         android:testOnly="false"
         android:largeHeap="true"
-        android:hardwareAccelerated="false"
+
         android:theme="@style/AppTheme.FullScreen"
         android:usesCleartextTraffic="true"
         tools:ignore="HardcodedDebugMode">

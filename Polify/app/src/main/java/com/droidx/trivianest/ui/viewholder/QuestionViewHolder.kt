@@ -1,5 +1,6 @@
 package com.droidx.trivianest.ui.viewholder
 
+import android.text.method.ScrollingMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,6 +21,7 @@ class QuestionViewHolder(private val binding: LayoutQuestionBinding) : RecyclerV
             val binding = DataBindingUtil.inflate<LayoutQuestionBinding>(
                     inflater, R.layout.layout_question, parent, false
             )
+            binding.questionProb.movementMethod = ScrollingMovementMethod()
             return QuestionViewHolder(binding)
         }
     }
