@@ -299,12 +299,17 @@ class HomeActivity : FullScreenActivity() {
         }
 
         rlIcon2.setOnSoundClickListener {
-            infoToast(getString(R.string.logout_success))
+            lifecycleScope.launch {
+                val shouldLogout = showConfirmationDialog(R.string.title_logout, R.string.desc_logout)
+                if (shouldLogout) {
+                    mAuth.signOut()
 
-            mAuth.signOut()
+                    infoToast(getString(R.string.logout_success))
 
-            startActivity(Intent(this, LoginActivity::class.java))
-            finish()
+                    startActivity(Intent(this@HomeActivity, LoginActivity::class.java))
+                    finish()
+                }
+            }
         }
 
         rlIcon3.setOnSoundClickListener {

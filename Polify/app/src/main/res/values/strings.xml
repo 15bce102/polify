@@ -56,4 +56,6 @@
     <string name="enter_valid_code">Please enter the valid code</string>
     <string name="room_leave_success">Room left successfully</string>
     <string name="sent_invite">Invite sent</string>
+    <string name="title_logout">Log out</string>
+    <string name="desc_logout">Are you sure you want to log out?</string>
 </resources>
