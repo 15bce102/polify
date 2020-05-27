@@ -1,10 +1,10 @@
 package com.droidx.trivianest.ui.fragment
 
+import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.opengl.Visibility
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -23,16 +23,13 @@ import com.droidx.trivianest.data.EXTRA_BATTLE_ID
 import com.droidx.trivianest.data.EXTRA_PLAYERS
 import com.droidx.trivianest.databinding.FragmentResultsBinding
 import com.droidx.trivianest.model.data.PlayerResult
+import com.droidx.trivianest.model.response.Result
+import com.droidx.trivianest.ui.activity.HomeActivity
 import com.droidx.trivianest.ui.adapter.ResultsAdapter
+import com.droidx.trivianest.util.setOnSoundClickListener
 import com.google.firebase.auth.FirebaseAuth
 import com.muddzdev.styleabletoast.StyleableToast
 import kotlinx.coroutines.launch
-import splitties.toast.longToast
-import com.droidx.trivianest.model.response.Result
-import com.droidx.trivianest.ui.activity.HomeActivity
-import com.droidx.trivianest.util.infoToast
-import com.droidx.trivianest.util.setOnSoundClickListener
-import kotlinx.android.synthetic.main.fragment_results.*
 
 class ResultsFragment : Fragment() {
     companion object {
@@ -68,9 +65,8 @@ class ResultsFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if(battleId == "test"){
+        if (battleId == "test")
             return
-        }
 
         LocalBroadcastManager.getInstance(requireContext())
                 .registerReceiver(resultsReceiver, IntentFilter(ACTION_MATCH_RESULTS))
@@ -86,21 +82,23 @@ class ResultsFragment : Fragment() {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentResultsBinding.inflate(inflater, container, false)
 
         if (battleId == "test") {
-               binding.textView.visibility = View.VISIBLE
-               binding.textScore.visibility = View.VISIBLE
-               binding.textScore.text = "Your Score : $score"
-         //       infoToast("Your score $score")
+            binding.textView.visibility = View.VISIBLE
+            binding.textScore.visibility = View.VISIBLE
+            binding.textScore.text = "Your Score : $score"
 
-                binding.textView.setOnSoundClickListener {
-                    val intent = Intent(context,HomeActivity::class.java)
-                    startActivity(intent)
-
-                }
+            binding.textView.setOnSoundClickListener {
+                val intent = Intent(context, HomeActivity::class.java)
+                startActivity(intent)
+            }
+        } else {
+            binding.loadingView.visibility = View.VISIBLE
         }
+
         initRecyclerView()
 
         return binding.root
@@ -120,6 +118,8 @@ class ResultsFragment : Fragment() {
 
     private fun showResults(results: List<PlayerResult>) {
         resultsAdapter.submitList(results) {
+            binding.loadingView.visibility = View.GONE
+
             val user = mAuth.currentUser ?: return@submitList
 
             val player = results.find { playerResult -> playerResult.player.uid == user.uid }!!
