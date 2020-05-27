@@ -48,6 +48,7 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import com.droidx.trivianest.model.response.Result
 import com.droidx.trivianest.util.setOnSoundClickListener
+import kotlinx.coroutines.delay
 
 class QuestionsFragment : Fragment() {
     companion object {
@@ -310,6 +311,10 @@ class QuestionsFragment : Fragment() {
             score++
 
         selectedOptPos = -1
+
+        lifecycleScope.launch {
+            delay(2500)
+        }
 
         if (pos == questionsAdapter.itemCount - 1)
             finishGame()
