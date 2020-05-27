@@ -398,6 +398,7 @@ class HomeActivity : FullScreenActivity() {
                             startActivity(intent)
                         } else
                             errorToast(data.message ?: "")
+
                     }
                 } else
                     errorToast(result.message ?: "")
@@ -411,5 +412,10 @@ class HomeActivity : FullScreenActivity() {
         rewardedAd.loadAd(AdRequest.Builder().build(), adLoadCallback)
 
         return rewardedAd
+    }
+
+    override fun onResume() {
+        super.onResume()
+        userViewModel.refresh()
     }
 }

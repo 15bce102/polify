@@ -58,4 +58,6 @@
     <string name="sent_invite">Invite sent</string>
     <string name="title_logout">Log out</string>
     <string name="desc_logout">Are you sure you want to log out?</string>
+    <string name="multiplayer_request">*You will receive multiplayer mode requests from your friends on this screen</string>
+    <string name="room_request">*Go back to home screen for accepting your friend request or else send request from here</string>
 </resources>

@@ -17,12 +17,12 @@ class UserViewModel(private val uid: String) : ViewModel() {
         get() = _user
 
     init {
+        _user.postValue(Result.loading(null))
         loadProfile()
     }
 
     private fun loadProfile() {
         viewModelScope.launch {
-            _user.postValue(Result.loading(null))
             val response = GameRepository.userProfile(uid)
             _user.postValue(response)
         }
