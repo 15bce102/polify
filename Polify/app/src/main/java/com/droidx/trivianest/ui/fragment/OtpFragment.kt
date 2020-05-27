@@ -99,7 +99,7 @@ class OtpFragment : Fragment() {
             mAuth.signInWithCredential(credential)
                     .addOnCompleteListener { task ->
                         if (!task.isSuccessful) {
-                            toast(task.exception!!.message.toString())
+                         //   toast(task.exception!!.message.toString())
                             return@addOnCompleteListener
                         }
 

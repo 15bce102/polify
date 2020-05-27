@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.opengl.Visibility
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -28,6 +29,10 @@ import com.muddzdev.styleabletoast.StyleableToast
 import kotlinx.coroutines.launch
 import splitties.toast.longToast
 import com.droidx.trivianest.model.response.Result
+import com.droidx.trivianest.ui.activity.HomeActivity
+import com.droidx.trivianest.util.infoToast
+import com.droidx.trivianest.util.setOnSoundClickListener
+import kotlinx.android.synthetic.main.fragment_results.*
 
 class ResultsFragment : Fragment() {
     companion object {
@@ -63,8 +68,7 @@ class ResultsFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (battleId == "test") {
-            longToast("Your score = $score")
+        if(battleId == "test"){
             return
         }
 
@@ -85,6 +89,18 @@ class ResultsFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentResultsBinding.inflate(inflater, container, false)
 
+        if (battleId == "test") {
+               binding.textView.visibility = View.VISIBLE
+               binding.textScore.visibility = View.VISIBLE
+               binding.textScore.text = "Your Score : $score"
+         //       infoToast("Your score $score")
+
+                binding.textView.setOnSoundClickListener {
+                    val intent = Intent(context,HomeActivity::class.java)
+                    startActivity(intent)
+
+                }
+        }
         initRecyclerView()
 
         return binding.root
