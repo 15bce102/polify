@@ -93,6 +93,7 @@ class ResultsFragment : Fragment() {
 
             binding.textView.setOnSoundClickListener {
                 val intent = Intent(context, HomeActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                 startActivity(intent)
             }
         } else {
