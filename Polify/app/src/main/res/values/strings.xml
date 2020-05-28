@@ -62,4 +62,5 @@
     <string name="multiplayer_request">*You will receive multiplayer mode requests from your friends on this screen</string>
     <string name="room_request">*Go back to home screen for accepting your friend request or else send request from here</string>
     <string name="questions_wait_msg">Your network might be slow Fetching questions....</string>
+    <string name="error_invalid_user_name">Invalid user name</string>
 </resources>

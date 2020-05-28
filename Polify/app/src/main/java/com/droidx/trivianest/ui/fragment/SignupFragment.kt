@@ -66,13 +66,17 @@ class SignupFragment : Fragment() {
                 val number = countryCodePicker.fullNumberWithPlus
                 val userName = userNameET.text.toString().trim()
 
-                if (requireContext().isValidPhoneNumber(number, countryCodePicker.selectedCountryCode)
-                        && isValidUserName(userName))
+                val isPhone = requireContext().isValidPhoneNumber(number, countryCodePicker.selectedCountryCode)
+                val isUserName = isValidUserName(userName)
+
+                if (isPhone && isUserName)
                     findNavController().navigate(
                             SignupFragmentDirections.actionSignupFragmentToOtpFragment(
                                     countryCodePicker.fullNumberWithPlus, userName, avatarUrl))
-                else
+                else if (!isPhone)
                     errorToast(getString(R.string.error_invalid_number))
+                else if (!isUserName)
+                    errorToast(getString(R.string.error_invalid_user_name))
             }
 
             textLogin.setOnSoundClickListener {
