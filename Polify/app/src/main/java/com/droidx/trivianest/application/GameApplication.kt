@@ -1,7 +1,7 @@
 package com.droidx.trivianest.application
 
 import android.app.Application
-import com.droidx.trivianest.api.GameRepository
+import com.droidx.gameapi.api.GameRepository
 import com.droidx.trivianest.repository.ContactFetcher
 
 @Suppress("unused")

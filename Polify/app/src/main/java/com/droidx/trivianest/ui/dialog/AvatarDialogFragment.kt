@@ -8,7 +8,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DefaultItemAnimator
-import com.droidx.trivianest.server.RetrofitClient.BASE_URL
+import com.droidx.gameapi.server.RetrofitClient.BASE_URL
 import com.droidx.trivianest.databinding.DialogAvatarBinding
 import com.droidx.trivianest.eventbus.AvatarEvent
 import com.droidx.trivianest.ui.adapter.AvatarAdapter
@@ -16,7 +16,7 @@ import com.droidx.trivianest.ui.viewmodel.AvatarViewModel
 import com.droidx.trivianest.ui.viewmodel.BaseViewModelFactory
 import com.droidx.trivianest.util.RecyclerTouchListener
 import org.greenrobot.eventbus.EventBus
-import com.droidx.trivianest.model.response.Result
+import com.droidx.gameapi.model.response.Result
 
 class AvatarDialogFragment : DialogFragment() {
     companion object {

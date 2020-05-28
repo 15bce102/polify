@@ -1,4 +1,4 @@
-package com.droidx.trivianest.util
+package com.droidx.gameapi.util
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -6,7 +6,7 @@ import retrofit2.HttpException
 import retrofit2.Response
 import java.io.IOException
 import java.net.ConnectException
-import com.droidx.trivianest.model.response.Result
+import com.droidx.gameapi.model.response.Result
 
 suspend fun <T> sendNetworkRequest(requestFunc: suspend () -> Response<T>): Result<T> {
     return withContext(Dispatchers.IO) {

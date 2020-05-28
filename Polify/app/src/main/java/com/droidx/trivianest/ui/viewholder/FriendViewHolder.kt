@@ -9,10 +9,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.droidx.trivianest.R
 import com.droidx.trivianest.databinding.LayoutFriendBinding
 import com.droidx.trivianest.eventbus.FriendInviteEvent
-import com.droidx.trivianest.model.data.Friend
+import com.droidx.gameapi.model.data.Friend
 import com.droidx.trivianest.util.setOnSoundClickListener
 import org.greenrobot.eventbus.EventBus
-
 
 class FriendViewHolder(private val binding: LayoutFriendBinding) : RecyclerView.ViewHolder(binding.root) {
     companion object {

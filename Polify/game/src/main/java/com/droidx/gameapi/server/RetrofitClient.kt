@@ -1,4 +1,4 @@
-package com.droidx.trivianest.server
+package com.droidx.gameapi.server
 
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit

@@ -3,9 +3,9 @@ package com.droidx.trivianest.service
 import android.content.Intent
 import android.util.Log
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.droidx.trivianest.api.GameRepository
+import com.droidx.gameapi.api.GameRepository
 import com.droidx.trivianest.data.*
-import com.droidx.trivianest.model.data.*
+import com.droidx.gameapi.model.data.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
@@ -16,7 +16,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.launch
 import java.util.concurrent.Executors
-import com.droidx.trivianest.model.response.Result
+import com.droidx.gameapi.model.response.Result
 
 class CloudMessagingService : FirebaseMessagingService(), CoroutineScope {
     companion object {

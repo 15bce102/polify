@@ -19,12 +19,12 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.droidx.trivianest.R
-import com.droidx.trivianest.api.GameRepository
+import com.droidx.gameapi.api.GameRepository
 import com.droidx.trivianest.data.*
 import com.droidx.trivianest.databinding.FragmentRoomBinding
 import com.droidx.trivianest.eventbus.FriendInviteEvent
-import com.droidx.trivianest.model.data.Battle
-import com.droidx.trivianest.model.data.Room
+import com.droidx.gameapi.model.data.Battle
+import com.droidx.gameapi.model.data.Room
 import com.droidx.trivianest.ui.adapter.FriendAdapter
 import com.droidx.trivianest.ui.viewholder.FriendViewHolder
 import com.droidx.trivianest.ui.viewmodel.BaseViewModelFactory
@@ -37,7 +37,7 @@ import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import com.droidx.trivianest.model.response.Result
+import com.droidx.gameapi.model.response.Result
 import com.droidx.trivianest.util.setOnSoundClickListener
 
 class RoomFragment : Fragment() {

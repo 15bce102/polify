@@ -7,7 +7,7 @@
 
         <variable
             name="user"
-            type="com.droidx.trivianest.model.data.User" />
+            type="com.droidx.gameapi.model.data.User" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

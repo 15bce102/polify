@@ -1,12 +1,13 @@
-package com.droidx.trivianest.api
+package com.droidx.gameapi.api
 
 import android.app.Application
 import android.content.Context
-import com.droidx.trivianest.model.data.Question
-import com.droidx.trivianest.model.response.*
-import com.droidx.trivianest.server.RetrofitClient
-import com.droidx.trivianest.server.RetrofitService
-import com.droidx.trivianest.util.sendNetworkRequest
+import com.droidx.gameapi.model.response.ApiResponse
+import com.droidx.gameapi.server.RetrofitClient
+import com.droidx.gameapi.server.RetrofitService
+import com.droidx.gameapi.util.sendNetworkRequest
+import com.droidx.gameapi.model.data.Question
+import com.droidx.gameapi.model.response.*
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.Dispatchers

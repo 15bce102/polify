@@ -7,7 +7,7 @@
 
         <variable
             name="option"
-            type="com.droidx.trivianest.model.data.Option" />
+            type="com.droidx.gameapi.model.data.Option" />
     </data>
 
     <com.google.android.material.card.MaterialCardView

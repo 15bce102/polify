@@ -1,10 +1,10 @@
 package com.droidx.trivianest.ui.viewmodel
 
 import androidx.lifecycle.*
-import com.droidx.trivianest.api.GameRepository
-import com.droidx.trivianest.model.response.FriendsResponse
+import com.droidx.gameapi.api.GameRepository
+import com.droidx.gameapi.model.response.FriendsResponse
 import kotlinx.coroutines.*
-import com.droidx.trivianest.model.response.Result
+import com.droidx.gameapi.model.response.Result
 
 class FriendViewModel(uid: String) : ViewModel() {
     companion object {

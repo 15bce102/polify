@@ -6,7 +6,7 @@
 
         <variable
             name="result"
-            type="com.droidx.trivianest.model.data.PlayerResult" />
+            type="com.droidx.gameapi.model.data.PlayerResult" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

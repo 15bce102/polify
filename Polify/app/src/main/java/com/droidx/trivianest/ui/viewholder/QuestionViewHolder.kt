@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.droidx.trivianest.R
 import com.droidx.trivianest.databinding.LayoutQuestionBinding
 import com.droidx.trivianest.eventbus.OptionEvent
-import com.droidx.trivianest.model.data.Question
+import com.droidx.gameapi.model.data.Question
 import com.droidx.trivianest.ui.adapter.OptionsAdapter
 import com.droidx.trivianest.util.RecyclerTouchListener
 import org.greenrobot.eventbus.EventBus

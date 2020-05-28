@@ -1,6 +1,6 @@
-package com.droidx.trivianest.model.response
+package com.droidx.gameapi.model.response
 
-import com.droidx.trivianest.model.data.User
+import com.droidx.gameapi.model.data.User
 
 data class UserResponse(
         val success: Boolean,

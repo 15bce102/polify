@@ -5,7 +5,7 @@ import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import com.droidx.trivianest.R
-import com.droidx.trivianest.model.data.Room
+import com.droidx.gameapi.model.data.Room
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine

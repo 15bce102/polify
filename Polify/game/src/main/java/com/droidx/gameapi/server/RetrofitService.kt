@@ -1,6 +1,6 @@
-package com.droidx.trivianest.server
+package com.droidx.gameapi.server
 
-import com.droidx.trivianest.model.response.*
+import com.droidx.gameapi.model.response.*
 import retrofit2.Response
 import retrofit2.http.*
 

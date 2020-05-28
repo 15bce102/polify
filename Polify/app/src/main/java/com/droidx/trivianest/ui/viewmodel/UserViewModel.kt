@@ -4,11 +4,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.droidx.trivianest.api.GameRepository
+import com.droidx.gameapi.api.GameRepository
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
-import com.droidx.trivianest.model.response.Result
-import com.droidx.trivianest.model.response.UserResponse
+import com.droidx.gameapi.model.response.Result
+import com.droidx.gameapi.model.response.UserResponse
 
 class UserViewModel(private val uid: String) : ViewModel() {
     private val _user = MutableLiveData<Result<UserResponse>>()

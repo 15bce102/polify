@@ -6,7 +6,7 @@
     <data>
         <variable
             name="friend"
-            type="com.droidx.trivianest.model.data.Friend" />
+            type="com.droidx.gameapi.model.data.Friend" />
     </data>
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/cardview"

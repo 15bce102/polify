@@ -7,8 +7,8 @@ import android.util.Log
 import androidx.core.content.ContextCompat
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.droidx.trivianest.api.GameRepository
-import com.droidx.trivianest.model.response.Result.Status
+import com.droidx.gameapi.api.GameRepository
+import com.droidx.gameapi.model.response.Result.Status
 import com.droidx.trivianest.repository.ContactFetcher
 import com.droidx.trivianest.util.toFullPhoneNumbers
 import com.google.firebase.auth.FirebaseAuth

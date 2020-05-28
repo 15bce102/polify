@@ -3,7 +3,7 @@ package com.droidx.trivianest.ui.adapter
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
-import com.droidx.trivianest.model.data.Friend
+import com.droidx.gameapi.model.data.Friend
 import com.droidx.trivianest.ui.viewholder.FriendViewHolder
 
 private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Friend>() {

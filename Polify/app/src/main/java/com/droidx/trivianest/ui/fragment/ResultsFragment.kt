@@ -17,13 +17,13 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DefaultItemAnimator
 import com.droidx.trivianest.R
-import com.droidx.trivianest.api.GameRepository
+import com.droidx.gameapi.api.GameRepository
 import com.droidx.trivianest.data.ACTION_MATCH_RESULTS
 import com.droidx.trivianest.data.EXTRA_BATTLE_ID
 import com.droidx.trivianest.data.EXTRA_PLAYERS
 import com.droidx.trivianest.databinding.FragmentResultsBinding
-import com.droidx.trivianest.model.data.PlayerResult
-import com.droidx.trivianest.model.response.Result
+import com.droidx.gameapi.model.data.PlayerResult
+import com.droidx.gameapi.model.response.Result
 import com.droidx.trivianest.ui.activity.HomeActivity
 import com.droidx.trivianest.ui.adapter.ResultsAdapter
 import com.droidx.trivianest.util.setOnSoundClickListener

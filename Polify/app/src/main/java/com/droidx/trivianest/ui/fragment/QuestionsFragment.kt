@@ -20,14 +20,14 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import coil.api.load
 import com.droidx.trivianest.R
-import com.droidx.trivianest.api.GameRepository
+import com.droidx.gameapi.api.GameRepository
 import com.droidx.trivianest.data.BATTLE_MULTIPLAYER
 import com.droidx.trivianest.data.BATTLE_ONE_VS_ONE
 import com.droidx.trivianest.data.BATTLE_TEST
 import com.droidx.trivianest.data.QUE_TIME_LIMIT_MS
 import com.droidx.trivianest.databinding.FragmentQuestionsBinding
 import com.droidx.trivianest.eventbus.OptionEvent
-import com.droidx.trivianest.model.data.Question
+import com.droidx.gameapi.model.data.Question
 import com.droidx.trivianest.ui.adapter.QuestionAdapter
 import com.droidx.trivianest.ui.viewholder.OptionViewHolder
 import com.droidx.trivianest.ui.viewmodel.BaseViewModelFactory
@@ -46,7 +46,7 @@ import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import com.droidx.trivianest.model.response.Result
+import com.droidx.gameapi.model.response.Result
 import com.droidx.trivianest.util.setOnSoundClickListener
 import kotlinx.coroutines.delay
 

@@ -10,7 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import com.droidx.trivianest.R
-import com.droidx.trivianest.api.GameRepository
+import com.droidx.gameapi.api.GameRepository
 import com.droidx.trivianest.databinding.FragmentOtpBinding
 import com.droidx.trivianest.ui.activity.HomeActivity
 import com.droidx.trivianest.util.errorToast
@@ -24,7 +24,7 @@ import com.google.firebase.iid.FirebaseInstanceId
 import kotlinx.coroutines.launch
 import splitties.toast.toast
 import java.util.concurrent.TimeUnit
-import com.droidx.trivianest.model.response.Result
+import com.droidx.gameapi.model.response.Result
 
 class OtpFragment : Fragment() {
     companion object {

@@ -1,4 +1,4 @@
-package com.droidx.trivianest.model.data
+package com.droidx.gameapi.model.data
 
 import android.os.Parcelable
 

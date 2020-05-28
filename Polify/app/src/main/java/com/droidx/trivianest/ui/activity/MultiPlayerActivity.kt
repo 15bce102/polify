@@ -5,15 +5,15 @@ import android.view.WindowManager
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import com.droidx.trivianest.R
-import com.droidx.trivianest.api.GameRepository
+import com.droidx.gameapi.api.GameRepository
 import com.droidx.trivianest.data.EXTRA_ROOM
-import com.droidx.trivianest.model.data.Room
+import com.droidx.gameapi.model.data.Room
 import com.droidx.trivianest.ui.fragment.RoomWaitingFragmentDirections
 import com.droidx.trivianest.util.errorToast
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 import splitties.toast.toast
-import com.droidx.trivianest.model.response.Result
+import com.droidx.gameapi.model.response.Result
 
 class MultiPlayerActivity : FullScreenActivity() {
     private val mAuth by lazy { FirebaseAuth.getInstance() }

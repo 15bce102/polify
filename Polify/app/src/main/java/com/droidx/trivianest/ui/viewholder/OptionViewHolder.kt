@@ -7,7 +7,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.droidx.trivianest.R
 import com.droidx.trivianest.databinding.LayoutOptionBinding
-import com.droidx.trivianest.model.data.Option
+import com.droidx.gameapi.model.data.Option
 import splitties.resources.color
 
 class OptionViewHolder(private val binding: LayoutOptionBinding) : RecyclerView.ViewHolder(binding.root) {

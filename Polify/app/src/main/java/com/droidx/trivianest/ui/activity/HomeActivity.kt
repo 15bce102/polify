@@ -27,7 +27,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.viewpager2.widget.ViewPager2
 import coil.api.load
 import com.droidx.trivianest.R
-import com.droidx.trivianest.api.GameRepository
+import com.droidx.gameapi.api.GameRepository
 import com.droidx.trivianest.data.ACTION_ROOM_INVITE
 import com.droidx.trivianest.data.EXTRA_PLAYERS
 import com.droidx.trivianest.data.EXTRA_ROOM
@@ -36,9 +36,9 @@ import com.droidx.trivianest.databinding.ActivityHomeBinding
 import com.droidx.trivianest.eventbus.AvatarEvent
 import com.droidx.trivianest.eventbus.BattleSelectEvent
 import com.droidx.trivianest.model.BattleSelect
-import com.droidx.trivianest.model.data.Player
-import com.droidx.trivianest.model.data.Room
-import com.droidx.trivianest.model.response.Result
+import com.droidx.gameapi.model.data.Player
+import com.droidx.gameapi.model.data.Room
+import com.droidx.gameapi.model.response.Result
 import com.droidx.trivianest.ui.adapter.SelectBattleAdapter
 import com.droidx.trivianest.ui.dialog.AvatarDialogFragment
 import com.droidx.trivianest.ui.viewmodel.BaseViewModelFactory

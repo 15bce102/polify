@@ -9,13 +9,13 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.droidx.trivianest.R
-import com.droidx.trivianest.api.GameRepository
+import com.droidx.gameapi.api.GameRepository
 import com.droidx.trivianest.databinding.FragmentLoginBinding
 import com.droidx.trivianest.util.errorToast
 import com.droidx.trivianest.util.isValidPhoneNumber
 import com.droidx.trivianest.util.setOnSoundClickListener
 import kotlinx.coroutines.launch
-import com.droidx.trivianest.model.response.Result
+import com.droidx.gameapi.model.response.Result
 
 class LoginFragment : Fragment() {
     private lateinit var binding: FragmentLoginBinding

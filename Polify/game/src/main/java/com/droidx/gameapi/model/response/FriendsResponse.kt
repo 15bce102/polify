@@ -1,6 +1,6 @@
-package com.droidx.trivianest.model.response
+package com.droidx.gameapi.model.response
 
-import com.droidx.trivianest.model.data.Friend
+import com.droidx.gameapi.model.data.Friend
 
 data class FriendsResponse(
         val success: Boolean,

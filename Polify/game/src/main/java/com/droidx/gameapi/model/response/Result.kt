@@ -1,4 +1,4 @@
-package com.droidx.trivianest.model.response
+package com.droidx.gameapi.model.response
 
 data class Result<out T>(val status: Status, val data: T?, val message: String?) {
 

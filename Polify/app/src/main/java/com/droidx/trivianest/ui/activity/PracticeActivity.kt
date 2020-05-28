@@ -6,8 +6,8 @@ import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
 import com.droidx.trivianest.R
 import com.droidx.trivianest.data.EXTRA_PLAYERS
-import com.droidx.trivianest.model.data.Player
-import com.droidx.trivianest.model.data.TestBattle
+import com.droidx.gameapi.model.data.Player
+import com.droidx.gameapi.model.data.TestBattle
 
 class PracticeActivity : FullScreenActivity() {
 

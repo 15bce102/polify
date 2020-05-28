@@ -1,14 +1,13 @@
-package com.droidx.trivianest.model.data
+package com.droidx.gameapi.model.data
 
 import com.google.gson.annotations.SerializedName
 
-data class User(
+data class Friend(
         @SerializedName("_id")
         val uid: String,
         @SerializedName("user_name")
         val userName: String,
+        val status: Int,
         val level: String,
-        val coins: Int,
-        @SerializedName("avatar")
         val avatar: String
 )

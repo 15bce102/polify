@@ -6,12 +6,12 @@ import android.os.Binder
 import android.os.Handler
 import android.os.IBinder
 import android.util.Log
-import com.droidx.trivianest.api.GameRepository
+import com.droidx.gameapi.api.GameRepository
 import com.droidx.trivianest.data.STATUS_ONLINE
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.*
 import java.util.concurrent.Executors
-import com.droidx.trivianest.model.response.Result
+import com.droidx.gameapi.model.response.Result
 
 class GameService : Service(), CoroutineScope {
     companion object {

@@ -6,7 +6,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.droidx.trivianest.R
 import com.droidx.trivianest.databinding.LayoutResultBinding
-import com.droidx.trivianest.model.data.PlayerResult
+import com.droidx.gameapi.model.data.PlayerResult
 
 class ResultsViewHolder(private val binding: LayoutResultBinding) : RecyclerView.ViewHolder(binding.root) {
     companion object {

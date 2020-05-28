@@ -9,19 +9,19 @@
 
         <variable
             name="player1"
-            type="com.droidx.trivianest.model.data.Player" />
+            type="com.droidx.gameapi.model.data.Player" />
 
         <variable
             name="player2"
-            type="com.droidx.trivianest.model.data.Player" />
+            type="com.droidx.gameapi.model.data.Player" />
 
         <variable
             name="player3"
-            type="com.droidx.trivianest.model.data.Player" />
+            type="com.droidx.gameapi.model.data.Player" />
 
         <variable
             name="player4"
-            type="com.droidx.trivianest.model.data.Player" />
+            type="com.droidx.gameapi.model.data.Player" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

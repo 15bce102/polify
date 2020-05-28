@@ -1,5 +1,5 @@
 package com.droidx.trivianest.eventbus
 
-import com.droidx.trivianest.model.data.Friend
+import com.droidx.gameapi.model.data.Friend
 
 data class FriendInviteEvent(val friend: Friend)

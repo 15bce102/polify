@@ -2,11 +2,11 @@ package com.droidx.trivianest.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
-import com.droidx.trivianest.api.GameRepository
+import com.droidx.gameapi.api.GameRepository
 import com.droidx.trivianest.data.BATTLE_TEST
-import com.droidx.trivianest.model.data.Battle
-import com.droidx.trivianest.model.response.QuestionsResponse
-import com.droidx.trivianest.model.response.Result
+import com.droidx.gameapi.model.data.Battle
+import com.droidx.gameapi.model.response.QuestionsResponse
+import com.droidx.gameapi.model.response.Result
 
 class QuestionViewModel(battle: Battle?, battleType: String) : ViewModel() {
     val questions = liveData {

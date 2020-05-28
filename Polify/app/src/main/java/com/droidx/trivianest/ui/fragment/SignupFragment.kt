@@ -8,7 +8,7 @@ import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import coil.api.load
-import com.droidx.trivianest.server.RetrofitClient.DEFAULT_AVATAR_URL
+import com.droidx.gameapi.server.RetrofitClient.DEFAULT_AVATAR_URL
 import com.droidx.trivianest.R
 import com.droidx.trivianest.databinding.FragmentSignupBinding
 import com.droidx.trivianest.eventbus.AvatarEvent

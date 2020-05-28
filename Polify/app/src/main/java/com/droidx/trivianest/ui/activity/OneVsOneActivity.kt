@@ -16,8 +16,8 @@ import com.droidx.trivianest.R
 import com.droidx.trivianest.data.ACTION_MATCH_FOUND
 import com.droidx.trivianest.data.BATTLE_ONE_VS_ONE
 import com.droidx.trivianest.data.EXTRA_BATTLE
-import com.droidx.trivianest.model.data.Battle
-import com.droidx.trivianest.model.data.OneVsOneBattle
+import com.droidx.gameapi.model.data.Battle
+import com.droidx.gameapi.model.data.OneVsOneBattle
 import com.droidx.trivianest.ui.fragment.WaitingFragmentDirections
 
 class OneVsOneActivity : FullScreenActivity() {

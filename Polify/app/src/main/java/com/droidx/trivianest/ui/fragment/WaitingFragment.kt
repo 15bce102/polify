@@ -8,13 +8,13 @@ import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import com.droidx.trivianest.api.GameRepository
+import com.droidx.gameapi.api.GameRepository
 import com.droidx.trivianest.data.WAIT_TIME_LIMIT_SEC
 import com.droidx.trivianest.databinding.FragmentWaitingBinding
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 import java.util.*
-import com.droidx.trivianest.model.response.Result
+import com.droidx.gameapi.model.response.Result
 import com.droidx.trivianest.util.errorToast
 
 class WaitingFragment : Fragment() {
@@ -35,7 +35,7 @@ class WaitingFragment : Fragment() {
             }
 
             lifecycleScope.launch {
-                val response = GameRepository.leaveWaitingRoom(user.uid)
+                val response = _root_ide_package_.com.droidx.gameapi.api.GameRepository.leaveWaitingRoom(user.uid)
                 if (response.status == Result.Status.SUCCESS)
                     Log.d(TAG, "left waiting room")
                 else
@@ -75,7 +75,7 @@ class WaitingFragment : Fragment() {
 
         FirebaseAuth.getInstance().currentUser?.let { user ->
             lifecycleScope.launch {
-                val response = GameRepository.joinWaitingRoom(user.uid)
+                val response = _root_ide_package_.com.droidx.gameapi.api.GameRepository.joinWaitingRoom(user.uid)
                 if (response.status == Result.Status.SUCCESS) {
                     val data = response.data
                     if (data?.success == true)

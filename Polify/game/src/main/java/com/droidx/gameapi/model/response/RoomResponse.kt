@@ -1,6 +1,6 @@
-package com.droidx.trivianest.model.response
+package com.droidx.gameapi.model.response
 
-import com.droidx.trivianest.model.data.Room
+import com.droidx.gameapi.model.data.Room
 
 data class RoomResponse(
         val success: Boolean,
