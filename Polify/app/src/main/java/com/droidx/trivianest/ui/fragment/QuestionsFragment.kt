@@ -132,10 +132,6 @@ class QuestionsFragment : Fragment() {
         initListeners()
         initPlayers()
 
-        binding.loadingAnimView.setAnimation(R.raw.loading)
-        binding.loadingTextView.visibility = View.VISIBLE
-        binding.loadingView.visibility = View.VISIBLE
-
         questionsViewModel.questions.observe(viewLifecycleOwner, Observer { result ->
             when (result.status) {
                 Result.Status.SUCCESS -> {
@@ -151,6 +147,11 @@ class QuestionsFragment : Fragment() {
                     binding.loadingAnimView.setAnimation(R.raw.error)
                     binding.loadingView.visibility = View.VISIBLE
                     binding.loadingTextView.visibility = View.GONE
+                }
+                Result.Status.LOADING -> {
+                    binding.loadingAnimView.setAnimation(R.raw.loading)
+                    binding.loadingTextView.visibility = View.VISIBLE
+                    binding.loadingView.visibility = View.VISIBLE
                 }
             }
         })

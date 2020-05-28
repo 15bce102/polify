@@ -79,7 +79,7 @@
                         android:layout_marginTop="10dp"
                         android:background="@color/cardview_dark_background"
                         android:scaleType="centerCrop"
-                        android:src="@drawable/logo"
+                        tools:src="@mipmap/ic_profile"
                         app:imageUrl="@{user.avatar}"
                         tools:ignore="PrivateResource" />
 
