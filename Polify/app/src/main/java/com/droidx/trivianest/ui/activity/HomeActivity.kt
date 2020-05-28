@@ -141,8 +141,6 @@ class HomeActivity : FullScreenActivity() {
             lifecycleOwner = this@HomeActivity
         }
 
-        loadGif()
-
         rewardedAd = createAndLoadRewardedAd()
 
         userViewModel.user.observe(this, Observer { result ->
@@ -424,18 +422,5 @@ class HomeActivity : FullScreenActivity() {
     override fun onResume() {
         super.onResume()
         userViewModel.refresh()
-    }
-
-    private fun loadGif() {
-        val imageLoader = ImageLoader.Builder(this)
-                .componentRegistry {
-                    if (SDK_INT >= 28) {
-                        add(ImageDecoderDecoder())
-                    } else {
-                        add(GifDecoder())
-                    }
-                }
-                .build()
-        binding.imageViewFlag.load(R.raw.india, imageLoader)
     }
 }
