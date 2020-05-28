@@ -61,4 +61,5 @@
     <string name="score_wait_msg">Loading results… It may take up to 30 seconds based on the opponent\'s activity</string>
     <string name="multiplayer_request">*You will receive multiplayer mode requests from your friends on this screen</string>
     <string name="room_request">*Go back to home screen for accepting your friend request or else send request from here</string>
+    <string name="questions_wait_msg">Your network might be slow Fetching questions....</string>
 </resources>

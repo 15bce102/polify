@@ -122,6 +122,10 @@ class QuestionsFragment : Fragment() {
         requireActivity().onBackPressedDispatcher.addCallback(this, callback)
         requireActivity().volumeControlStream = AudioManager.STREAM_MUSIC
 
+        binding.loadingAnimView.setAnimation(R.raw.loading)
+        binding.loadingTextView.visibility = View.VISIBLE
+        binding.loadingView.visibility = View.VISIBLE
+
         initExoPlayer()
     }
 
@@ -133,12 +137,20 @@ class QuestionsFragment : Fragment() {
         initPlayers()
 
         questionsViewModel.questions.observe(viewLifecycleOwner, Observer { result ->
-            if (result.status == Result.Status.SUCCESS) {
-                (result.data?.questions)?.let { questions ->
-                    questionsAdapter.submitList(questions) {
-                        Log.d("qLog", "number of questions = ${questions.size}")
-                        startMatch(questions)
+            when (result.status) {
+                Result.Status.SUCCESS -> {
+                    (result.data?.questions)?.let { questions ->
+                        questionsAdapter.submitList(questions) {
+                            Log.d("qLog", "number of questions = ${questions.size}")
+                            binding.loadingView.visibility = View.GONE
+                            startMatch(questions)
+                        }
                     }
+                }
+                Result.Status.ERROR -> {
+                    binding.loadingAnimView.setAnimation(R.raw.error)
+                    binding.loadingView.visibility = View.VISIBLE
+                    binding.loadingTextView.visibility = View.GONE
                 }
             }
         })
