@@ -117,7 +117,7 @@ class ResultsFragment : Fragment() {
     }
 
     private fun showResults(results: List<PlayerResult>) {
-        resultsAdapter.submitList(results) {
+        resultsAdapter.submitList(results.sortedByDescending { result->result.player.score }) {
             binding.loadingView.visibility = View.GONE
 
             val user = mAuth.currentUser ?: return@submitList

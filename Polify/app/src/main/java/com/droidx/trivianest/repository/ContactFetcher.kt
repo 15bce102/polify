@@ -88,7 +88,7 @@ object ContactFetcher {
                             )
                     var num = number.replace("\\s".toRegex(),"")
                     val authNumber = mAuth.currentUser!!.phoneNumber!!.substring(3,mAuth.currentUser!!.phoneNumber!!.length)
-                    if(num.substring(0,3)=="+91"){
+                    if(num.length>=3&&num.substring(0,3)=="+91"){
                         num = num.substring(3,num.length)
                     }
                     
