@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.droidx.trivianest" >
+    package="com.droidx.gameapi" >
 
     <uses-permission android:name="android.permission.INTERNET" />
 
