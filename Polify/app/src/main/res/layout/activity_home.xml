@@ -215,6 +215,7 @@
             app:layout_constraintStart_toStartOf="parent" />
 
         <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/imageView_flag"
             android:layout_width="20sp"
             android:layout_height="20sp"
             android:layout_marginBottom="16dp"

@@ -12,6 +12,7 @@ import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import android.os.Build
+import android.os.Build.VERSION.SDK_INT
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -25,7 +26,11 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.viewpager2.widget.ViewPager2
+import coil.ImageLoader
 import coil.api.load
+import coil.decode.GifDecoder
+import coil.decode.ImageDecoderDecoder
+import coil.request.LoadRequest
 import com.droidx.trivianest.R
 import com.droidx.trivianest.api.GameRepository
 import com.droidx.trivianest.data.ACTION_ROOM_INVITE
@@ -135,6 +140,8 @@ class HomeActivity : FullScreenActivity() {
         binding = DataBindingUtil.setContentView<ActivityHomeBinding>(this, R.layout.activity_home).apply {
             lifecycleOwner = this@HomeActivity
         }
+
+        loadGif()
 
         rewardedAd = createAndLoadRewardedAd()
 
@@ -417,5 +424,18 @@ class HomeActivity : FullScreenActivity() {
     override fun onResume() {
         super.onResume()
         userViewModel.refresh()
+    }
+
+    private fun loadGif() {
+        val imageLoader = ImageLoader.Builder(this)
+                .componentRegistry {
+                    if (SDK_INT >= 28) {
+                        add(ImageDecoderDecoder())
+                    } else {
+                        add(GifDecoder())
+                    }
+                }
+                .build()
+        binding.imageViewFlag.load(R.raw.india, imageLoader)
     }
 }
