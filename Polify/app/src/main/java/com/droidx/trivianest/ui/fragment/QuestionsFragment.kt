@@ -314,12 +314,14 @@ class QuestionsFragment : Fragment() {
 
         lifecycleScope.launch {
             delay(2500)
+
+            if (pos == questionsAdapter.itemCount - 1)
+                finishGame()
+            else
+                binding.viewPager.setCurrentItem(pos + 1, true)
         }
 
-        if (pos == questionsAdapter.itemCount - 1)
-            finishGame()
-        else
-            binding.viewPager.setCurrentItem(pos + 1, true)
+
     }
 
     private fun showCorrectWrongAnim(questionPos: Int, next: () -> Unit) {
