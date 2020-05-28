@@ -25,7 +25,7 @@
         <argument
             android:name="battle"
             android:defaultValue="@null"
-            app:argType="com.droidx.trivianest.model.data.Battle"
+            app:argType="com.droidx.gameapi.model.data.Battle"
             app:nullable="true" />
         <argument
             android:name="start_time"

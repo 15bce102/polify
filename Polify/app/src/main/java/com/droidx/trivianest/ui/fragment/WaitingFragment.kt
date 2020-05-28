@@ -35,7 +35,7 @@ class WaitingFragment : Fragment() {
             }
 
             lifecycleScope.launch {
-                val response = _root_ide_package_.com.droidx.gameapi.api.GameRepository.leaveWaitingRoom(user.uid)
+                val response = GameRepository.leaveWaitingRoom(user.uid)
                 if (response.status == Result.Status.SUCCESS)
                     Log.d(TAG, "left waiting room")
                 else
@@ -75,7 +75,7 @@ class WaitingFragment : Fragment() {
 
         FirebaseAuth.getInstance().currentUser?.let { user ->
             lifecycleScope.launch {
-                val response = _root_ide_package_.com.droidx.gameapi.api.GameRepository.joinWaitingRoom(user.uid)
+                val response = GameRepository.joinWaitingRoom(user.uid)
                 if (response.status == Result.Status.SUCCESS) {
                     val data = response.data
                     if (data?.success == true)
