@@ -9,17 +9,15 @@
     <application
         android:name="com.droidx.trivianest.application.GameApplication"
         android:allowBackup="true"
-        android:debuggable="true"
+
         android:icon="@mipmap/main_logo_round"
         android:label="@string/app_name"
 
         android:supportsRtl="true"
-        android:testOnly="false"
         android:largeHeap="true"
 
         android:theme="@style/AppTheme.FullScreen"
-        android:usesCleartextTraffic="true"
-        tools:ignore="HardcodedDebugMode">
+        android:usesCleartextTraffic="true">
 
         <receiver
             android:name="com.droidx.trivianest.receiver.BootReceiver"
