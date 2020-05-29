@@ -26,19 +26,19 @@ import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.viewpager2.widget.ViewPager2
 import coil.api.load
-import com.droidx.trivianest.R
 import com.droidx.gameapi.api.GameRepository
+import com.droidx.gameapi.model.data.Player
+import com.droidx.gameapi.model.data.Room
+import com.droidx.gameapi.model.response.Result
+import com.droidx.trivianest.R
 import com.droidx.trivianest.data.ACTION_ROOM_INVITE
+import com.droidx.trivianest.data.AD_UNIT_ID
 import com.droidx.trivianest.data.EXTRA_PLAYERS
 import com.droidx.trivianest.data.EXTRA_ROOM
-import com.droidx.trivianest.data.TEST_AD_ID
 import com.droidx.trivianest.databinding.ActivityHomeBinding
 import com.droidx.trivianest.eventbus.AvatarEvent
 import com.droidx.trivianest.eventbus.BattleSelectEvent
 import com.droidx.trivianest.model.BattleSelect
-import com.droidx.gameapi.model.data.Player
-import com.droidx.gameapi.model.data.Room
-import com.droidx.gameapi.model.response.Result
 import com.droidx.trivianest.ui.adapter.SelectBattleAdapter
 import com.droidx.trivianest.ui.dialog.AvatarDialogFragment
 import com.droidx.trivianest.ui.viewmodel.BaseViewModelFactory
@@ -408,7 +408,7 @@ class HomeActivity : FullScreenActivity() {
     }
 
     private fun createAndLoadRewardedAd(): RewardedAd {
-        val rewardedAd = RewardedAd(this, TEST_AD_ID)
+        val rewardedAd = RewardedAd(this, AD_UNIT_ID)
         rewardedAd.loadAd(AdRequest.Builder().build(), adLoadCallback)
 
         return rewardedAd

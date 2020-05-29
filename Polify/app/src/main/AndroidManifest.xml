@@ -9,17 +9,15 @@
     <application
         android:name="com.droidx.trivianest.application.GameApplication"
         android:allowBackup="true"
-        android:debuggable="true"
+
         android:icon="@mipmap/main_logo_round"
         android:label="@string/app_name"
 
         android:supportsRtl="true"
-        android:testOnly="false"
         android:largeHeap="true"
 
         android:theme="@style/AppTheme.FullScreen"
-        android:usesCleartextTraffic="true"
-        tools:ignore="HardcodedDebugMode">
+        android:usesCleartextTraffic="true">
 
         <receiver
             android:name="com.droidx.trivianest.receiver.BootReceiver"
@@ -76,8 +74,8 @@
             android:theme="@style/AppTheme.NoActionBar"/>
 
         <meta-data
-            android:name="com.google.android.gms.ads.AD_MANAGER_APP"
-            android:value="true"/>
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-1946175293310170~4947699721"/>
     </application>
 
 </manifest>

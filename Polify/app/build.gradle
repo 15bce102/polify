@@ -17,7 +17,7 @@ android {
         minSdkVersion 24
         targetSdkVersion 29
         versionCode 1
-        versionName "1.0"
+        versionName "1.0.0"
     }
 
     buildTypes {
@@ -88,4 +88,5 @@ dependencies {
     implementation 'me.grantland:autofittextview:0.2.1'
 
     implementation project(path: ':game')
+    implementation 'com.google.firebase:firebase-auth:16.0.5'
 }
