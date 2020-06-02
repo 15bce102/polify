@@ -5,6 +5,7 @@ from os.path import isfile, join
 
 from firebase_admin import auth
 from firebase_admin.auth import UserNotFoundError
+from firebase_admin.exceptions import InvalidArgumentError
 from firebase_admin.messaging import Message, MulticastMessage, send, send_multicast
 
 
@@ -30,7 +31,7 @@ def get_user_from_phone_number(phone_number):
     try:
         user = auth.get_user_by_phone_number(phone_number)
         return user
-    except UserNotFoundError:
+    except (UserNotFoundError, InvalidArgumentError):
         return None
 
 

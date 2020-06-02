@@ -1,49 +1,16 @@
-import atexit
-
 import firebase_admin
 from firebase_admin import credentials
-
-import utils
-from singleton import scheduler
-
 from flask import Flask, request, send_from_directory
 
-from api_utils import battles, users, questions
-
-from utils import current_milli_time, is_valid_user
-
+import utils
+from api_utils import battles, users
 from constants import STATUS_BUSY, STATUS_ONLINE
-from datetime import datetime
+from utils import current_milli_time, is_valid_user
 
 app = Flask(__name__, static_url_path='')
 
 cred = credentials.Certificate('keys/key.json')
 firebase_admin.initialize_app(cred)
-
-
-def init():
-    users.init()
-    battles.init()
-    questions.init()
-
-    scheduler.add_job(func=users.update_all_users, trigger="interval", seconds=3 * 60, id='update_status_job',
-                      replace_existing=True)
-    scheduler.add_job(func=battles.start_matchmaking, id='matchmaking_job',
-                      replace_existing=True)
-    scheduler.add_job(func=battles.watch_battles, id='score_update_job',
-                      replace_existing=True)
-    scheduler.add_job(func=questions.populate_questions, trigger="date",
-                      run_date=datetime.strptime('May 21 2020  11:00AM', '%b %d %Y %I:%M%p'),
-                      id='questions_populate_job', replace_existing=True)
-
-    scheduler.start()
-    print('scheduler start')
-
-    # Shut down the scheduler when exiting the app
-    atexit.register(lambda: shut_down())
-
-
-init()
 
 
 @app.route('/', methods=['GET'])
@@ -53,6 +20,11 @@ def welcome():
         "time": current_milli_time()
     }
     return resp
+
+
+@app.route('/policy/')
+def privacy_policy():
+    return app.send_static_file('policy.md')
 
 
 """User related requests"""
@@ -131,17 +103,16 @@ def update_status():
     return resp
 
 
-@app.route('/update-profile', methods=['POST'])
+@app.route('/update-avatar', methods=['POST'])
 def update_profile():
     uid = request.json['uid']
-    user_name = request.json['user_name']
     avatar = request.json['avatar']
 
     valid, resp = is_valid_user(uid)
     if not valid:
         return resp
 
-    resp = users.update_user_profile(uid, user_name, avatar)
+    resp = users.update_user_avatar(uid, avatar)
     return resp
 
 
@@ -195,6 +166,18 @@ def update_friends():
     return resp
 
 
+@app.route('/add-coins', methods=['POST'])
+def add_coins():
+    uid = request.json['uid']
+
+    valid, resp = is_valid_user(uid)
+    if not valid:
+        return resp
+
+    resp = users.add_coins(uid)
+    return resp
+
+
 """Battle related requests"""
 
 
@@ -235,12 +218,27 @@ def update_score():
     bid = request.args['bid']
     uid = request.args['uid']
     score = int(request.args['score'])
+    
+    print('bid={0}, uid={1}, score={2}'.format(bid, uid, score))
 
     # valid, resp = is_valid_user(uid)
     # if not valid:
     #     return resp
 
     resp = battles.update_battle_score(bid, uid, score)
+    return resp
+
+
+@app.route('/leave-battle', methods=['POST'])
+def leave_battle():
+    uid = request.json['uid']
+    bid = request.json['bid']
+
+    valid, resp = is_valid_user(uid)
+    if not valid:
+        return resp
+
+    resp = battles.leave_battle(uid, bid)
     return resp
 
 
@@ -313,15 +311,6 @@ def start_battle():
 
     resp = battles.start_private_battle(uid, room_id)
     return resp
-
-
-def shut_down():
-    try:
-        battles.stop_matchmaking()
-        scheduler.shutdown()
-        print('shutdown success')
-    except Exception as e:
-        print("shutdown exception:", e)
 
 
 if __name__ == "__main__":

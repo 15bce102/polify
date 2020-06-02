@@ -1,19 +1,12 @@
 from pymongo import ReturnDocument, MongoClient
-from pymongo.database import Database
 from pymongo.errors import PyMongoError
 
-from constants import STATUS_ONLINE, STATUS_OFFLINE, DBNAME
+from constants import STATUS_ONLINE, DBNAME, COINS_AD_VIEWING
 from constants import USERS, COINS_INITIAL, COINS_POOL_MULTIPLAYER, COINS_POOL_ONE_VS_ONE, BATTLE_ONE_VS_ONE
 from utils import current_milli_time, get_user_from_phone_number, upgrade_tier
 
-db: Database
-
-
-def init():
-    client = MongoClient(
-        "mongodb+srv://polify:polify@cluster0-dhuyw.mongodb.net/test?retryWrites=true&w=majority")
-    global db
-    db = client[DBNAME]
+client = MongoClient("mongodb+srv://polify:polify@cluster0-ht1fc.mongodb.net/test?retryWrites=true&w=majority")
+db = client[DBNAME]
 
 
 def create_user(uid, avatar, user_name, token):
@@ -75,18 +68,17 @@ def update_user_status(uid, status):
     return resp
 
 
-def update_user_profile(uid, user_name, avatar):
+def update_user_avatar(uid, avatar):
     resp = {}
 
     try:
         db[USERS].update_one(
             {"_id": uid},
-            {"$set":
-                 {"user_name": user_name,
-                  "avatar": avatar,
-                  "status": STATUS_ONLINE,
-                  "last_seen": current_milli_time()}
-             }
+            {"$set": {
+                "avatar": avatar,
+                "status": STATUS_ONLINE,
+                "last_seen": current_milli_time()
+            }}
         )
         resp['success'] = True
     except PyMongoError:
@@ -197,19 +189,6 @@ def is_friend_request(uid, friend_uid):
     return True
 
 
-def update_all_users():
-    print('updating offline users')
-
-    now = current_milli_time()
-    interval = 2 * 60 * 1000
-
-    count = db[USERS].update_many(
-        {"status": STATUS_ONLINE, "last_seen": {"$lt": now - interval}},
-        {"$set": {"status": STATUS_OFFLINE}}
-    ).modified_count
-    print('updated count = ', count)
-
-
 def get_fcm_tokens(uids):
     tokens = list(db[USERS].find({"_id": {"$in": uids}}, {"_id": 0, "token": 1}))
     return [str(token['token']) for token in tokens]
@@ -250,23 +229,19 @@ def update_stats_from_scores(players, battle_type):
     top_score = max(player['score'] for player in players)
     winners = [player['uid'] for player in players if player['score'] == top_score]
 
-    coins = []
+    coins_update = {}
     for player in players:
         if player['uid'] in winners:
-            coins.append({
-                "{0}".format(player['uid']): '+{0}'.format(total_coins // len(winners))
-            })
+            coins_update["{0}".format(player['uid'])] = '+{0}'.format(total_coins // len(winners) - coins)
         else:
-            coins.append({
-                "{0}".format(player['uid']): '-{0}'.format(coins)
-            })
+            coins_update["{0}".format(player['uid'])] = '-{0}'.format(coins)
 
     db[USERS].update_many(
         {"_id": {"$in": winners}},
         {"$inc": {"coins": total_coins // len(winners)}}
     )
 
-    return coins
+    return coins_update
 
 
 def charge_entry_fee(uids, entry_fee):
@@ -311,6 +286,7 @@ def update_level(player):
     )
 
     inc = lambda x: x if x != -1 else 0
+
     new_score = user['totalScore'] + inc(player['score'])
 
     new_tier = upgrade_tier(new_score)
@@ -333,3 +309,27 @@ def get_player_profile(uid):
         {"user_name": 1, "avatar": 1, "level": 1}
     )
     return user
+
+
+def get_user_status(uid):
+    user = db[USERS].find_one(
+        {"_id": uid},
+        {"_id": 0, "status": 1}
+    )
+    return user['status']
+
+
+def add_coins(uid):
+    resp = {}
+
+    try:
+        db[USERS].update_one(
+            {"_id": uid},
+            {"$inc": {"coins": COINS_AD_VIEWING}}
+        )
+        resp['success'] = True
+    except PyMongoError:
+        resp['success'] = False
+        resp['message'] = 'Could not add coins'
+
+    return resp
