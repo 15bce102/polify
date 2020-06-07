@@ -6,7 +6,7 @@ from pymongo import MongoClient
 from pymongo.errors import PyMongoError
 
 from api_utils import users, questions
-from constants import BATTLE_ONE_VS_ONE
+from constants import BATTLE_ONE_VS_ONE, ID_BOT1
 from constants import COINS_POOL_ONE_VS_ONE
 from constants import STATUS_BUSY, STATUS_ONLINE, STATUS_OFFLINE
 from constants import WAITING_ROOM, BATTLES, DBNAME, USERS
@@ -23,6 +23,9 @@ battle_stream = db[BATTLES].watch(pipeline=pipeline, full_document="updateLookup
 
 
 def start_matchmaking():
+    users.create_user(uid=ID_BOT1, avatar='http://polify.herokuapp.com/avatars/avatar1.jpg',
+                      user_name='TriviaBot', token='token-bot')
+
     print('starting watching matchmaking')
 
     try:
@@ -41,49 +44,7 @@ def start_matchmaking():
 
                 print('random users profiles = ', random_users)
 
-                uids = [user['_id'] for user in random_users]
-
-                print('uids = ', uids)
-
-                db[WAITING_ROOM].delete_many({"_id": {"$in": random_users}})
-                players = [{"uid": user['_id'], "score": -1, "user_name": user['user_name'],
-                            "avatar": user['avatar'], "level": user['level']}
-                           for user in random_users]
-
-                battle = {
-                    "_id": str(uuid.uuid4()),
-                    "type": BATTLE_ONE_VS_ONE,
-                    "start_time": current_milli_time(),
-                    "coins_pool": COINS_POOL_ONE_VS_ONE,
-                    "players": players
-                }
-                db[BATTLES].insert_one(battle)
-
-                users.charge_entry_fee(uids, COINS_POOL_ONE_VS_ONE)
-
-                for uid in uids:
-                    users.update_user_status(uid, STATUS_BUSY)
-
-                tokens = users.get_fcm_tokens(uids)
-
-                db[WAITING_ROOM].remove({"_id": {"$in": uids}})
-
-                random_questions = questions.get_random_questions(10)
-
-                db[BATTLES].update_one(
-                    {"_id": battle['_id']},
-                    {"$set": {"questions": random_questions, "status": "progressing"}}
-                )
-
-                battle['start_time'] = str(battle['start_time'])
-                battle['coins_pool'] = str(battle['coins_pool'])
-                battle['players'] = simplejson.dumps(battle['players'])
-
-                data = {
-                    "type": "matchmaking",
-                    "payload": simplejson.dumps(battle)
-                }
-                send_multi_message(data, tokens)
+                create_and_start_battle(random_users)
 
     except PyMongoError as e:
         # The ChangeStream encountered an unrecoverable error or the

@@ -2,6 +2,7 @@ package com.droidx.trivianest.util
 
 import android.content.Context
 import androidx.work.*
+import com.droidx.trivianest.worker.AdsWorker
 import com.droidx.trivianest.worker.ContactsWorker
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -35,7 +36,7 @@ fun Context.scheduleAdsCountClear() {
     }
     val howMany = c.timeInMillis - System.currentTimeMillis()
 
-    val request = PeriodicWorkRequestBuilder<ContactsWorker>(ADS_COUNT_CLEAR_INTERVAL_HRS, TimeUnit.HOURS)
+    val request = PeriodicWorkRequestBuilder<AdsWorker>(ADS_COUNT_CLEAR_INTERVAL_HRS, TimeUnit.HOURS)
             .setInitialDelay(howMany, TimeUnit.MILLISECONDS)
             .build()
 

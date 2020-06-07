@@ -3,9 +3,11 @@ import uuid
 import simplejson
 from pymongo import ReturnDocument, MongoClient
 from pymongo.errors import PyMongoError
+from time import sleep
+from threading import Thread
 
 from api_utils import users, questions
-from constants import BATTLE_MULTIPLAYER
+from constants import BATTLE_MULTIPLAYER, BATTLE_ONE_VS_ONE, ID_BOT1
 from constants import COINS_POOL_ONE_VS_ONE, COINS_POOL_MULTIPLAYER
 from constants import STATUS_BUSY, STATUS_ONLINE
 from constants import WAITING_ROOM, BATTLES, PRIVATE_ROOM, DBNAME, USERS
@@ -16,6 +18,74 @@ db = client[DBNAME]
 
 
 # db[WAITING_ROOM] should not be empty
+
+def start_updating_bot_score(bid):
+    print('bot battle start')
+    score = 0
+    pos = 0
+
+    battle = db[BATTLES].find_one({"_id": bid})
+
+    for question in battle['questions']:
+        pos += 1
+        print('bot playing question {0}'.format(pos))
+        if question['correctAnswer'] == 'C':
+            score += 1
+
+        sleep(15)
+
+    print('bot game finished')
+    update_battle_score(battle['_id'], ID_BOT1, score)
+
+
+def create_and_start_battle(random_users, bot=False):
+    uids = [user['_id'] for user in random_users]
+
+    print('uids = ', uids)
+
+    db[WAITING_ROOM].delete_many({"_id": {"$in": random_users}})
+    players = [{"uid": user['_id'], "score": -1, "user_name": user['user_name'],
+                "avatar": user['avatar'], "level": user['level']}
+               for user in random_users]
+
+    battle = {
+        "_id": str(uuid.uuid4()),
+        "type": BATTLE_ONE_VS_ONE,
+        "start_time": current_milli_time(),
+        "coins_pool": COINS_POOL_ONE_VS_ONE,
+        "players": players
+    }
+    db[BATTLES].insert_one(battle)
+
+    users.charge_entry_fee(uids, COINS_POOL_ONE_VS_ONE)
+
+    for uid in uids:
+        users.update_user_status(uid, STATUS_BUSY)
+
+    tokens = users.get_fcm_tokens(uids)
+
+    db[WAITING_ROOM].remove({"_id": {"$in": uids}})
+
+    random_questions = questions.get_random_questions(10)
+
+    db[BATTLES].update_one(
+        {"_id": battle['_id']},
+        {"$set": {"questions": random_questions, "status": "progressing"}}
+    )
+
+    battle['start_time'] = str(battle['start_time'])
+    battle['coins_pool'] = str(battle['coins_pool'])
+    battle['players'] = simplejson.dumps(battle['players'])
+
+    data = {
+        "type": "matchmaking",
+        "payload": simplejson.dumps(battle)
+    }
+    send_multi_message(data, tokens)
+
+    if bot:
+        thread = Thread(target=start_updating_bot_score, args=[battle['_id']])
+        thread.start()
 
 
 def join_waiting_room(uid):
@@ -73,7 +143,7 @@ def get_battle_questions(bid):
 
 def update_battle_score(bid, uid, score):
     resp = {}
-    
+
     print('in update battle score')
 
     try:
@@ -276,7 +346,7 @@ def start_private_battle(uid, room_id):
         "coins_pool": COINS_POOL_MULTIPLAYER,
         "players": room['members']
     }
-    
+
     db[BATTLES].insert_one(battle)
 
     battle['start_time'] = str(battle['start_time'])
@@ -295,7 +365,7 @@ def start_private_battle(uid, room_id):
     }
 
     random_questions = questions.get_random_questions(10)
-    
+
     try:
         db[PRIVATE_ROOM].delete_one({"_id": room_id})
         db[BATTLES].update_one(
@@ -333,10 +403,10 @@ def leave_private_room(uid, room_id):
     tokens = users.get_fcm_tokens(uids)
 
     if room['owner'] == uid:
-    
+
         for u in uids:
             users.update_user_status(u, STATUS_ONLINE)
-    
+
         db[PRIVATE_ROOM].delete_one({"_id": room_id})
 
         owner = users.get_player_profile(uid)

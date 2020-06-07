@@ -55,6 +55,10 @@ interface RetrofitService {
     /** Battle related requests **/
 
     @Headers("Content-Type: application/json")
+    @POST("/play-with-bot")
+    suspend fun playWithBot(@Body map: Map<String, @JvmSuppressWildcards Any>): Response<ApiResponse>
+
+    @Headers("Content-Type: application/json")
     @POST("/create-room")
     suspend fun createMultiPlayerRoom(@Body map: Map<String, @JvmSuppressWildcards Any>): Response<RoomResponse>
 

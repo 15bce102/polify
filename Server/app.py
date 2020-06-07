@@ -1,10 +1,11 @@
 import firebase_admin
 from firebase_admin import credentials
-from flask import Flask, request, send_from_directory
+from flask import Flask, request, send_from_directory, send_file
+
 
 import utils
 from api_utils import battles, users
-from constants import STATUS_BUSY, STATUS_ONLINE
+from constants import STATUS_BUSY, STATUS_ONLINE, ID_BOT1
 from utils import current_milli_time, is_valid_user
 
 app = Flask(__name__, static_url_path='')
@@ -22,9 +23,9 @@ def welcome():
     return resp
 
 
-@app.route('/policy/')
+@app.route('/policy')
 def privacy_policy():
-    return app.send_static_file('policy.md')
+    return send_file('policy.md')
 
 
 """User related requests"""
@@ -181,13 +182,29 @@ def add_coins():
 """Battle related requests"""
 
 
+@app.route('/play-with-bot', methods=['POST'])
+def play_with_bot():
+    uid = request.json['uid']
+
+    valid, resp = is_valid_user(uid)
+    if not valid:
+        return resp
+
+    game_players = [users.get_player_profile(uid), users.get_player_profile(ID_BOT1)]
+
+    battles.create_and_start_battle(game_players, bot=True)
+
+    resp = {"success": True}
+    return resp
+
+
 @app.route('/join-waiting-room', methods=['GET'])
 def join_1v1_waiting_room():
     uid = request.args['uid']
 
-    # valid, resp = is_valid_user(uid)
-    # if not valid:
-    #     return resp
+    valid, resp = is_valid_user(uid)
+    if not valid:
+        return resp
 
     resp = battles.join_waiting_room(uid)
     return resp
@@ -218,7 +235,7 @@ def update_score():
     bid = request.args['bid']
     uid = request.args['uid']
     score = int(request.args['score'])
-    
+
     print('bid={0}, uid={1}, score={2}'.format(bid, uid, score))
 
     # valid, resp = is_valid_user(uid)

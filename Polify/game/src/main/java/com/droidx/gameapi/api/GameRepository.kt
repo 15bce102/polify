@@ -7,11 +7,13 @@ import com.droidx.gameapi.server.RetrofitClient
 import com.droidx.gameapi.server.RetrofitService
 import com.droidx.gameapi.util.sendNetworkRequest
 import com.droidx.gameapi.model.data.Question
+import com.droidx.gameapi.model.data.User
 import com.droidx.gameapi.model.response.*
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import retrofit2.Response
 
 object GameRepository {
     private const val ASSETS_PRACTICE_QUESTIONS = "practice.json"
@@ -107,6 +109,11 @@ object GameRepository {
 
     suspend fun updateBattleScore(bid: String, uid: String, score: Int) =
             sendNetworkRequest { service.updateScore(bid, uid, score) }
+
+    suspend fun playWithBot(uid: String): Result<ApiResponse> {
+        val map = mapOf("uid" to uid)
+        return sendNetworkRequest { service.playWithBot(map) }
+    }
 
     suspend fun createMultiPlayerRoom(uid: String): Result<RoomResponse> {
         val map = mapOf("uid" to uid)

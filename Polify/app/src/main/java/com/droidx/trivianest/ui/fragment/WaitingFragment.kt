@@ -9,13 +9,13 @@ import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.droidx.gameapi.api.GameRepository
+import com.droidx.gameapi.model.response.Result
 import com.droidx.trivianest.data.WAIT_TIME_LIMIT_SEC
 import com.droidx.trivianest.databinding.FragmentWaitingBinding
+import com.droidx.trivianest.util.errorToast
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 import java.util.*
-import com.droidx.gameapi.model.response.Result
-import com.droidx.trivianest.util.errorToast
 
 class WaitingFragment : Fragment() {
     companion object {
@@ -64,10 +64,20 @@ class WaitingFragment : Fragment() {
 
                 requireActivity().runOnUiThread {
                     binding.timerTV.text = seconds.toString()
+                }
 
-                    if (seconds == WAIT_TIME_LIMIT_SEC) {
-                        errorToast("No match found for battle")
-                        requireActivity().finish()
+                if (seconds == WAIT_TIME_LIMIT_SEC) {
+                    val user = mAuth.currentUser ?: return
+
+                    lifecycleScope.launch {
+                        val result = GameRepository.playWithBot(user.uid)
+                        if (result.status == Result.Status.SUCCESS) {
+                            if (result.data?.success == true)
+                                Log.d(TAG, "playing with bot")
+                            else
+                                errorToast("Could not connect with bot")
+                        } else
+                            errorToast("Could not connect with bot")
                     }
                 }
             }
