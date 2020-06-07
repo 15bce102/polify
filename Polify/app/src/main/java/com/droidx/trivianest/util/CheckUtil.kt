@@ -1,12 +1,16 @@
 package com.droidx.trivianest.util
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import android.provider.Settings
 import android.telephony.TelephonyManager
 import android.util.Log
 import androidx.core.content.getSystemService
 import io.michaelrocks.libphonenumber.android.NumberParseException
 import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
 import java.util.*
+
 
 fun Context.isValidPhoneNumber(number: String, countryCode: String): Boolean {
     val util = PhoneNumberUtil.createInstance(this)
@@ -59,4 +63,11 @@ fun List<String>.toFullPhoneNumbers(context: Context): List<String> {
             }
         }
     }
+}
+
+fun Context.launchSettingsIntent() {
+    val uri = Uri.fromParts("package", packageName, null)
+
+    val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, uri)
+    startActivity(intent)
 }

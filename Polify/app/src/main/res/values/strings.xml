@@ -63,4 +63,7 @@
     <string name="room_request">*Go back to home screen for accepting your friend request or else send request from here</string>
     <string name="questions_wait_msg">Your network might be slow Fetching questions....</string>
     <string name="error_invalid_user_name">Invalid user name</string>
+
+    <string name="contacts_perm_title">Grant contacts permission</string>
+    <string name="contacts_perm_msg">Trivia Nest requires to read your contacts so that you can play multiplayer with your friends. Please grant the contacts permission from settings</string>
 </resources>

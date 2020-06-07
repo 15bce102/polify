@@ -1,5 +1,6 @@
 package com.droidx.trivianest.ui.activity
 
+import android.Manifest
 import android.animation.ArgbEvaluator
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
@@ -51,6 +52,12 @@ import com.google.android.gms.ads.rewarded.RewardedAdCallback
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.auth.FirebaseAuth
+import com.karumi.dexter.Dexter
+import com.karumi.dexter.PermissionToken
+import com.karumi.dexter.listener.PermissionDeniedResponse
+import com.karumi.dexter.listener.PermissionGrantedResponse
+import com.karumi.dexter.listener.PermissionRequest
+import com.karumi.dexter.listener.single.PermissionListener
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu
 import com.oguzdev.circularfloatingactionmenu.library.SubActionButton
@@ -220,7 +227,26 @@ class HomeActivity : FullScreenActivity() {
                 startActivity(Intent(this, OneVsOneActivity::class.java))
             }
             R.string.title_multiplayer -> {
-                startActivity(Intent(this, MultiPlayerActivity::class.java))
+                Dexter.withContext(this)
+                        .withPermission(Manifest.permission.READ_CONTACTS)
+                        .withListener(object : PermissionListener {
+                            override fun onPermissionGranted(response: PermissionGrantedResponse) {
+                                startActivity(Intent(this@HomeActivity, MultiPlayerActivity::class.java))
+                            }
+
+                            override fun onPermissionRationaleShouldBeShown(request: PermissionRequest, token: PermissionToken) {
+                                token.cancelPermissionRequest()
+                                lifecycleScope.launch {
+                                    val shouldGoToSettings = showConfirmationDialog(R.string.contacts_perm_title, R.string.contacts_perm_msg)
+                                    if (shouldGoToSettings)
+                                        launchSettingsIntent()
+                                }
+                            }
+
+                            override fun onPermissionDenied(deniedResponse: PermissionDeniedResponse) {
+                                //errorToast("${deniedResponse.permissionName} permission denied")
+                            }
+                        }).check()
             }
             R.string.title_test -> {
                 val user = binding.user!!
@@ -293,9 +319,27 @@ class HomeActivity : FullScreenActivity() {
                 .build()
 
         rlIcon1.setOnSoundClickListener {
-            infoToast(getString(R.string.contacts_sync_start))
+            Dexter.withContext(this)
+                    .withPermission(Manifest.permission.READ_CONTACTS)
+                    .withListener(object : PermissionListener {
+                        override fun onPermissionGranted(response: PermissionGrantedResponse) {
+                            scheduleFriendsUpdate(refresh = true)
+                            infoToast(getString(R.string.contacts_sync_start))
+                        }
 
-            scheduleFriendsUpdate()
+                        override fun onPermissionRationaleShouldBeShown(request: PermissionRequest, token: PermissionToken) {
+                            token.cancelPermissionRequest()
+                            lifecycleScope.launch {
+                                val shouldGoToSettings = showConfirmationDialog(R.string.contacts_perm_title, R.string.contacts_perm_msg)
+                                if (shouldGoToSettings)
+                                    launchSettingsIntent()
+                            }
+                        }
+
+                        override fun onPermissionDenied(deniedResponse: PermissionDeniedResponse) {
+                            //errorToast("${deniedResponse.permissionName} permission denied")
+                        }
+                    }).check()
         }
 
         rlIcon2.setOnSoundClickListener {

@@ -15,7 +15,7 @@ const val EXTRA_BATTLE_ID = "battleId"
 const val EXTRA_ROOM = "room"
 const val EXTRA_MESSAGE = "message"
 
-const val WAIT_TIME_LIMIT_SEC = 30
+const val WAIT_TIME_LIMIT_SEC = 15
 const val QUE_TIME_LIMIT_MS = (15 * 1000).toLong()
 
 const val KEY_TYPE = "type"
