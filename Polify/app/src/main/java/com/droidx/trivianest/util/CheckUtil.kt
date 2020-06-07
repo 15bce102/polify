@@ -4,11 +4,10 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
-import android.telephony.TelephonyManager
 import android.util.Log
-import androidx.core.content.getSystemService
 import io.michaelrocks.libphonenumber.android.NumberParseException
 import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
+import splitties.systemservices.telephonyManager
 import java.util.*
 
 
@@ -34,7 +33,7 @@ fun isValidUserName(userName: String) =
         userName.isNotBlank()
 
 fun List<String>.toFullPhoneNumbers(context: Context): List<String> {
-    val simIso = context.getSystemService<TelephonyManager>()!!.simCountryIso.toUpperCase(Locale.US).trim()
+    val simIso = telephonyManager.simCountryIso.toUpperCase(Locale.US).trim()
     val util = PhoneNumberUtil.createInstance(context)
     val countryCode = util.getCountryCodeForRegion(simIso).toString()
     val dummy = util.format(util.getExampleNumber(simIso), PhoneNumberUtil.PhoneNumberFormat.E164)

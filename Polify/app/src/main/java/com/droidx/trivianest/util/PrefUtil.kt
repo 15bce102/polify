@@ -9,6 +9,9 @@ private const val KEY_FIRST_TIME = "first_time"
 private const val PREF_AD_WATCHED = "ad_watched_pref"
 private const val KEY_AD_COUNT = "ad_count"
 
+private const val PREF_HOME_VISIBLE = "home_visible_pref"
+private const val KEY_VISIBLE = "visible"
+
 private const val MAX_ADS_PER_DAY = 5
 
 fun Context.isFirstTime() =
@@ -37,3 +40,12 @@ fun Context.clearAdCount() {
     getSharedPreferences(PREF_AD_WATCHED, Context.MODE_PRIVATE)
             .edit { putInt(KEY_AD_COUNT, 0) }
 }
+
+fun Context.setHomeActivityVisible(visible: Boolean) {
+    getSharedPreferences(PREF_HOME_VISIBLE, Context.MODE_PRIVATE)
+            .edit { putBoolean(KEY_VISIBLE, visible) }
+}
+
+fun Context.isHomeActivityVisible() =
+        getSharedPreferences(PREF_HOME_VISIBLE, Context.MODE_PRIVATE)
+                .getBoolean(KEY_VISIBLE, false)

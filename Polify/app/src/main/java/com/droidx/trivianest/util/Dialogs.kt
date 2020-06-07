@@ -17,6 +17,7 @@ suspend fun Context.showMultiPlayerInviteDialog(room: Room): Boolean {
     AlertDialog.Builder(this)
             .setTitle(getString(R.string.title_multiplayer_invite))
             .setMessage(getString(R.string.desc_multiplayer_invite, owner.userName))
+            .setCancelable(false)
             .setPositiveButton(R.string.accept) { dialogInterface, _ ->
                 dialogInterface.dismiss()
                 result.resume(true)
@@ -37,6 +38,7 @@ suspend fun Context.showConfirmationDialog(@StringRes title: Int, @StringRes msg
     AlertDialog.Builder(this)
             .setTitle(title)
             .setMessage(msg)
+            .setCancelable(false)
             .setPositiveButton(R.string.yes) { dialog, _ ->
                 dialog.dismiss()
                 result.resume(true)

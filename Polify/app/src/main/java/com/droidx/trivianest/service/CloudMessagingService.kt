@@ -4,8 +4,11 @@ import android.content.Intent
 import android.util.Log
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.droidx.gameapi.api.GameRepository
-import com.droidx.trivianest.data.*
 import com.droidx.gameapi.model.data.*
+import com.droidx.gameapi.model.response.Result
+import com.droidx.trivianest.data.*
+import com.droidx.trivianest.util.buildNotification
+import com.droidx.trivianest.util.isHomeActivityVisible
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
@@ -15,12 +18,13 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.launch
+import splitties.systemservices.notificationManager
 import java.util.concurrent.Executors
-import com.droidx.gameapi.model.response.Result
 
 class CloudMessagingService : FirebaseMessagingService(), CoroutineScope {
     companion object {
         private val TAG = "${this::class.java.simpleName}Log"
+        private const val INVITE_NOTI_ID = 1
     }
 
     private val job: Job = Job()
@@ -77,10 +81,11 @@ class CloudMessagingService : FirebaseMessagingService(), CoroutineScope {
             TYPE_ROOM_INVITE -> {
                 Log.d(TAG, "room invite: ${map[KEY_PAYLOAD]}")
 
-                map[KEY_PAYLOAD]?.toRoom().let { room ->
-                    val intent = Intent(ACTION_ROOM_INVITE)
-                            .putExtra(EXTRA_ROOM, room)
-                    LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
+                map[KEY_PAYLOAD]?.toRoom()?.let { room ->
+                    if (isHomeActivityVisible())
+                        sendDialogBroadcast(room)
+                    else
+                        showNotification(room)
                 }
             }
 
@@ -127,6 +132,18 @@ class CloudMessagingService : FirebaseMessagingService(), CoroutineScope {
                 }
             }
         }
+    }
+
+    private fun showNotification(room: Room) {
+        val builder = buildNotification(room)
+
+        notificationManager.notify(INVITE_NOTI_ID, builder.build())
+    }
+
+    private fun sendDialogBroadcast(room: Room) {
+        val intent = Intent(ACTION_ROOM_INVITE)
+                .putExtra(EXTRA_ROOM, room)
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
     }
 
     override fun onDestroy() {

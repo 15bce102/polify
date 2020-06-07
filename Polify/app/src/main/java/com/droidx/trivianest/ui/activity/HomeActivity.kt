@@ -20,7 +20,6 @@ import android.widget.ImageView
 import androidx.activity.viewModels
 import androidx.annotation.NonNull
 import androidx.annotation.RequiresApi
-import androidx.core.content.getSystemService
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
@@ -66,6 +65,7 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import splitties.resources.color
 import splitties.resources.drawable
+import splitties.systemservices.connectivityManager
 
 class HomeActivity : FullScreenActivity() {
     companion object {
@@ -145,6 +145,8 @@ class HomeActivity : FullScreenActivity() {
 
         rewardedAd = createAndLoadRewardedAd()
 
+        processExtras()
+
         userViewModel.user.observe(this, Observer { result ->
             when (result.status) {
                 Result.Status.LOADING -> {
@@ -200,6 +202,16 @@ class HomeActivity : FullScreenActivity() {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(multiPlayerReceiver)
     }
 
+    override fun onStart() {
+        super.onStart()
+        setHomeActivityVisible(true)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        setHomeActivityVisible(false)
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onAvatarEvent(avatarEvent: AvatarEvent) {
         val (avatarUrl) = avatarEvent
@@ -235,18 +247,19 @@ class HomeActivity : FullScreenActivity() {
                             }
 
                             override fun onPermissionRationaleShouldBeShown(request: PermissionRequest, token: PermissionToken) {
-                                token.cancelPermissionRequest()
                                 lifecycleScope.launch {
                                     val shouldGoToSettings = showConfirmationDialog(R.string.contacts_perm_title, R.string.contacts_perm_msg)
                                     if (shouldGoToSettings)
                                         launchSettingsIntent()
+                                    token.cancelPermissionRequest()
                                 }
                             }
 
                             override fun onPermissionDenied(deniedResponse: PermissionDeniedResponse) {
                                 //errorToast("${deniedResponse.permissionName} permission denied")
                             }
-                        }).check()
+                        }).onSameThread()
+                        .check()
             }
             R.string.title_test -> {
                 val user = binding.user!!
@@ -268,6 +281,13 @@ class HomeActivity : FullScreenActivity() {
         binding.imgProfile.setOnSoundClickListener {
             val dialog = AvatarDialogFragment.getInstance()
             dialog.show(supportFragmentManager, "avatarDialog")
+        }
+    }
+
+    private fun processExtras() {
+        if (intent.action == ACTION_ROOM_INVITE) {
+            val room = intent.extras?.get(EXTRA_ROOM) as Room
+            showRoomInviteDialog(room)
         }
     }
 
@@ -328,18 +348,19 @@ class HomeActivity : FullScreenActivity() {
                         }
 
                         override fun onPermissionRationaleShouldBeShown(request: PermissionRequest, token: PermissionToken) {
-                            token.cancelPermissionRequest()
                             lifecycleScope.launch {
                                 val shouldGoToSettings = showConfirmationDialog(R.string.contacts_perm_title, R.string.contacts_perm_msg)
                                 if (shouldGoToSettings)
                                     launchSettingsIntent()
+                                token.cancelPermissionRequest()
                             }
                         }
 
                         override fun onPermissionDenied(deniedResponse: PermissionDeniedResponse) {
                             //errorToast("${deniedResponse.permissionName} permission denied")
                         }
-                    }).check()
+                    }).onSameThread()
+                    .check()
         }
 
         rlIcon2.setOnSoundClickListener {
@@ -367,7 +388,7 @@ class HomeActivity : FullScreenActivity() {
                 .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
                 .build()
 
-        getSystemService<ConnectivityManager>()?.registerNetworkCallback(networkRequest, object : ConnectivityManager.NetworkCallback() {
+        connectivityManager.registerNetworkCallback(networkRequest, object : ConnectivityManager.NetworkCallback() {
             override fun onAvailable(network: Network) {
                 super.onAvailable(network)
 
