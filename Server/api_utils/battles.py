@@ -7,11 +7,11 @@ from time import sleep
 from threading import Thread
 
 from api_utils import users, questions
-from constants import BATTLE_MULTIPLAYER, BATTLE_ONE_VS_ONE, ID_BOT1
+from constants import BATTLE_MULTIPLAYER, BATTLE_ONE_VS_ONE
 from constants import COINS_POOL_ONE_VS_ONE, COINS_POOL_MULTIPLAYER
 from constants import STATUS_BUSY, STATUS_ONLINE
 from constants import WAITING_ROOM, BATTLES, PRIVATE_ROOM, DBNAME, USERS
-from utils import send_multi_message, send_single_message, current_milli_time
+from utils import send_multi_message, send_single_message, current_milli_time, bot_answer_algo
 
 client = MongoClient("mongodb+srv://polify:polify@cluster0-ht1fc.mongodb.net/test?retryWrites=true&w=majority")
 db = client[DBNAME]
@@ -19,7 +19,7 @@ db = client[DBNAME]
 
 # db[WAITING_ROOM] should not be empty
 
-def start_updating_bot_score(bid):
+def start_updating_bot_score(bid, bot_id):
     print('bot battle start')
     score = 0
     pos = 0
@@ -29,16 +29,16 @@ def start_updating_bot_score(bid):
     for question in battle['questions']:
         pos += 1
         print('bot playing question {0}'.format(pos))
-        if question['correctAnswer'] == 'C':
+        if question['correctAnswer'] == bot_answer_algo():
             score += 1
 
-        sleep(15)
+        sleep(19)
 
     print('bot game finished')
-    update_battle_score(battle['_id'], ID_BOT1, score)
+    update_battle_score(battle['_id'], bot_id, score)
 
 
-def create_and_start_battle(random_users, bot=False):
+def create_and_start_battle(random_users, bot_id=None):
     uids = [user['_id'] for user in random_users]
 
     print('uids = ', uids)
@@ -83,8 +83,8 @@ def create_and_start_battle(random_users, bot=False):
     }
     send_multi_message(data, tokens)
 
-    if bot:
-        thread = Thread(target=start_updating_bot_score, args=[battle['_id']])
+    if bot_id is not None:
+        thread = Thread(target=start_updating_bot_score, args=[battle['_id'], bot_id])
         thread.start()
 
 

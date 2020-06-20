@@ -2,11 +2,18 @@ import time
 
 from os import listdir
 from os.path import isfile, join
+import random
 
 from firebase_admin import auth
 from firebase_admin.auth import UserNotFoundError
 from firebase_admin.exceptions import InvalidArgumentError
 from firebase_admin.messaging import Message, MulticastMessage, send, send_multicast
+
+from constants import LIST_BOT_IDS
+
+
+def bot_answer_algo():
+    return 'C'
 
 
 def current_milli_time():
@@ -72,3 +79,7 @@ def upgrade_tier(score):
         return "Elite 2"
     else:
         return "Professional"
+
+
+def get_random_bot():
+    return random.choice(LIST_BOT_IDS)

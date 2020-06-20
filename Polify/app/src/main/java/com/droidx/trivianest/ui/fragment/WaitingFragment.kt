@@ -90,10 +90,16 @@ class WaitingFragment : Fragment() {
                     val data = response.data
                     if (data?.success == true)
                         Log.d(TAG, "waiting room joined")
-                    else
+                    else {
+                        errorToast(data?.message)
+                        requireActivity().finish()
                         Log.e(TAG, "waiting room join failed: ${data?.message}")
-                } else
+                    }
+                } else {
+                    errorToast(response.message)
+                    requireActivity().finish()
                     Log.e(TAG, "waiting room join failed")
+                }
             }
         }
 

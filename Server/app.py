@@ -5,7 +5,7 @@ from flask import Flask, request, send_from_directory, send_file
 
 import utils
 from api_utils import battles, users
-from constants import STATUS_BUSY, STATUS_ONLINE, ID_BOT1
+from constants import STATUS_BUSY, STATUS_ONLINE
 from utils import current_milli_time, is_valid_user
 
 app = Flask(__name__, static_url_path='')
@@ -190,9 +190,11 @@ def play_with_bot():
     if not valid:
         return resp
 
-    game_players = [users.get_player_profile(uid), users.get_player_profile(ID_BOT1)]
+    bot_id = utils.get_random_bot()
 
-    battles.create_and_start_battle(game_players, bot=True)
+    game_players = [users.get_player_profile(uid), users.get_player_profile(bot_id)]
+
+    battles.create_and_start_battle(game_players, bot_id)
 
     resp = {"success": True}
     return resp

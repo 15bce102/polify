@@ -1,14 +1,11 @@
-import uuid
-
 import simplejson
 from apscheduler.jobstores.base import JobLookupError
 from pymongo import MongoClient
 from pymongo.errors import PyMongoError
 
-from api_utils import users, questions
-from constants import BATTLE_ONE_VS_ONE, ID_BOT1
-from constants import COINS_POOL_ONE_VS_ONE
-from constants import STATUS_BUSY, STATUS_ONLINE, STATUS_OFFLINE
+from api_utils import users
+from api_utils.battles import create_and_start_battle
+from constants import STATUS_ONLINE, STATUS_OFFLINE
 from constants import WAITING_ROOM, BATTLES, DBNAME, USERS
 from utils import send_multi_message, current_milli_time
 
@@ -23,9 +20,6 @@ battle_stream = db[BATTLES].watch(pipeline=pipeline, full_document="updateLookup
 
 
 def start_matchmaking():
-    users.create_user(uid=ID_BOT1, avatar='http://polify.herokuapp.com/avatars/avatar1.jpg',
-                      user_name='TriviaBot', token='token-bot')
-
     print('starting watching matchmaking')
 
     try:

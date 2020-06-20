@@ -21,4 +21,4 @@ STATUS_WAITING = 3
 BATTLE_ONE_VS_ONE = '1v1'
 BATTLE_MULTIPLAYER = 'Private room'
 
-ID_BOT1 = 'bot-1-trivia-nest'
+LIST_BOT_IDS = ['bot-trivia-nest-1', 'bot-trivia-nest-2', 'bot-trivia-nest-3', 'bot-trivia-nest-4']
