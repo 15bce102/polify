@@ -92,7 +92,7 @@ class HomeActivity : FullScreenActivity() {
                 val result = GameRepository.addCoins(user.uid)
                 if (result.status == Result.Status.SUCCESS) {
                     if (result.data?.success == true) {
-                        incAdCount()
+                        //incAdCount()
                         infoToast("50 Coins added")
                         userViewModel.refresh()
 
@@ -176,13 +176,13 @@ class HomeActivity : FullScreenActivity() {
             initFloatingMenu()
 
         scheduleFriendsUpdate()
-        scheduleAdsCountClear()
+        //scheduleAdsCountClear()
 
         binding.imgPlus.setOnSoundClickListener {
-            if (!canWatchMoreAds()) {
+            /*if (!canWatchMoreAds()) {
                 errorToast("You have watched all ads for today!")
                 return@setOnSoundClickListener
-            }
+            }*/
 
             if (!rewardedAd.isLoaded) {
                 errorToast("Ad loading...please wait")

@@ -6,13 +6,15 @@ import androidx.core.content.edit
 private const val PREF_FIRST_TIME = "first_time_user_pref"
 private const val KEY_FIRST_TIME = "first_time"
 
+/*
 private const val PREF_AD_WATCHED = "ad_watched_pref"
 private const val KEY_AD_COUNT = "ad_count"
+*/
 
 private const val PREF_HOME_VISIBLE = "home_visible_pref"
 private const val KEY_VISIBLE = "visible"
 
-private const val MAX_ADS_PER_DAY = 5
+//private const val MAX_ADS_PER_DAY = 5
 
 fun Context.isFirstTime() =
         getSharedPreferences(PREF_FIRST_TIME, Context.MODE_PRIVATE)
@@ -23,7 +25,7 @@ fun Context.setFirstTimeComplete() {
             .edit { putBoolean(KEY_FIRST_TIME, false) }
 }
 
-fun Context.canWatchMoreAds(): Boolean {
+/*fun Context.canWatchMoreAds(): Boolean {
     val count = getSharedPreferences(PREF_AD_WATCHED, Context.MODE_PRIVATE)
             .getInt(KEY_AD_COUNT, 0)
     return count < MAX_ADS_PER_DAY
@@ -39,7 +41,7 @@ fun Context.incAdCount() {
 fun Context.clearAdCount() {
     getSharedPreferences(PREF_AD_WATCHED, Context.MODE_PRIVATE)
             .edit { putInt(KEY_AD_COUNT, 0) }
-}
+}*/
 
 fun Context.setHomeActivityVisible(visible: Boolean) {
     getSharedPreferences(PREF_HOME_VISIBLE, Context.MODE_PRIVATE)

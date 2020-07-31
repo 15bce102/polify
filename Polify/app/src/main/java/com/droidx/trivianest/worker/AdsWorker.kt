@@ -1,5 +1,5 @@
 package com.droidx.trivianest.worker
-
+/*
 import android.content.Context
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
@@ -10,4 +10,4 @@ class AdsWorker(appContext: Context, params: WorkerParameters) : CoroutineWorker
         applicationContext.clearAdCount()
         return Result.success()
     }
-}
+}*/
